@@ -1,0 +1,12 @@
+{
+  "routerMap": [
+    {
+      "name": "simple",
+      "pageSourceFile": "src/main/ets/pages/SimpleListPage.ets",
+      "buildFunction": "routerBuilder",
+      "data": {
+        "description": "page"
+      }
+    }
+  ]
+}
