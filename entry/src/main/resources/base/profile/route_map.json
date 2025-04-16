@@ -7,6 +7,14 @@
       "data": {
         "description": "page"
       }
+    },
+    {
+      "name": "group",
+      "pageSourceFile": "src/main/ets/pages/GroupListPage.ets",
+      "buildFunction": "routerBuilder",
+      "data": {
+        "description": "page"
+      }
     }
   ]
 }

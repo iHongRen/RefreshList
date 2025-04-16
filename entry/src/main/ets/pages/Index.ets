@@ -3,7 +3,8 @@
 struct Index {
   pageStack: NavPathStack = new NavPathStack()
   items: string[][] = [
-    ['普通刷新和加载更多', 'simple']
+    ['普通刷新和加载更多', 'simple'],
+    ['分组刷新和加载更多', 'group']
   ]
 
   build() {
@@ -23,7 +24,6 @@ struct Index {
             .width('100%')
             .alignItems(VerticalAlign.Center)
             .justifyContent(FlexAlign.SpaceBetween)
-
           }
           .padding(10)
           .onClick(() => {
