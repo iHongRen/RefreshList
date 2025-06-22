@@ -1,16 +1,16 @@
 /**
- * @fileName : ViewModel.ets
+ * @fileName : SimpleViewModel.ets
  * @author : @cxy
  * @date : 2025/4/16
  * @description : 文件描述
  */
 import { RefreshController, RefreshDataSource } from "refreshlist"
-import { ItemModel } from "../models/ItemModel"
+import { ItemModel } from "../../models/ItemModel"
 
-export class ViewModel {
+export class SimpleViewModel {
   @Track dataSource: RefreshDataSource = new RefreshDataSource
   @Track controller: RefreshController = new RefreshController()
-  curpage: number = 1
+  private curpage: number = 1
 
   refresh(): void {
     this.requestData(1)

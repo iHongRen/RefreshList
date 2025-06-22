@@ -2,7 +2,7 @@
   "routerMap": [
     {
       "name": "simple",
-      "pageSourceFile": "src/main/ets/pages/SimpleListPage.ets",
+      "pageSourceFile": "src/main/ets/pages/simple/SimpleListPage.ets",
       "buildFunction": "routerBuilder",
       "data": {
         "description": "page"
@@ -10,7 +10,7 @@
     },
     {
       "name": "group",
-      "pageSourceFile": "src/main/ets/pages/GroupListPage.ets",
+      "pageSourceFile": "src/main/ets/pages/group/GroupListPage.ets",
       "buildFunction": "routerBuilder",
       "data": {
         "description": "page"

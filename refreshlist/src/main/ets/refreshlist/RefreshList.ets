@@ -14,6 +14,7 @@ import { RefreshListAttrModifier } from './RefreshListAttrModifier'
 import { RefreshListDirvier } from './RefreshListDirvier'
 import { RefreshEmptyView } from './RefreshEmptyView'
 import { RefreshLoadingView } from './RefreshLoadingView'
+import { RefreshGroupModel } from '../../../../Index'
 
 interface RefreshItemWrap {
   dataSource: RefreshDataSource
@@ -21,11 +22,6 @@ interface RefreshItemWrap {
 
 @Component
 export struct RefreshList {
-  //得包含 ListItem/ListItemGroup, 用于支持配置ListItem/ListItemGroup
-  //ListItem : 配置ListItem支持侧滑删除等动作
-  //ListItemGroup : 通过配合 RefreshGroupDataSource + RefreshGroupModel 实现分组懒加载数据源
-  @BuilderParam listItemOrGroupLayout: (item: Object, index: number) => void
-  //通常不需要自定义ListItem属性配置，就用itemLayout
   @BuilderParam itemLayout: (item: Object, index: number) => void
   @BuilderParam headerLayout: () => void
   @BuilderParam cumstomLayout: (wrap: RefreshItemWrap) => void
@@ -43,6 +39,7 @@ export struct RefreshList {
   @Prop dirvier: RefreshListDirvier | null = null
   @Prop lanes: number = 1
   @Prop gutter: Dimension = 0
+  @Prop maintainVisibleContentPosition: boolean = false
   @Require dataSource: RefreshDataSource = new RefreshDataSource()
   @Require controller: RefreshController = new RefreshController()
   @State listAttrModifier: RefreshListAttrModifier = new RefreshListAttrModifier()
@@ -179,15 +176,9 @@ export struct RefreshList {
         }
       }
 
-      if (this.listItemOrGroupLayout) {
+      if (this.itemLayout) {
         LazyForEach(this.dataSource, (item: ESObject, index: number) => {
-          this.listItemOrGroupLayout(item, index)
-        }, this.keyGenerator)
-      } else if (this.itemLayout) {
-        LazyForEach(this.dataSource, (item: ESObject, index: number) => {
-          ListItem() {
-            this.itemLayout(item, index)
-          }
+          this.itemLayout(item, index)
         }, this.keyGenerator)
       } else if (this.cumstomLayout) {
         this.cumstomLayout({ dataSource: this.dataSource })
@@ -215,6 +206,7 @@ export struct RefreshList {
       }
 
     }
+    .maintainVisibleContentPosition(this.maintainVisibleContentPosition)
     .edgeEffect(EdgeEffect.Spring, { alwaysEnabled: true })
     .scrollBar(this.barState)
     .scrollBarColor('#bbb')

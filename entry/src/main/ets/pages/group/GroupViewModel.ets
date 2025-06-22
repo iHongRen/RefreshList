@@ -6,12 +6,12 @@
  */
 
 import { RefreshController, RefreshGroupModel, RefreshGroupDataSource } from "refreshlist"
-import { ItemModel } from "../models/ItemModel"
+import { ItemModel } from "../../models/ItemModel"
 
 export class GroupViewModel {
   @Track dataSource: RefreshGroupDataSource = new RefreshGroupDataSource()
   @Track controller: RefreshController = new RefreshController()
-  curpage: number = 1
+  private curpage: number = 1
 
   refresh(): void {
     this.requestData(1)

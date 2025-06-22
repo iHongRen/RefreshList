@@ -5,8 +5,8 @@
  * @description : 文件描述
  */
 import { RefreshList } from 'refreshlist'
-import { ItemModel } from '../models/ItemModel'
-import { ViewModel } from '../viewmodels/ViewModel'
+import { ItemModel } from '../../models/ItemModel'
+import { SimpleViewModel } from './SimpleViewModel'
 
 
 @Builder
@@ -17,7 +17,7 @@ function routerBuilder() {
 @Component
 struct SimpleListPage {
   @State title: string = ''
-  @State viewModel: ViewModel = new ViewModel()
+  @State viewModel: SimpleViewModel = new SimpleViewModel()
 
   build() {
     NavDestination() {

@@ -33,7 +33,7 @@ export class RefreshDataSource implements IDataSource {
   }
 
   public getDataAll(): Object[] {
-    return this.list
+    return [...this.list]
   }
 
   insertData(index: number, data: Object): void {
