@@ -34,7 +34,7 @@ struct GroupListPage {
     .title(this.title)
     .onReady((ctx) => {
       this.title = ctx.pathInfo.param as string
-
+      this.viewModel.refresh()
     })
   }
 

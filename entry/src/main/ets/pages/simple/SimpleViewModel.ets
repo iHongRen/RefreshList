@@ -25,7 +25,7 @@ export class SimpleViewModel {
       const length = page === 1 ? 0 : this.dataSource.totalCount()
       const list: ItemModel[] = []
       for (let i = 0; i < 20; i++) {
-        const item = new ItemModel(`${length + i}`, `title${length + i}`)
+        const item = new ItemModel(`${length + i}`, `item${length + i}`)
         list.push(item)
       }
 

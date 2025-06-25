@@ -23,19 +23,22 @@ export class GroupViewModel {
 
   async requestData(page: number): Promise<void> {
     setTimeout(() => {
-      const length = page === 1 ? 0 : this.dataSource.totalCount()
+      const length = page === 1 ? 0 : this.dataSource.totalItemCount()
       const list: ItemModel[] = []
       for (let i = 0; i < 20; i++) {
-        const item = new ItemModel(`${length + i}`, `title${length + i}`)
+        const item = new ItemModel(`${length + i}`, `item${length + i}`)
         list.push(item)
       }
 
       if (page === 1) {
         this.dataSource.deleteAll()
       }
-      this.dataSource.pushDataArray(list)
-      this.controller.finishRefresh()
 
+      this.dataSource.addListToGroup(list, (item: ItemModel) => {
+        return item.id.slice(0, -1) + "0"
+      })
+
+      this.controller.finishRefresh()
       this.curpage = page
     }, 500)
   }
