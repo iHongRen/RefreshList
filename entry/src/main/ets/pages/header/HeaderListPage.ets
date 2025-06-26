@@ -1,12 +1,13 @@
 /**
- * @fileName : SimpleListPage.ets
+ * @fileName : HeaderListPage.ets
  * @author : @cxy
- * @date : 2025/4/14
+ * @date : 2025/6/25
  * @description : 文件描述
  */
+
 import { RefreshList } from 'refreshlist'
 import { ItemModel } from '../../models/ItemModel'
-import { SimpleViewModel } from './SimpleViewModel'
+import { SimpleViewModel } from '../simple/SimpleViewModel'
 
 
 @Builder
@@ -25,6 +26,7 @@ struct SimpleListPage {
         dataSource: this.viewModel.dataSource,
         controller: this.viewModel.controller,
         onRefresh: () => this.viewModel.refresh(),
+        headerLayout: () => this.headerLayout(),
         onLoadMore: () => this.viewModel.loadMore(),
         itemLayout: (item: Object, index: number) => this.itemLayout(item as ItemModel),
         divider: { strokeWidth: 1, color: '#ddd' },
@@ -37,6 +39,13 @@ struct SimpleListPage {
       this.title = ctx.pathInfo.param as string
       this.viewModel.refresh()
     })
+  }
+
+  @Builder
+  headerLayout(): void {
+    Image($r('app.media.background'))
+      .width('100%')
+      .height(200)
   }
 
   @Builder

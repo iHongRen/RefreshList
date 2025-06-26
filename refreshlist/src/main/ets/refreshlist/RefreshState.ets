@@ -19,7 +19,6 @@ export interface RefreshHeaderData {
   refreshState: RefreshStatus
   refreshOffset: number
   refreshing: boolean
-  text: string
-  textColor?: ResourceColor
+  refreshExtra?: Object
 }
 

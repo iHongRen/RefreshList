@@ -11,10 +11,9 @@ import { RefreshFooter } from './RefreshFooter'
 import { RefreshController } from './RefreshController'
 import { RefreshFooterState } from './RefreshState'
 import { RefreshListAttrModifier } from './RefreshListAttrModifier'
-import { RefreshListDirvier } from './RefreshListDirvier'
+import { RefreshListDivider } from './RefreshListDirvier'
 import { RefreshEmptyView } from './RefreshEmptyView'
 import { RefreshLoadingView } from './RefreshLoadingView'
-import { RefreshGroupModel } from '../../../../Index'
 
 interface RefreshItemWrap {
   dataSource: RefreshDataSource
@@ -22,35 +21,64 @@ interface RefreshItemWrap {
 
 @Component
 export struct RefreshList {
+  // 需要 ListItem / ListItemGroup 作为组件
   @BuilderParam itemLayout: (item: Object, index: number) => void
-  @BuilderParam headerLayout: () => void
+  // 自定义布局，自己实现 LazyForEach 部分
   @BuilderParam cumstomLayout: (wrap: RefreshItemWrap) => void
+  // 类似于 iOS tableHeaderView
+  @BuilderParam headerLayout: () => void
+  // loading 布局
   @BuilderParam loadingLayout: () => void = this.defaultLoadingView
+  // 空布局
   @BuilderParam emptyLayout: () => void = this.defaultEmptyView
+  // 是否正在loading
   @Prop showLoading: boolean = true
+  // 是否展示空布局
   @Prop showEmpty: boolean = true
+  // 缓存的列表项数量
   @State cachedCount: number = 4
-  @State safeBottom: number = 30
+  // 设置内容区域起始偏移量
+  @State contentStartOffset: number = 0
+  // 设置内容区末尾偏移量
+  @State contentEndOffset: number = 0
+  // 吸顶样式
   @State sticky: StickyStyle = StickyStyle.Header | StickyStyle.Footer;
-  @Prop textColor: ResourceColor = '#bbb'
-  @Prop space: number = 0
+  // item 间距
+  @Prop itemSpace: number = 0
+  // 滚动条状态
   @Prop barState: BarState = BarState.On
+  // 设置下拉跟手系数。
   @Prop pullDownRatio: number = 0.62
-  @Prop dirvier: RefreshListDirvier | null = null
+  // 分割线样式
+  @Prop divider: RefreshListDivider | null = null
+  // 设置List组件的布局列数或行数
   @Prop lanes: number = 1
+  // 列间距
   @Prop gutter: Dimension = 0
+  // 设置显示区域上方插入或删除数据时是否要保持可见内容位置不变。
   @Prop maintainVisibleContentPosition: boolean = false
-  @Require dataSource: RefreshDataSource = new RefreshDataSource()
-  @Require controller: RefreshController = new RefreshController()
+  // 用于自定义更多 List 属性
   @State listAttrModifier: RefreshListAttrModifier = new RefreshListAttrModifier()
+  // 数据源
+  @Require dataSource: RefreshDataSource = new RefreshDataSource()
+  // 控制器
+  @Require controller: RefreshController = new RefreshController()
+
+  ////////////////////////////////////////////////////
+  // 刷新时回调
   onRefresh?: () => void
+  // 加载更多时回调
   onLoadMore?: () => void
+  // 设置item的一key
   keyGenerator?: (item: ESObject, index: number) => string
   scroller: ListScroller = new ListScroller()
+  // 滚动时回调
   onDidScroll?: OnScrollCallback
+  //滚动到底部回调
   onReachEnd?: () => void
+  //滚动到索引回调
   onScrollIndex?: (start: number, end: number) => void
-  ////// 以下，不需要作为属性传值
+  //////----------- 以下，不需要作为属性传值 ----------///////
   @State isEmpty: boolean = false
   @State hideLoadMore: boolean = false
   @State footerState: RefreshFooterState = RefreshFooterState.Loading
@@ -128,8 +156,6 @@ export struct RefreshList {
         refreshState: this.refreshState,
         refreshOffset: this.refreshOffset,
         refreshing: this.refreshing,
-        text: this.refreshWord,
-        textColor: this.textColor
       })
     }) {
       this.listView()
@@ -169,7 +195,7 @@ export struct RefreshList {
 
   @Builder
   listView() {
-    List({ scroller: this.controller.scroller, space: this.space }) {
+    List({ scroller: this.controller.scroller, space: this.itemSpace }) {
       if (this.headerLayout) {
         ListItem() {
           this.headerLayout()
@@ -210,10 +236,11 @@ export struct RefreshList {
     .edgeEffect(EdgeEffect.Spring, { alwaysEnabled: true })
     .scrollBar(this.barState)
     .scrollBarColor('#bbb')
-    .contentEndOffset(this.safeBottom)
+    .contentStartOffset(this.contentStartOffset)
+    .contentEndOffset(this.contentEndOffset)
     .sticky(this.sticky)
     .cachedCount(this.cachedCount)
-    .divider(this.dirvier)
+    .divider(this.divider)
     .lanes(this.lanes, this.gutter)
     .attributeModifier(this.listAttrModifier)
     .width('100%')

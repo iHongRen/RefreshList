@@ -4,7 +4,8 @@ struct Index {
   pageStack: NavPathStack = new NavPathStack()
   items: string[][] = [
     ['普通刷新和加载更多', 'simple'],
-    ['分组刷新和加载更多', 'group']
+    ['分组刷新和加载更多', 'group'],
+    ['HeaderView', 'header']
   ]
 
   build() {

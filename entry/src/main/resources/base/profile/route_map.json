@@ -15,6 +15,14 @@
       "data": {
         "description": "page"
       }
+    },
+    {
+      "name": "header",
+      "pageSourceFile": "src/main/ets/pages/header/HeaderListPage.ets",
+      "buildFunction": "routerBuilder",
+      "data": {
+        "description": "page"
+      }
     }
   ]
 }

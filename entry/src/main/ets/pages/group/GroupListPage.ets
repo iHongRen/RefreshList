@@ -27,7 +27,7 @@ struct GroupListPage {
         onRefresh: () => this.viewModel.refresh(),
         onLoadMore: () => this.viewModel.loadMore(),
         itemLayout: (group: Object, index: number) => this.groupLayout(group as RefreshGroupModel),
-        dirvier: { strokeWidth: 1, color: '#ddd' },
+        divider: { strokeWidth: 1, color: '#ddd' },
         keyGenerator: (group: RefreshGroupModel) => group.title
       })
     }
