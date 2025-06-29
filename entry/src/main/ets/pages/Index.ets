@@ -5,7 +5,8 @@ struct Index {
   items: string[][] = [
     ['普通刷新和加载更多', 'simple'],
     ['分组刷新和加载更多', 'group'],
-    ['HeaderView', 'header']
+    ['HeaderView', 'header'],
+    ['自定义使用', 'custom']
   ]
 
   build() {

@@ -43,7 +43,11 @@ struct SimpleListPage {
 
   @Builder
   headerLayout(): void {
-    Image($r('app.media.background'))
+    Text('我是 header')
+      .textAlign(TextAlign.Center)
+      .fontColor('#fff')
+      .fontSize(20)
+      .backgroundColor('#00a0ff')
       .width('100%')
       .height(200)
   }

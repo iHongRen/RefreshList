@@ -63,7 +63,6 @@ export struct RefreshList {
   @Require dataSource: RefreshDataSource = new RefreshDataSource()
   // 控制器
   @Require controller: RefreshController = new RefreshController()
-
   ////////////////////////////////////////////////////
   // 刷新时回调
   onRefresh?: () => void
@@ -100,20 +99,7 @@ export struct RefreshList {
     RefreshEmptyView()
   }
 
-  resetRefreshWord() {
-    if (!this.onRefresh) {
-      return
-    }
-    const words = RefreshController.refreshWords
-    if (words.length === 0) {
-      return
-    }
-    const index = Math.floor(Math.random() * words.length)
-    this.refreshWord = words[index]
-  }
-
   aboutToAppear(): void {
-    this.resetRefreshWord()
     this.controller.scroller = this.scroller
 
     this.controller.setHasmore = (hasmore: boolean) => {
@@ -167,9 +153,6 @@ export struct RefreshList {
       if (!this.onRefresh) {
         this.refreshState = RefreshStatus.Done;
         return
-      }
-      if (state === RefreshStatus.Done) {
-        this.resetRefreshWord()
       }
       this.refreshState = state;
     })
