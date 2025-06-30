@@ -5,7 +5,7 @@
  * @description : 文件描述
  */
 
-import { RefreshDataSource, RefreshList } from 'refreshlist'
+import { RefreshDataSource, RefreshFooterData, RefreshFooterState, RefreshHeaderData, RefreshList } from 'refreshlist'
 import { ItemModel } from '../../models/ItemModel'
 import { CustomListModel } from './CustomListModel'
 
@@ -27,6 +27,8 @@ struct CustomListPage {
         controller: this.viewModel.controller,
         onRefresh: () => this.viewModel.refresh(),
         onLoadMore: () => this.viewModel.loadMore(),
+        refreshHeaderLayout: (headerData: RefreshHeaderData) => this.refreshHeaderLayout(headerData),
+        refreshFooterLayout: (footerData: RefreshFooterData) => this.refreshFooterLayout(footerData),
         cumstomLayout: (wrap) => this.cumstomLayout(wrap.dataSource),
         divider: { strokeWidth: 1, color: '#ddd' },
         loadingLayout: () => this.loadingBuilder(),
@@ -54,6 +56,28 @@ struct CustomListPage {
       })
   }
 
+  // 自定义刷新header动画
+  @Builder
+  refreshHeaderLayout(headerData: RefreshHeaderData): void {
+    Column() {
+      Image($r("app.media.custom_header")).height(30)
+    }
+  }
+
+  // 自定义刷新footer动画
+  @Builder
+  refreshFooterLayout(footerData: RefreshFooterData): void {
+    Column() {
+      if (footerData.state === RefreshFooterState.Loading) {
+        Image($r("app.media.custom_footer")).height(44)
+      } else {
+        Text('没有更多了').fontColor('#999').fontSize(14)
+      }
+    }
+    .visibility(footerData.hide ? Visibility.None : Visibility.Visible)
+  }
+
+  // 自定义 List 内容
   @Builder
   cumstomLayout(dataSource: RefreshDataSource): void {
     LazyForEach(dataSource, (item: ItemModel) => {
@@ -66,12 +90,10 @@ struct CustomListPage {
   // 自定义loading布局
   @Builder
   loadingBuilder(): void {
-    Text('正在加载中')
-      .fontColor('#f00')
-      .fontSize(20)
+    Image($r("app.media.custom_loading")).height(30)
   }
 
-  // 自定义空页面布局
+  // 自定义empty布局
   @Builder
   emptyBuilder(): void {
     Text('暂无数据')

@@ -9,7 +9,7 @@ import { RefreshDataSource } from './RefreshDataSource'
 import { RefreshHeader } from './RefreshHeader'
 import { RefreshFooter } from './RefreshFooter'
 import { RefreshController } from './RefreshController'
-import { RefreshFooterState } from './RefreshState'
+import { RefreshFooterData, RefreshFooterState, RefreshHeaderData } from './RefreshState'
 import { RefreshListAttrModifier } from './RefreshListAttrModifier'
 import { RefreshListDivider } from './RefreshListDirvier'
 import { RefreshEmptyView } from './RefreshEmptyView'
@@ -31,6 +31,10 @@ export struct RefreshList {
   @BuilderParam loadingLayout: () => void = this.defaultLoadingView
   // 空布局
   @BuilderParam emptyLayout: () => void = this.defaultEmptyView
+  // 刷新头布局
+  @BuilderParam refreshHeaderLayout: (headerData: RefreshHeaderData) => void = this.defaultRefreshHeader
+  // 加载更多布局
+  @BuilderParam refreshFooterLayout: (footerData: RefreshFooterData) => void = this.defaultRefreshFooter
   // 是否正在loading
   @Prop showLoading: boolean = true
   // 是否展示空布局
@@ -99,6 +103,20 @@ export struct RefreshList {
     RefreshEmptyView()
   }
 
+  @Builder
+  defaultRefreshHeader(headerData: RefreshHeaderData) {
+    RefreshHeader({
+      refreshState: headerData.refreshState,
+      refreshOffset: headerData.refreshOffset,
+      refreshing: headerData.refreshing,
+    })
+  }
+
+  @Builder
+  defaultRefreshFooter(footerData: RefreshFooterData) {
+    RefreshFooter({ state: footerData.state, hide: footerData.hide })
+  }
+
   aboutToAppear(): void {
     this.controller.scroller = this.scroller
 
@@ -138,7 +156,7 @@ export struct RefreshList {
   build() {
     Refresh({
       refreshing: this.refreshing,
-      builder: RefreshHeader({
+      builder: this.refreshHeaderLayout({
         refreshState: this.refreshState,
         refreshOffset: this.refreshOffset,
         refreshing: this.refreshing,
@@ -209,11 +227,10 @@ export struct RefreshList {
 
       } else if (this.onLoadMore && !this.refreshing) {
         ListItem() {
-          RefreshFooter({ state: this.footerState, hide: this.hideLoadMore })
+          this.refreshFooterLayout({ state: this.footerState, hide: this.hideLoadMore })
         }
         .width(this.listWidth) //确保水平居中显示
       }
-
     }
     .maintainVisibleContentPosition(this.maintainVisibleContentPosition)
     .edgeEffect(EdgeEffect.Spring, { alwaysEnabled: true })

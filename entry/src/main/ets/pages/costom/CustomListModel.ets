@@ -35,14 +35,12 @@ export class CustomListModel {
       }
       this.dataSource.pushDataArray(list)
 
-      // 是否还有更多数据
-      const hasmore = page === 1
+      const hasmore = page < 2
       this.controller.setHasmore(hasmore)
-
       this.controller.finishRefresh()
 
       // 隐藏加载更多组件
-      this.controller.hideLoadMore(true)
+      this.controller.hideLoadMore(!hasmore)
 
       this.curpage = page
     }, 500)

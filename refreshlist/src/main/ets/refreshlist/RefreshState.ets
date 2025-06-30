@@ -11,14 +11,13 @@ export enum RefreshFooterState {
 }
 
 export interface RefreshFooterData {
-  hide: boolean
+  hide: boolean //是否需要隐藏 footer
   state: RefreshFooterState
 }
 
 export interface RefreshHeaderData {
   refreshState: RefreshStatus
-  refreshOffset: number
-  refreshing: boolean
-  refreshExtra?: Object
+  refreshOffset: number //偏移量
+  refreshing: boolean //是否正在刷新
 }
 
