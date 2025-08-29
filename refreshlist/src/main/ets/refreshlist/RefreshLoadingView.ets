@@ -2,7 +2,7 @@
  * @fileName : RefreshLoadingView.ets
  * @author : @cxy
  * @date : 2025/4/11
- * @description : 文件描述
+ * @description : loading 组件
  */
 
 @Component
@@ -12,7 +12,7 @@ export struct RefreshLoadingView {
 
   build() {
     if (this.loading) {
-      Column({space: 5}) {
+      Column({ space: 5 }) {
         LoadingProgress().color('#bbb').width(30).height(30)
         Text(this.title).fontColor('#999').fontSize(14)
       }

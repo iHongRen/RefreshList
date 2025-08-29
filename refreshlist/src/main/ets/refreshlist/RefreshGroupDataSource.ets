@@ -2,7 +2,7 @@
  * @fileName : RefreshGroupDataSource.ets
  * @author : @cxy
  * @date : 2024/9/20
- * @description : 文件描述
+ * @description : 分组数据源
  */
 import { RefreshDataSource } from './RefreshDataSource'
 import { RefreshGroupModel } from './RefreshGroupModel'

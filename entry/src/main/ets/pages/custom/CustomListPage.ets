@@ -19,6 +19,8 @@ function routerBuilder() {
 struct CustomListPage {
   @State title: string = ''
   @State viewModel: CustomListModel = new CustomListModel()
+  @State refreshHeaderData: RefreshHeaderData = new RefreshHeaderData()
+  @State refreshFooterData: RefreshFooterData = new RefreshFooterData()
 
   build() {
     NavDestination() {
@@ -27,12 +29,14 @@ struct CustomListPage {
         controller: this.viewModel.controller,
         onRefresh: () => this.viewModel.refresh(),
         onLoadMore: () => this.viewModel.loadMore(),
-        refreshHeaderLayout: (headerData: RefreshHeaderData) => this.refreshHeaderLayout(headerData),
-        refreshFooterLayout: (footerData: RefreshFooterData) => this.refreshFooterLayout(footerData),
-        cumstomLayout: (wrap) => this.cumstomLayout(wrap.dataSource),
+        refreshHeaderLayout: () => this.refreshHeaderLayout(),
+        refreshFooterLayout: () => this.refreshFooterLayout(),
+        cumstomLayout: () => this.cumstomLayout(),
         divider: { strokeWidth: 1, color: '#ddd' },
         loadingLayout: () => this.loadingBuilder(),
-        emptyLayout: () => this.emptyBuilder()
+        emptyLayout: () => this.emptyBuilder(),
+        refreshHeaderData: this.refreshHeaderData,
+        refreshFooterData: this.refreshFooterData,
       })
     }
     .menus(this.menusBuilder)
@@ -58,7 +62,7 @@ struct CustomListPage {
 
   // 自定义刷新header动画
   @Builder
-  refreshHeaderLayout(headerData: RefreshHeaderData): void {
+  refreshHeaderLayout(): void {
     Column() {
       Image($r("app.media.custom_header")).height(30)
     }
@@ -66,21 +70,21 @@ struct CustomListPage {
 
   // 自定义刷新footer动画
   @Builder
-  refreshFooterLayout(footerData: RefreshFooterData): void {
+  refreshFooterLayout(): void {
     Column() {
-      if (footerData.state === RefreshFooterState.Loading) {
+      if (this.refreshFooterData.state === RefreshFooterState.Loading) {
         Image($r("app.media.custom_footer")).height(44)
       } else {
         Text('没有更多了').fontColor('#999').fontSize(14)
       }
     }
-    .visibility(footerData.hide ? Visibility.None : Visibility.Visible)
+    .visibility(this.refreshFooterData.isShow ? Visibility.Visible : Visibility.None)
   }
 
   // 自定义 List 内容
   @Builder
-  cumstomLayout(dataSource: RefreshDataSource): void {
-    LazyForEach(dataSource, (item: ItemModel) => {
+  cumstomLayout(): void {
+    LazyForEach(this.viewModel.dataSource, (item: ItemModel) => {
       ListItem() {
         this.itemLayout(item)
       }

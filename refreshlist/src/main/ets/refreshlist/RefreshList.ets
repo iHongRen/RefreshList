@@ -2,7 +2,7 @@
  * @fileName : RefreshList.ets
  * @author : @cxy
  * @date : 2024/9/19
- * @description : 文件描述
+ * @description : 刷新组件
  */
 
 import { RefreshDataSource } from './RefreshDataSource'
@@ -15,16 +15,13 @@ import { RefreshListDivider } from './RefreshListDirvier'
 import { RefreshEmptyView } from './RefreshEmptyView'
 import { RefreshLoadingView } from './RefreshLoadingView'
 
-interface RefreshItemWrap {
-  dataSource: RefreshDataSource
-}
 
 @Component
 export struct RefreshList {
   // 需要 ListItem / ListItemGroup 作为组件
   @BuilderParam itemLayout: (item: Object, index: number) => void
   // 自定义布局，自己实现 LazyForEach 部分
-  @BuilderParam cumstomLayout: (wrap: RefreshItemWrap) => void
+  @BuilderParam cumstomLayout: () => void
   // 类似于 iOS tableHeaderView
   @BuilderParam headerLayout: () => void
   // loading 布局
@@ -32,9 +29,9 @@ export struct RefreshList {
   // 空布局
   @BuilderParam emptyLayout: () => void = this.defaultEmptyView
   // 刷新头布局
-  @BuilderParam refreshHeaderLayout: (headerData: RefreshHeaderData) => void = this.defaultRefreshHeader
+  @BuilderParam refreshHeaderLayout: () => void = this.defaultRefreshHeader
   // 加载更多布局
-  @BuilderParam refreshFooterLayout: (footerData: RefreshFooterData) => void = this.defaultRefreshFooter
+  @BuilderParam refreshFooterLayout: () => void = this.defaultRefreshFooter
   // 是否正在loading
   @Prop showLoading: boolean = true
   // 是否展示空布局
@@ -81,15 +78,10 @@ export struct RefreshList {
   onReachEnd?: () => void
   //滚动到索引回调
   onScrollIndex?: (start: number, end: number) => void
+  @State refreshHeaderData: RefreshHeaderData = new RefreshHeaderData()
+  @State refreshFooterData: RefreshFooterData = new RefreshFooterData()
   //////----------- 以下，不需要作为属性传值 ----------///////
-  @State isEmpty: boolean = false
-  @State hideLoadMore: boolean = false
-  @State footerState: RefreshFooterState = RefreshFooterState.Loading
-  @State refreshWord: string = ''
-  @State refreshing: boolean = false;
-  @State refreshOffset: number = 0;
-  @State refreshState: RefreshStatus = RefreshStatus.Inactive;
-  @State listWidth: number = 0
+  @State _isEmpty: boolean = false
   private canLoadMore: boolean = false;
   private isLoadingMore: boolean = false;
 
@@ -104,43 +96,39 @@ export struct RefreshList {
   }
 
   @Builder
-  defaultRefreshHeader(headerData: RefreshHeaderData) {
-    RefreshHeader({
-      refreshState: headerData.refreshState,
-      refreshOffset: headerData.refreshOffset,
-      refreshing: headerData.refreshing,
-    })
+  defaultRefreshHeader() {
+    RefreshHeader({ data: this.refreshHeaderData })
   }
 
   @Builder
-  defaultRefreshFooter(footerData: RefreshFooterData) {
-    RefreshFooter({ state: footerData.state, hide: footerData.hide })
+  defaultRefreshFooter() {
+    RefreshFooter({ data: this.refreshFooterData })
   }
 
   aboutToAppear(): void {
     this.controller.scroller = this.scroller
 
     this.controller.setHasmore = (hasmore: boolean) => {
-      this.footerState = Boolean(Number(hasmore)) ? RefreshFooterState.Loading : RefreshFooterState.NoMore
+      this.refreshFooterData.state = Boolean(Number(hasmore)) ? RefreshFooterState.Loading : RefreshFooterState.NoMore
     }
     this.controller.onRefresh = () => {
       if (this.onRefresh) {
         this.scroller?.scrollEdge(Edge.Top)
-        this.refreshing = true
+        this.refreshHeaderData.refreshing = true
       }
     }
 
     this.controller.finishRefresh = () => {
       const total = this.dataSource?.totalItemCount()
-      this.refreshing = false
+      this.refreshHeaderData.refreshing = false
       this.canLoadMore = true
       this.isLoadingMore = false
       this.showLoading = false
-      this.isEmpty = total === 0
-      this.hideLoadMore = total < 5
+      this._isEmpty = total === 0
+      this.refreshFooterData.isShow = total >= 5
     }
     this.controller.hideLoadMore = (hide: boolean) => {
-      this.hideLoadMore = hide
+      this.refreshFooterData.isShow = !hide
     }
 
     this.controller.scrollToIndex =
@@ -149,34 +137,30 @@ export struct RefreshList {
       }
 
     this.dataSource.onDataCountChange = (count: number) => {
-      this.isEmpty = count === 0
+      this._isEmpty = count === 0
     }
   }
 
   build() {
     Refresh({
-      refreshing: this.refreshing,
-      builder: this.refreshHeaderLayout({
-        refreshState: this.refreshState,
-        refreshOffset: this.refreshOffset,
-        refreshing: this.refreshing,
-      })
+      refreshing: this.refreshHeaderData.refreshing,
+      builder: this.refreshHeaderLayout
     }) {
       this.listView()
     }
     .onOffsetChange((offset: number) => {
-      this.refreshOffset = offset;
+      this.refreshHeaderData.refreshOffset = offset;
     })
     .onStateChange((state: RefreshStatus) => {
       if (!this.onRefresh) {
-        this.refreshState = RefreshStatus.Done;
+        this.refreshHeaderData.refreshState = RefreshStatus.Done;
         return
       }
-      this.refreshState = state;
+      this.refreshHeaderData.refreshState = state;
     })
     .onRefreshing(() => {
-      const isGuestureTrigger = !this.refreshing
-      this.refreshing = true
+      const isGuestureTrigger = !this.refreshHeaderData.refreshing
+      this.refreshHeaderData.refreshing = true
       if (this.onRefresh) {
         if (isGuestureTrigger) {
           this.onRefresh?.()
@@ -186,7 +170,7 @@ export struct RefreshList {
           }, 300)
         }
       } else {
-        this.refreshing = false
+        this.refreshHeaderData.refreshing = false
       }
     })
     .pullDownRatio(this.pullDownRatio)
@@ -208,28 +192,26 @@ export struct RefreshList {
           this.itemLayout(item, index)
         }, this.keyGenerator)
       } else if (this.cumstomLayout) {
-        this.cumstomLayout({ dataSource: this.dataSource })
+        this.cumstomLayout()
       }
 
       if (this.showLoading) {
         ListItem() {
           this.loadingLayout()
         }
-        .width(this.listWidth)
-        .height('95%')
-
-      } else if (this.showEmpty && this.isEmpty) {
+        .width('100%')
+        .height('100%')
+      } else if (this.showEmpty && this._isEmpty) {
         ListItem() {
           this.emptyLayout()
         }
-        .width(this.listWidth)
-        .height('95%')
-
-      } else if (this.onLoadMore && !this.refreshing) {
+        .width('100%')
+        .height('100%')
+      } else if (this.onLoadMore && !this.refreshHeaderData.refreshing) {
         ListItem() {
-          this.refreshFooterLayout({ state: this.footerState, hide: this.hideLoadMore })
+          this.refreshFooterLayout()
         }
-        .width(this.listWidth) //确保水平居中显示
+        .width('100%')
       }
     }
     .maintainVisibleContentPosition(this.maintainVisibleContentPosition)
@@ -245,19 +227,16 @@ export struct RefreshList {
     .attributeModifier(this.listAttrModifier)
     .width('100%')
     .height('100%')
-    .onSizeChange((oldValue: SizeOptions, newValue: SizeOptions) => {
-      this.listWidth = newValue.width as number
-    })
     .onReachEnd(() => {
       this.onReachEnd?.()
-      if (this.footerState === RefreshFooterState.NoMore) {
+      if (this.refreshFooterData.state === RefreshFooterState.NoMore) {
         return
       }
       // 加载更多数据逻辑
-      if (this.onLoadMore && this.canLoadMore && !this.refreshing) {
+      if (this.onLoadMore && this.canLoadMore && !this.refreshHeaderData.refreshing) {
         this.canLoadMore = false;
         this.isLoadingMore = true;
-        this.footerState = RefreshFooterState.Loading
+        this.refreshFooterData.state = RefreshFooterState.Loading
         this.onLoadMore?.()
       }
     })
@@ -266,11 +245,11 @@ export struct RefreshList {
       // 当达到列表末尾时，触发新数据加载
     })
     .onScrollFrameBegin((offset: number, state: ScrollState) => {
-      if (this.footerState === RefreshFooterState.NoMore) {
+      if (this.refreshFooterData.state === RefreshFooterState.NoMore) {
         return
       }
       // 只有当向上滑动时触发新数据加载
-      if (offset > 5 && !this.isLoadingMore && !this.refreshing) {
+      if (offset > 5 && !this.isLoadingMore && !this.refreshHeaderData.refreshing) {
         this.canLoadMore = true;
       }
       return { offsetRemain: offset };

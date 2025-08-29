@@ -2,7 +2,7 @@
  * @fileName : RefreshEmptyView.ets
  * @author : @cxy
  * @date : 2025/4/11
- * @description : 文件描述
+ * @description : 空页面
  */
 
 @Component

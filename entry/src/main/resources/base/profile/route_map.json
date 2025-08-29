@@ -26,7 +26,7 @@
     },
     {
       "name": "custom",
-      "pageSourceFile": "src/main/ets/pages/costom/CustomListPage.ets",
+      "pageSourceFile": "src/main/ets/pages/custom/CustomListPage.ets",
       "buildFunction": "routerBuilder",
       "data": {
         "description": "page"
