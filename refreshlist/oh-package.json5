@@ -1,9 +1,23 @@
 {
-  "name": "refreshlist",
+  "name": "@cxy/refreshlist",
   "version": "1.0.0",
-  "description": "Please describe the basic information.",
+  "description": "简单易用的上拉下拉刷新组件，支持自定义样式和多种使用场景",
   "main": "Index.ets",
-  "author": "",
+  "author": "@仙银",
+  "homepage": "https://github.com/iHongRen",
+  "repository": "https://github.com/iHongRen/RefreshList",
   "license": "Apache-2.0",
+  "keywords": [
+    "refresh",
+    "list",
+    "load",
+    "view",
+    "util",
+    "刷新",
+    "下拉",
+    "上拉",
+    "加载",
+    "仙银"
+  ],
   "dependencies": {}
 }

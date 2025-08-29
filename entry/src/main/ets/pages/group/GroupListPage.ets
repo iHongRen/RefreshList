@@ -4,7 +4,7 @@
  * @date : 2025/4/16
  * @description : 文件描述
  */
-import { RefreshGroupModel, RefreshList } from 'refreshlist'
+import { RefreshGroupModel, RefreshList } from '@cxy/refreshlist'
 import { ItemModel } from '../../models/ItemModel'
 import { GroupViewModel } from './GroupViewModel'
 

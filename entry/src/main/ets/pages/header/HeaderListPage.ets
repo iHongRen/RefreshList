@@ -5,7 +5,7 @@
  * @description : 文件描述
  */
 
-import { RefreshList } from 'refreshlist'
+import { RefreshList } from '@cxy/refreshlist'
 import { ItemModel } from '../../models/ItemModel'
 import { SimpleViewModel } from '../simple/SimpleViewModel'
 

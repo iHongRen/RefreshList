@@ -58,8 +58,14 @@ export struct RefreshList {
   @Prop gutter: Dimension = 0
   // 设置显示区域上方插入或删除数据时是否要保持可见内容位置不变。
   @Prop maintainVisibleContentPosition: boolean = false
+  // List 的 EdgeEffect
+  @Prop edfeEffect: EdgeEffect = EdgeEffect.Spring
   // 用于自定义更多 List 属性
   @State listAttrModifier: RefreshListAttrModifier = new RefreshListAttrModifier()
+  // 刷新头部状态数据
+  @State refreshHeaderData: RefreshHeaderData = new RefreshHeaderData()
+  // 加载更多状态数据
+  @State refreshFooterData: RefreshFooterData = new RefreshFooterData()
   // 数据源
   @Require dataSource: RefreshDataSource = new RefreshDataSource()
   // 控制器
@@ -78,8 +84,6 @@ export struct RefreshList {
   onReachEnd?: () => void
   //滚动到索引回调
   onScrollIndex?: (start: number, end: number) => void
-  @State refreshHeaderData: RefreshHeaderData = new RefreshHeaderData()
-  @State refreshFooterData: RefreshFooterData = new RefreshFooterData()
   //////----------- 以下，不需要作为属性传值 ----------///////
   @State _isEmpty: boolean = false
   private canLoadMore: boolean = false;
@@ -188,7 +192,7 @@ export struct RefreshList {
       }
 
       if (this.itemLayout) {
-        LazyForEach(this.dataSource, (item: ESObject, index: number) => {
+        LazyForEach(this.dataSource, (item: Object, index: number) => {
           this.itemLayout(item, index)
         }, this.keyGenerator)
       } else if (this.cumstomLayout) {
@@ -215,7 +219,7 @@ export struct RefreshList {
       }
     }
     .maintainVisibleContentPosition(this.maintainVisibleContentPosition)
-    .edgeEffect(EdgeEffect.Spring, { alwaysEnabled: true })
+    .edgeEffect(this.edfeEffect, { alwaysEnabled: true })
     .scrollBar(this.barState)
     .scrollBarColor('#bbb')
     .contentStartOffset(this.contentStartOffset)

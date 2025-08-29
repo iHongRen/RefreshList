@@ -5,7 +5,9 @@
  * @description : 文件描述
  */
 
-import { RefreshDataSource, RefreshFooterData, RefreshFooterState, RefreshHeaderData, RefreshList } from 'refreshlist'
+import {
+  RefreshFooterData, RefreshFooterState, RefreshHeaderData, RefreshList
+} from "@cxy/refreshlist"
 import { ItemModel } from '../../models/ItemModel'
 import { CustomListModel } from './CustomListModel'
 
@@ -67,7 +69,7 @@ struct CustomListPage {
       Image($r("app.media.custom_header")).height(30)
     }
   }
-
+  
   // 自定义刷新footer动画
   @Builder
   refreshFooterLayout(): void {

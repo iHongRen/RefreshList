@@ -6,7 +6,7 @@
   "author": "",
   "license": "",
   "dependencies": {
-    "refreshlist": "file:../refreshlist"
+    "@cxy/refreshlist": "file:../refreshlist"
   }
 }
 

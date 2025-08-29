@@ -5,7 +5,7 @@
  * @description : 文件描述
  */
 
-import { RefreshController, RefreshGroupModel, RefreshGroupDataSource } from "refreshlist"
+import { RefreshController, RefreshGroupDataSource } from '@cxy/refreshlist'
 import { ItemModel } from "../../models/ItemModel"
 
 export class GroupViewModel {

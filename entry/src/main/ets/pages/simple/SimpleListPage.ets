@@ -4,7 +4,7 @@
  * @date : 2025/4/14
  * @description : 文件描述
  */
-import { RefreshList } from 'refreshlist'
+import { RefreshList } from '@cxy/refreshlist'
 import { ItemModel } from '../../models/ItemModel'
 import { SimpleViewModel } from './SimpleViewModel'
 
@@ -28,7 +28,7 @@ struct SimpleListPage {
         onLoadMore: () => this.viewModel.loadMore(),
         itemLayout: (item: Object, index: number) => this.itemLayout(item as ItemModel),
         divider: { strokeWidth: 1, color: '#ddd' },
-        keyGenerator: (item: ItemModel) => item.id
+        keyGenerator: (item: ItemModel) => item.id,
       })
     }
     .hideTitleBar(false)

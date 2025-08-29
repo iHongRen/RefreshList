@@ -6,14 +6,13 @@
  */
 
 import {
-  RefreshController, RefreshDataSource, RefreshFooterData, RefreshHeaderData
-} from "refreshlist"
+  RefreshController, RefreshDataSource
+} from "@cxy/refreshlist"
 import { ItemModel } from "../../models/ItemModel"
 
 export class CustomListModel {
   @Track dataSource: RefreshDataSource = new RefreshDataSource
   @Track controller: RefreshController = new RefreshController()
-
   private curpage: number = 1
 
   refresh(): void {
