@@ -6,7 +6,15 @@ struct Index {
     ['普通刷新和加载更多', 'simple'],
     ['分组刷新和加载更多', 'group'],
     ['HeaderView', 'header'],
-    ['自定义使用', 'custom']
+    ['自定义使用', 'custom'],
+    ['网格布局示例', 'grid'],
+    ['瀑布流布局', 'waterfall'],
+    ['聊天列表示例', 'chat'],
+    ['搜索结果示例', 'search'],
+    ['无限滚动示例', 'infinite'],
+    ['性能优化示例', 'performance'],
+    ['动态内容示例', 'dynamic'],
+    ['高级综合示例', 'advanced']
   ]
 
   build() {

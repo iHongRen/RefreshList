@@ -9,3 +9,5 @@ export { RefreshGroupDataSource } from './src/main/ets/refreshlist/RefreshGroupD
 export { RefreshFooterState, RefreshHeaderData, RefreshFooterData } from './src/main/ets/refreshlist/RefreshState'
 
 export { RefreshGroupModel } from './src/main/ets/refreshlist/RefreshGroupModel'
+
+export { RefreshListAttrModifier } from './src/main/ets/refreshlist/RefreshListAttrModifier'

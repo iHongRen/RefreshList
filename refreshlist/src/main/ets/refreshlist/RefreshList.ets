@@ -21,7 +21,7 @@ export struct RefreshList {
   // 需要 ListItem / ListItemGroup 作为组件
   @BuilderParam itemLayout: (item: Object, index: number) => void
   // 自定义布局，自己实现 LazyForEach 部分
-  @BuilderParam cumstomLayout: () => void
+  @BuilderParam customLayout: () => void
   // 类似于 iOS tableHeaderView
   @BuilderParam headerLayout: () => void
   // loading 布局
@@ -195,8 +195,8 @@ export struct RefreshList {
         LazyForEach(this.dataSource, (item: Object, index: number) => {
           this.itemLayout(item, index)
         }, this.keyGenerator)
-      } else if (this.cumstomLayout) {
-        this.cumstomLayout()
+      } else if (this.customLayout) {
+        this.customLayout()
       }
 
       if (this.showLoading) {

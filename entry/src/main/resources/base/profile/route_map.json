@@ -31,6 +31,70 @@
       "data": {
         "description": "page"
       }
+    },
+    {
+      "name": "grid",
+      "pageSourceFile": "src/main/ets/pages/grid/GridListPage.ets",
+      "buildFunction": "routerBuilder",
+      "data": {
+        "description": "page"
+      }
+    },
+    {
+      "name": "waterfall",
+      "pageSourceFile": "src/main/ets/pages/waterfall/WaterfallListPage.ets",
+      "buildFunction": "routerBuilder",
+      "data": {
+        "description": "page"
+      }
+    },
+    {
+      "name": "chat",
+      "pageSourceFile": "src/main/ets/pages/chat/ChatListPage.ets",
+      "buildFunction": "routerBuilder",
+      "data": {
+        "description": "page"
+      }
+    },
+    {
+      "name": "search",
+      "pageSourceFile": "src/main/ets/pages/search/SearchListPage.ets",
+      "buildFunction": "routerBuilder",
+      "data": {
+        "description": "page"
+      }
+    },
+    {
+      "name": "infinite",
+      "pageSourceFile": "src/main/ets/pages/infinite/InfiniteListPage.ets",
+      "buildFunction": "routerBuilder",
+      "data": {
+        "description": "page"
+      }
+    },
+    {
+      "name": "performance",
+      "pageSourceFile": "src/main/ets/pages/performance/PerformanceListPage.ets",
+      "buildFunction": "routerBuilder",
+      "data": {
+        "description": "page"
+      }
+    },
+    {
+      "name": "dynamic",
+      "pageSourceFile": "src/main/ets/pages/dynamic/DynamicListPage.ets",
+      "buildFunction": "routerBuilder",
+      "data": {
+        "description": "page"
+      }
+    },
+    {
+      "name": "advanced",
+      "pageSourceFile": "src/main/ets/pages/advanced/AdvancedListPage.ets",
+      "buildFunction": "routerBuilder",
+      "data": {
+        "description": "page"
+      }
     }
   ]
 }

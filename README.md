@@ -6,8 +6,6 @@
 
 鸿蒙HarmonyOS NEXT 简单易用的上拉下拉刷新组件，支持自定义样式和多种使用场景。
 
-
-
 ## ✨ 特性
 
 - 支持下拉刷新和上拉加载更多
@@ -17,8 +15,6 @@
 - 支持分组列表
 - 灵活的配置选项和属性修饰器
 - 轻量级，易于集成
-
-
 
 ## 📦 安装
 
@@ -39,8 +35,6 @@ ohpm install @cxy/refreshlist
   }
 }
 ```
-
-
 
 ## 🚀 快速开始指南
 
@@ -147,67 +141,64 @@ struct MyPage {
 }
 ```
 
-
-
-
 ## 📚 API 文档
 
 ### RefreshList 组件属性
 
 #### 必需属性
 
-| 属性 | 类型 | 说明 |
-|------|------|------|
-| dataSource | RefreshDataSource \| RefreshGroupDataSource | 数据源，管理列表数据 |
-| controller | RefreshController | 控制器，用于控制刷新状态和列表操作 |
+| 属性         | 类型                                          | 说明                |
+|------------|---------------------------------------------|-------------------|
+| dataSource | RefreshDataSource \| RefreshGroupDataSource | 数据源，管理列表数据        |
+| controller | RefreshController                           | 控制器，用于控制刷新状态和列表操作 |
 
 #### 布局属性
 
-| 属性 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| itemLayout | (item: ESObject, index: number) => void | - | 列表项布局 |
-| customLayout | () => void | - | 自定义布局，完全自定义LazyForEach部分 |
-| headerLayout | () => void | - | 列表头部布局，类似iOS的tableHeaderView |
-| loadingLayout | () => void | 默认加载视图 | 加载中状态的布局 |
-| emptyLayout | () => void | 默认空视图 | 空数据状态的布局 |
-| refreshHeaderLayout | () => void | 默认刷新头部 | 自定义下拉刷新头部布局 |
-| refreshFooterLayout | () => void | 默认刷新底部 | 自定义上拉加载底部布局 |
+| 属性                  | 类型                                      | 默认值    | 说明                           |
+|---------------------|-----------------------------------------|--------|------------------------------|
+| itemLayout          | (item: ESObject, index: number) => void | -      | 列表项布局                        |
+| customLayout        | () => void                              | -      | 自定义布局，完全自定义LazyForEach部分     |
+| headerLayout        | () => void                              | -      | 列表头部布局，类似iOS的tableHeaderView |
+| loadingLayout       | () => void                              | 默认加载视图 | 加载中状态的布局                     |
+| emptyLayout         | () => void                              | 默认空视图  | 空数据状态的布局                     |
+| refreshHeaderLayout | () => void                              | 默认刷新头部 | 自定义下拉刷新头部布局                  |
+| refreshFooterLayout | () => void                              | 默认刷新底部 | 自定义上拉加载底部布局                  |
 
 #### 状态属性
 
-| 属性 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| showLoading | boolean | true | 是否显示加载状态 |
-| showEmpty | boolean | true | 是否显示空数据状态 |
+| 属性          | 类型      | 默认值  | 说明        |
+|-------------|---------|------|-----------|
+| showLoading | boolean | true | 是否显示加载状态  |
+| showEmpty   | boolean | true | 是否显示空数据状态 |
 
 #### 列表配置属性
 
-| 属性 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| cachedCount | number | 4 | 缓存的列表项数量，用于性能优化，建议使用列表能显示列表项的一半 |
-| contentStartOffset | number | 0 | 设置内容区域起始偏移量 |
-| contentEndOffset | number | 0 | 设置内容区末尾偏移量 |
-| sticky | StickyStyle | StickyStyle.Header \| StickyStyle.Footer | 吸顶样式 |
-| itemSpace | number | 0 | 列表项间距 |
-| barState | BarState | BarState.On | 滚动条状态 |
-| pullDownRatio | number | 0.62 | 设置下拉跟手系数，禁止下拉设置0 |
-| divider | RefreshListDivider \| null | null | 分割线样式 |
-| lanes | number | 1 | 设置List组件的布局列数或行数 |
-| gutter | Dimension | 0 | 列间距 |
-| maintainVisibleContentPosition | boolean | false | 插入或删除数据时是否保持可见内容位置不变 |
-| edfeEffect | EdgeEffect | EdgeEffect.Spring | List的EdgeEffect效果 |
-| listAttrModifier | RefreshListAttrModifier | new RefreshListAttrModifier() | 用于自定义更多List属性 |
+| 属性                             | 类型                         | 默认值                                      | 说明                              |
+|--------------------------------|----------------------------|------------------------------------------|---------------------------------|
+| cachedCount                    | number                     | 4                                        | 缓存的列表项数量，用于性能优化，建议使用列表能显示列表项的一半 |
+| contentStartOffset             | number                     | 0                                        | 设置内容区域起始偏移量                     |
+| contentEndOffset               | number                     | 0                                        | 设置内容区末尾偏移量                      |
+| sticky                         | StickyStyle                | StickyStyle.Header \| StickyStyle.Footer | 吸顶样式                            |
+| itemSpace                      | number                     | 0                                        | 列表项间距                           |
+| barState                       | BarState                   | BarState.On                              | 滚动条状态                           |
+| pullDownRatio                  | number                     | 0.62                                     | 设置下拉跟手系数，禁止下拉设置0                |
+| divider                        | RefreshListDivider \| null | null                                     | 分割线样式                           |
+| lanes                          | number                     | 1                                        | 设置List组件的布局列数或行数                |
+| gutter                         | Dimension                  | 0                                        | 列间距                             |
+| maintainVisibleContentPosition | boolean                    | false                                    | 插入或删除数据时是否保持可见内容位置不变            |
+| edfeEffect                     | EdgeEffect                 | EdgeEffect.Spring                        | List的EdgeEffect效果               |
+| listAttrModifier               | RefreshListAttrModifier    | new RefreshListAttrModifier()            | 用于自定义更多List属性                   |
 
 #### 回调函数
 
-| 属性 | 类型 | 说明 |
-|------|------|------|
-| onRefresh | () => void | 下拉刷新时的回调函数 |
-| onLoadMore | () => void | 上拉加载更多时的回调函数 |
-| keyGenerator | (item: ESObject, index: number) => string | 列表项唯一标识生成器 |
-| onDidScroll | OnScrollCallback | 滚动时的回调函数 |
-| onReachEnd | () => void | 滚动到底部时的回调函数 |
-| onScrollIndex | (start: number, end: number) => void | 滚动到索引时的回调函数 |
+| 属性            | 类型                                        | 说明           |
+|---------------|-------------------------------------------|--------------|
+| onRefresh     | () => void                                | 下拉刷新时的回调函数   |
+| onLoadMore    | () => void                                | 上拉加载更多时的回调函数 |
+| keyGenerator  | (item: ESObject, index: number) => string | 列表项唯一标识生成器   |
+| onDidScroll   | OnScrollCallback                          | 滚动时的回调函数     |
+| onReachEnd    | () => void                                | 滚动到底部时的回调函数  |
+| onScrollIndex | (start: number, end: number) => void      | 滚动到索引时的回调函数  |
 
 ### RefreshController 控制器
 
@@ -215,19 +206,19 @@ RefreshController 提供了控制刷新列表的各种方法：
 
 #### 属性
 
-| 属性 | 类型 | 说明 |
-|------|------|------|
+| 属性       | 类型           | 说明      |
+|----------|--------------|---------|
 | scroller | ListScroller | 列表滚动控制器 |
 
 #### 方法
 
-| 方法 | 参数 | 返回值 | 说明 |
-|------|------|--------|------|
-| finishRefresh | () | void | 结束刷新状态，必须在刷新完成后调用 |
-| setHasmore | (hasmore: boolean) | void | 设置是否还有更多数据可加载 |
-| hideLoadMore | (hide: boolean) | void | 隐藏或显示加载更多组件 |
-| onRefresh | () | void | 手动触发下拉刷新 |
-| scrollToIndex | (index: number, smooth?: boolean, align?: ScrollAlign, options?: ScrollToIndexOptions) | void | 滚动到指定索引位置 |
+| 方法            | 参数                                                                                     | 返回值  | 说明                |
+|---------------|----------------------------------------------------------------------------------------|------|-------------------|
+| finishRefresh | ()                                                                                     | void | 结束刷新状态，必须在刷新完成后调用 |
+| setHasmore    | (hasmore: boolean)                                                                     | void | 设置是否还有更多数据可加载     |
+| hideLoadMore  | (hide: boolean)                                                                        | void | 隐藏或显示加载更多组件       |
+| onRefresh     | ()                                                                                     | void | 手动触发下拉刷新          |
+| scrollToIndex | (index: number, smooth?: boolean, align?: ScrollAlign, options?: ScrollToIndexOptions) | void | 滚动到指定索引位置         |
 
 ### RefreshDataSource 数据源
 
@@ -235,44 +226,44 @@ RefreshDataSource 是管理列表数据的核心类，实现了 IDataSource 接�
 
 #### 基础方法
 
-| 方法 | 参数 | 返回值 | 说明 |
-|------|------|--------|------|
-| isEmpty | () | boolean | 判断数据源是否为空 |
-| totalCount | () | number | 获取数据总数 (分组时，为分组数量) |
-| totalItemCount | () | number | 获取数据项总数（分组时，为分组下item总数） |
-| getData | (index: number) | Object \| undefined | 获取指定索引的数据 |
-| getLastData | () | Object \| undefined | 获取最后一项数据 |
-| getDataAll | () | Object[] | 获取所有数据的副本 |
+| 方法             | 参数              | 返回值                 | 说明                      |
+|----------------|-----------------|---------------------|-------------------------|
+| isEmpty        | ()              | boolean             | 判断数据源是否为空               |
+| totalCount     | ()              | number              | 获取数据总数 (分组时，为分组数量)      |
+| totalItemCount | ()              | number              | 获取数据项总数（分组时，为分组下item总数） |
+| getData        | (index: number) | Object \| undefined | 获取指定索引的数据               |
+| getLastData    | ()              | Object \| undefined | 获取最后一项数据                |
+| getDataAll     | ()              | Object[]            | 获取所有数据的副本               |
 
 #### 数据操作方法
 
-| 方法 | 参数 | 返回值 | 说明 |
-|------|------|--------|------|
-| insertData | (index: number, data: Object) | void | 在指定位置插入单个数据 |
-| insertDataArray | (index: number, arr: Object[]) | void | 在指定位置插入数据数组 |
-| pushData | (data: Object) | void | 在末尾添加单个数据 |
-| pushDataArray | (arr: Object[]) | void | 在末尾添加数据数组 |
-| deleteIndex | (index: number) | void | 删除指定索引的数据 |
-| deleteData | (data: Object) | void | 删除指定数据对象 |
-| deleteAll | () | void | 删除所有数据 |
-| deleteIndexCount | (index: number, count: number) | void | 从指定索引开始删除指定数量的数据 |
-| repalceIndex | (index: number, data: Object, key?: string) | void | 替换指定索引的数据 |
-| reloadIndex | (index: number, key?: string) | void | 重新加载指定索引的数据 |
-| reloadData | (data: Object, key?: string) | void | 重新加载指定数据对象 |
-| reloadDataAll | () | void | 重新加载所有数据 |
-| moveDataIndex | (from: number, to: number) | void | 移动数据从一个位置到另一个位置 |
+| 方法               | 参数                                          | 返回值  | 说明               |
+|------------------|---------------------------------------------|------|------------------|
+| insertData       | (index: number, data: Object)               | void | 在指定位置插入单个数据      |
+| insertDataArray  | (index: number, arr: Object[])              | void | 在指定位置插入数据数组      |
+| pushData         | (data: Object)                              | void | 在末尾添加单个数据        |
+| pushDataArray    | (arr: Object[])                             | void | 在末尾添加数据数组        |
+| deleteIndex      | (index: number)                             | void | 删除指定索引的数据        |
+| deleteData       | (data: Object)                              | void | 删除指定数据对象         |
+| deleteAll        | ()                                          | void | 删除所有数据           |
+| deleteIndexCount | (index: number, count: number)              | void | 从指定索引开始删除指定数量的数据 |
+| repalceIndex     | (index: number, data: Object, key?: string) | void | 替换指定索引的数据        |
+| reloadIndex      | (index: number, key?: string)               | void | 重新加载指定索引的数据      |
+| reloadData       | (data: Object, key?: string)                | void | 重新加载指定数据对象       |
+| reloadDataAll    | ()                                          | void | 重新加载所有数据         |
+| moveDataIndex    | (from: number, to: number)                  | void | 移动数据从一个位置到另一个位置  |
 
 #### 监听器方法
 
-| 方法 | 参数 | 返回值 | 说明 |
-|------|------|--------|------|
-| registerDataChangeListener | (listener: DataChangeListener) | void | 注册数据变化监听器 |
+| 方法                           | 参数                             | 返回值  | 说明          |
+|------------------------------|--------------------------------|------|-------------|
+| registerDataChangeListener   | (listener: DataChangeListener) | void | 注册数据变化监听器   |
 | unregisterDataChangeListener | (listener: DataChangeListener) | void | 取消注册数据变化监听器 |
 
 #### 回调属性
 
-| 属性 | 类型 | 说明 |
-|------|------|------|
+| 属性                | 类型                      | 说明         |
+|-------------------|-------------------------|------------|
 | onDataCountChange | (count: number) => void | 数据数量变化时的回调 |
 
 ### RefreshGroupDataSource 分组数据源
@@ -281,16 +272,16 @@ RefreshGroupDataSource 继承自 RefreshDataSource，专门用于管理分组列
 
 #### 重写方法
 
-| 方法 | 参数 | 返回值 | 说明 |
-|------|------|--------|------|
-| isEmpty | () | boolean | 判断分组数据源是否为空 |
-| totalItemCount | () | number | 计算所有分组中的数据项总数 |
-| getGroupDataAll | () | Object[] | 获取所有分组中的数据项 |
+| 方法              | 参数 | 返回值      | 说明            |
+|-----------------|----|----------|---------------|
+| isEmpty         | () | boolean  | 判断分组数据源是否为空   |
+| totalItemCount  | () | number   | 计算所有分组中的数据项总数 |
+| getGroupDataAll | () | Object[] | 获取所有分组中的数据项   |
 
 #### 分组特有方法
 
-| 方法 | 参数 | 返回值 | 说明 |
-|------|------|--------|------|
+| 方法             | 参数                                                  | 返回值  | 说明           |
+|----------------|-----------------------------------------------------|------|--------------|
 | addListToGroup | (list: Object[], getTitle: (e: ESObject) => string) | void | 将数据列表按标题分组添加 |
 
 ### RefreshGroupModel 分组模型
@@ -299,11 +290,11 @@ RefreshGroupDataSource 继承自 RefreshDataSource，专门用于管理分组列
 
 #### 属性
 
-| 属性 | 类型 | 说明 |
-|------|------|------|
-| title | string | 分组标题 |
+| 属性         | 类型                | 说明      |
+|------------|-------------------|---------|
+| title      | string            | 分组标题    |
 | dataSource | RefreshDataSource | 分组内的数据源 |
-| data | Object | 可选的附加数据 |
+| data       | Object            | 可选的附加数据 |
 
 #### 构造函数
 
@@ -315,50 +306,50 @@ constructor(title: string, dataSource: RefreshDataSource)
 
 下拉刷新头部的状态数据：
 
-| 属性 | 类型 | 说明 |
-|------|------|------|
-| refreshState | RefreshStatus | 刷新状态（Inactive、Drag、OverDrag、Refresh、Done） |
-| refreshOffset | number | 下拉偏移量 |
-| refreshing | boolean | 是否正在刷新 |
+| 属性            | 类型            | 说明                                        |
+|---------------|---------------|-------------------------------------------|
+| refreshState  | RefreshStatus | 刷新状态（Inactive、Drag、OverDrag、Refresh、Done） |
+| refreshOffset | number        | 下拉偏移量                                     |
+| refreshing    | boolean       | 是否正在刷新                                    |
 
 ### RefreshFooterData 刷新底部数据
 
 上拉加载更多底部的状态数据：
 
-| 属性 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| isShow | boolean | true | 是否显示底部组件 |
-| state | RefreshFooterState | RefreshFooterState.Done | 加载状态 |
-| loadingText | string | '加载中...' | 加载中显示的文本 |
-| doneText | string | '加载完成' | 加载完成显示的文本 |
-| noMoreText | string | '亲，没有更多了' | 没有更多数据时显示的文本 |
+| 属性          | 类型                 | 默认值                     | 说明           |
+|-------------|--------------------|-------------------------|--------------|
+| isShow      | boolean            | true                    | 是否显示底部组件     |
+| state       | RefreshFooterState | RefreshFooterState.Done | 加载状态         |
+| loadingText | string             | '加载中...'                | 加载中显示的文本     |
+| doneText    | string             | '加载完成'                  | 加载完成显示的文本    |
+| noMoreText  | string             | '亲，没有更多了'               | 没有更多数据时显示的文本 |
 
 #### 方法
 
-| 方法 | 参数 | 返回值 | 说明 |
-|------|------|--------|------|
+| 方法         | 参数 | 返回值    | 说明            |
+|------------|----|--------|---------------|
 | footerText | () | string | 根据当前状态返回对应的文本 |
 
 ### RefreshFooterState 枚举
 
 加载更多的状态枚举：
 
-| 值 | 数值 | 说明 |
-|------|------|------|
-| Loading | 0 | 正在加载中 |
-| Done | 1 | 加载完成 |
-| NoMore | 2 | 没有更多数据 |
+| 值       | 数值 | 说明     |
+|---------|----|--------|
+| Loading | 0  | 正在加载中  |
+| Done    | 1  | 加载完成   |
+| NoMore  | 2  | 没有更多数据 |
 
 ### RefreshListDivider 分割线接口
 
 自定义分割线样式的接口：
 
-| 属性 | 类型 | 必需 | 说明 |
-|------|------|------|------|
-| strokeWidth | Length | 是 | 分割线宽度 |
-| color | ResourceColor | 否 | 分割线颜色 |
-| startMargin | Length | 否 | 起始边距 |
-| endMargin | Length | 否 | 结束边距 |
+| 属性          | 类型            | 必需 | 说明    |
+|-------------|---------------|----|-------|
+| strokeWidth | Length        | 是  | 分割线宽度 |
+| color       | ResourceColor | 否  | 分割线颜色 |
+| startMargin | Length        | 否  | 起始边距  |
+| endMargin   | Length        | 否  | 结束边距  |
 
 ### RefreshListAttrModifier 属性修饰器
 
@@ -371,8 +362,6 @@ export class RefreshListAttrModifier implements AttributeModifier<ListAttribute>
   }
 }
 ```
-
-
 
 ## 使用示例
 
@@ -495,7 +484,7 @@ struct HeaderList {
 ### 4. 自定义刷新样式
 
 ```typescript
-import { RefreshList, RefreshHeaderData, RefreshFooterData, RefreshFooterState } from 'refreshlist'
+import { RefreshList, RefreshHeaderData, RefreshFooterData, RefreshFooterState } from '@cxy/refreshlist'
 
 @Component
 struct CustomRefreshList {
@@ -845,8 +834,6 @@ RefreshList/
 └── README.md                          # 说明文档
 ```
 
-
-
 ## 🔧 高级用法
 
 ### 数据源操作
@@ -896,7 +883,7 @@ controller.hideLoadMore(true)
 ### 分组列表用法
 
 ```typescript
-import { RefreshGroupDataSource, RefreshGroupModel } from 'refreshlist'
+import { RefreshGroupDataSource, RefreshGroupModel } from '@cxy/refreshlist'
 
 export class GroupViewModel {
   dataSource: RefreshGroupDataSource = new RefreshGroupDataSource()
@@ -921,9 +908,7 @@ export class GroupViewModel {
 }
 ```
 
-
-
-##  ❓常见问题
+## ❓常见问题
 
 ### Q: 如何禁用下拉刷新？
 
@@ -954,10 +939,6 @@ RefreshList({
 // 方法2：动态控制
 this.controller.hideLoadMore(true)
 ```
-
-
-
-
 
 # 作者
 
