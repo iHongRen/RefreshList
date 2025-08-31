@@ -15,7 +15,6 @@ export class SimpleViewModel {
   private pageSize: number = 20
 
   refresh(): void {
-    this.currentPage = 1
     this.requestData(1)
   }
 
@@ -26,8 +25,9 @@ export class SimpleViewModel {
   private async requestData(page: number): Promise<void> {
     // 模拟网络请求延迟
     setTimeout(() => {
+      this.currentPage = page
       const data = this.generateSimpleData(this.pageSize)
-      
+
       if (page === 1) {
         this.dataSource.deleteAll()
       }
@@ -38,7 +38,6 @@ export class SimpleViewModel {
       this.controller.setHasmore(hasMore)
       this.controller.finishRefresh()
 
-      this.currentPage = page
     }, 800)
   }
 

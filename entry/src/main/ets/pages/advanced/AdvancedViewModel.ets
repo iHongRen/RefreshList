@@ -15,33 +15,31 @@ export class AdvancedViewModel {
   private pageSize: number = 15
 
   refresh(): void {
-    this.currentPage = 1
-
-    setTimeout(() => {
-      this.dataSource.deleteAll()
-      const data = this.generateAdvancedData(this.pageSize)
-      this.dataSource.pushDataArray(data)
-      this.controller.finishRefresh()
-      this.controller.setHasmore(true)
-    }, 1200)
+    this.requestPage(1)
   }
 
   loadMore(): void {
+    this.requestPage(this.currentPage + 1)
+  }
+
+  requestPage(page: number) {
+    // 模拟网络请求延迟
     setTimeout(() => {
-      this.currentPage++
-      const data = this.generateAdvancedData(this.pageSize)
+      this.currentPage = page
+      const data = this.generateData(this.pageSize)
+      if (page === 1) {
+        this.dataSource.deleteAll()
+      }
       this.dataSource.pushDataArray(data)
 
-      // 模拟最多6页
-      if (this.currentPage >= 6) {
-        this.controller.setHasmore(false)
-      }
-
+      // 模拟最多5页数据
+      const hasMore = page < 5
+      this.controller.setHasmore(hasMore)
       this.controller.finishRefresh()
     }, 800)
   }
 
-  private generateAdvancedData(count: number): ItemModel[] {
+  private generateData(count: number): ItemModel[] {
     const categories = [
       '科技前沿', '设计灵感', '开发技巧', '产品思考', '用户体验',
       '行业动态', '创新理念', '技术分享', '项目实战', '团队协作'

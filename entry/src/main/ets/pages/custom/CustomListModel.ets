@@ -17,7 +17,6 @@ export class CustomListModel {
   private pageSize: number = 18
 
   refresh(): void {
-    this.currentPage = 1
     this.requestData(1)
   }
 
@@ -27,8 +26,8 @@ export class CustomListModel {
 
   private async requestData(page: number): Promise<void> {
     setTimeout(() => {
-      const data = this.generateCustomData(this.pageSize)
-
+      this.currentPage = page
+      const data = this.generateData(this.pageSize)
       if (page === 1) {
         this.dataSource.deleteAll()
       }
@@ -42,11 +41,10 @@ export class CustomListModel {
       // 隐藏加载更多组件
       this.controller.hideLoadMore(!hasMore)
 
-      this.currentPage = page
     }, 1200)
   }
 
-  private generateCustomData(count: number): ItemModel[] {
+  private generateData(count: number): ItemModel[] {
     const customFeatures = [
       '自定义刷新动画', '个性化加载效果', '定制化列表布局', '自定义空状态页面',
       '个性化加载状态', '自定义分隔线样式', '定制化交互效果', '个性化主题配置',

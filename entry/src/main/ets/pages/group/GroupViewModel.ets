@@ -20,7 +20,6 @@ export class GroupViewModel {
   private pageSize: number = 24
 
   refresh(): void {
-    this.currentPage = 1
     this.requestData(1)
   }
 
@@ -30,27 +29,23 @@ export class GroupViewModel {
 
   private async requestData(page: number): Promise<void> {
     setTimeout(() => {
-      const data = this.generateGroupData(this.pageSize)
-
+      this.currentPage = page
+      const data = this.generateData(this.pageSize)
       if (page === 1) {
         this.dataSource.deleteAll()
       }
-
       // 按类别分组
       this.dataSource.addListToGroup(data, (item: ItemModel) => {
         return item.category || '其他'
       })
-
       // 模拟最多4页数据
       const hasMore = page < 4
       this.controller.setHasmore(hasMore)
       this.controller.finishRefresh()
-
-      this.currentPage = page
     }, 1000)
   }
 
-  private generateGroupData(count: number): ItemModel[] {
+  private generateData(count: number): ItemModel[] {
     const categories = [
       '开发工具', '设计资源', '学习资料', '项目模板', '插件扩展'
     ]

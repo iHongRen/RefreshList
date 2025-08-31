@@ -15,35 +15,31 @@ export class GridViewModel {
   private pageSize: number = 20
 
   refresh(): void {
-    this.currentPage = 1
-
-    // 模拟网络请求
-    setTimeout(() => {
-      this.dataSource.deleteAll()
-      const data = this.generateGridData(this.pageSize)
-      this.dataSource.pushDataArray(data)
-      this.controller.finishRefresh()
-      this.controller.setHasmore(true)
-    }, 1500)
+    this.requestPage(1)
   }
 
   loadMore(): void {
-
-    setTimeout(() => {
-      this.currentPage++
-      const data = this.generateGridData(this.pageSize)
-      this.dataSource.pushDataArray(data)
-
-      // 模拟最多加载5页
-      if (this.currentPage >= 5) {
-        this.controller.setHasmore(false)
-      }
-
-      this.controller.finishRefresh()
-    }, 1000)
+    this.requestPage(this.currentPage + 1)
   }
 
-  private generateGridData(count: number): ItemModel[] {
+  requestPage(page: number) {
+    // 模拟网络请求延迟
+    setTimeout(() => {
+      this.currentPage = page
+      const data = this.generateData(this.pageSize)
+      if (page === 1) {
+        this.dataSource.deleteAll()
+      }
+      this.dataSource.pushDataArray(data)
+
+      // 模拟最多5页数据
+      const hasMore = page < 5
+      this.controller.setHasmore(hasMore)
+      this.controller.finishRefresh()
+    }, 800)
+  }
+
+  private generateData(count: number): ItemModel[] {
     const products = [
       '苹果iPhone 15 Pro', '华为Mate 60 Pro', '小米14 Ultra', 'OPPO Find X7',
       'vivo X100 Pro', '三星Galaxy S24', '荣耀Magic6', '一加12',

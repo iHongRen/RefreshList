@@ -27,10 +27,7 @@ struct SimpleListPage {
         onRefresh: () => this.viewModel.refresh(),
         onLoadMore: () => this.viewModel.loadMore(),
         itemLayout: (item: Object, index: number) => this.itemLayout(item as ItemModel),
-
-        // 自定义样式
         divider: { strokeWidth: 0.5, color: '#f0f0f0' },
-
         keyGenerator: (item: ItemModel) => item.id
       })
         .backgroundColor('#f8f9fa')

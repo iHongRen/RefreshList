@@ -18,31 +18,28 @@ export class DynamicViewModel {
   private newMessages: number = 12
 
   refresh(): void {
-    this.currentPage = 1
-
-    setTimeout(() => {
-      this.dataSource.deleteAll()
-      const data = this.generateDynamicData(this.pageSize)
-      this.dataSource.pushDataArray(data)
-      this.controller.finishRefresh()
-      this.controller.setHasmore(true)
-
-      // 更新统计数据
-      this.updateStatistics()
-    }, 1000)
+    this.requestPage(1)
   }
 
   loadMore(): void {
-    this.currentPage++
+    this.requestPage(this.currentPage + 1)
+  }
 
+  requestPage(page: number) {
+    // 模拟网络请求延迟
     setTimeout(() => {
-      const data = this.generateDynamicData(this.pageSize)
+      this.currentPage = page
+      const data = this.generateData(this.pageSize)
+      if (page === 1) {
+        this.dataSource.deleteAll()
+        // 更新统计数据
+        this.updateStatistics()
+      }
       this.dataSource.pushDataArray(data)
 
-      if (this.currentPage >= 4) {
-        this.controller.setHasmore(false)
-      }
-
+      // 模拟最多5页数据
+      const hasMore = page < 5
+      this.controller.setHasmore(hasMore)
       this.controller.finishRefresh()
     }, 800)
   }
@@ -157,7 +154,7 @@ export class DynamicViewModel {
     return item
   }
 
-  private generateDynamicData(count: number): ItemModel[] {
+  private generateData(count: number): ItemModel[] {
     const activities = [
       '实时数据更新演示', '动态内容管理系统', '用户活动监控',
       '实时消息推送', '数据流处理', '状态同步机制',

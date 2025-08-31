@@ -15,7 +15,6 @@ export class HeaderViewModel {
   private pageSize: number = 15
 
   refresh(): void {
-    this.currentPage = 1
     this.requestData(1)
   }
 
@@ -38,23 +37,20 @@ export class HeaderViewModel {
   private async requestData(page: number): Promise<void> {
     // 模拟网络请求延迟
     setTimeout(() => {
-      const data = this.generateHeaderData(this.pageSize)
-      
+      this.currentPage = page
+      const data = this.generateData(this.pageSize)
       if (page === 1) {
         this.dataSource.deleteAll()
       }
       this.dataSource.pushDataArray(data)
-
       // 模拟最多7页数据
       const hasMore = page < 7
       this.controller.setHasmore(hasMore)
       this.controller.finishRefresh()
-
-      this.currentPage = page
     }, 1000)
   }
 
-  private generateHeaderData(count: number): ItemModel[] {
+  private generateData(count: number): ItemModel[] {
     const features = [
       '下拉刷新功能', '上拉加载更多', '自定义头部视图', '灵活的布局配置',
       '高性能渲染', '流畅的动画效果', '丰富的自定义选项', '完善的状态管理',

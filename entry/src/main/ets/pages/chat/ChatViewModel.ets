@@ -15,34 +15,31 @@ export class ChatViewModel {
   private pageSize: number = 20
 
   refresh(): void {
-    this.currentPage = 1
-
-    setTimeout(() => {
-      this.dataSource.deleteAll()
-      const data = this.generateChatData(this.pageSize)
-      this.dataSource.pushDataArray(data)
-      this.controller.finishRefresh()
-      this.controller.setHasmore(true)
-    }, 1000)
+    this.requestPage(1)
   }
 
   loadMore(): void {
-    this.currentPage++
+    this.requestPage(this.currentPage + 1)
+  }
 
+  requestPage(page: number) {
+    // 模拟网络请求延迟
     setTimeout(() => {
-      const data = this.generateChatData(this.pageSize)
+      this.currentPage = page
+      const data = this.generateData(this.pageSize)
+      if (page === 1) {
+        this.dataSource.deleteAll()
+      }
       this.dataSource.pushDataArray(data)
 
-      // 模拟最多加载3页
-      if (this.currentPage >= 3) {
-        this.controller.setHasmore(false)
-      }
-
+      // 模拟最多5页数据
+      const hasMore = page < 5
+      this.controller.setHasmore(hasMore)
       this.controller.finishRefresh()
     }, 800)
   }
 
-  private generateChatData(count: number): ItemModel[] {
+  private generateData(count: number): ItemModel[] {
     const names = [
       '张三', '李四', '王五', '赵六', '钱七', '孙八', '周九', '吴十',
       '郑十一', '王十二', '冯十三', '陈十四', '褚十五', '卫十六',
