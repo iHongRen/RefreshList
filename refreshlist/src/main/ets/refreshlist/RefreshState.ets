@@ -21,7 +21,7 @@ export enum RefreshFooterState {
 @Observed
 export class RefreshFooterData {
   @Track isShow: boolean = true //是否显示
-  @Track state: RefreshFooterState = RefreshFooterState.Done //
+  @Track state: RefreshFooterState = RefreshFooterState.Done //完成态
   @Track loadingText: string = '加载中...' //加载中文本
   @Track doneText: string = '加载完成' //完成后的文本
   @Track noMoreText: string = '亲，没有更多了' //没有更多文本

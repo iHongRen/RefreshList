@@ -4,6 +4,7 @@
  * @date : 2024/9/19
  * @description : 控制器
  */
+import { RefreshFooterState } from "./RefreshState"
 
 
 export class RefreshController {
@@ -24,6 +25,5 @@ export class RefreshController {
   // 滚动到指定位置
   scrollToIndex: (index: number, smooth?: boolean, align?: ScrollAlign, options?: ScrollToIndexOptions) => void =
     () => {
-
     }
 }

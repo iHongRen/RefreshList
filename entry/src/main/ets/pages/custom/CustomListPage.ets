@@ -66,6 +66,7 @@ struct CustomListPage {
           this.viewModel.dataSource.deleteAll()
         })
     }
+    .height('100%')
   }
 
   // 自定义刷新头部动画
@@ -114,6 +115,14 @@ struct CustomListPage {
             .color('#667eea')
 
           Text('加载更多内容...')
+            .fontSize(12)
+            .fontColor('#999')
+            .margin({ left: 6 })
+        }
+        .justifyContent(FlexAlign.Center)
+      } else if (this.refreshFooterData.state === RefreshFooterState.Done) {
+        Row() {
+          Text('加载完成')
             .fontSize(12)
             .fontColor('#999')
             .margin({ left: 6 })
@@ -174,7 +183,6 @@ struct CustomListPage {
     .width('100%')
     .height(200)
     .justifyContent(FlexAlign.Center)
-    .backgroundColor('#fff')
   }
 
   // 自定义空状态布局
@@ -215,7 +223,6 @@ struct CustomListPage {
     .width('100%')
     .height(300)
     .justifyContent(FlexAlign.Center)
-    .backgroundColor('#fff')
   }
 
   @Builder

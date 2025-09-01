@@ -86,8 +86,8 @@ export struct RefreshList {
   onScrollIndex?: (start: number, end: number) => void
   //////----------- 以下，不需要作为属性传值 ----------///////
   @State _isEmpty: boolean = false
-  private canLoadMore: boolean = false;
-  private isLoadingMore: boolean = false;
+  private _canLoadMore: boolean = false;
+  private _isLoadingMore: boolean = false;
 
   @Builder
   defaultLoadingView() {
@@ -110,10 +110,18 @@ export struct RefreshList {
   }
 
   aboutToAppear(): void {
+    this.configController()
+
+    this.dataSource.onDataCountChange = (count: number) => {
+      this._isEmpty = count === 0
+    }
+  }
+
+  configController() {
     this.controller.scroller = this.scroller
 
     this.controller.setHasmore = (hasmore: boolean) => {
-      this.refreshFooterData.state = Boolean(Number(hasmore)) ? RefreshFooterState.Loading : RefreshFooterState.NoMore
+      this.refreshFooterData.state = Boolean(Number(hasmore)) ? RefreshFooterState.Done : RefreshFooterState.NoMore
     }
     this.controller.onRefresh = () => {
       if (this.onRefresh) {
@@ -125,12 +133,13 @@ export struct RefreshList {
     this.controller.finishRefresh = () => {
       const total = this.dataSource?.totalItemCount()
       this.refreshHeaderData.refreshing = false
-      this.canLoadMore = true
-      this.isLoadingMore = false
+      this._canLoadMore = true
+      this._isLoadingMore = false
       this.showLoading = false
       this._isEmpty = total === 0
       this.refreshFooterData.isShow = total >= 5
     }
+
     this.controller.hideLoadMore = (hide: boolean) => {
       this.refreshFooterData.isShow = !hide
     }
@@ -139,10 +148,6 @@ export struct RefreshList {
       (value: number, smooth?: boolean, align?: ScrollAlign, options?: ScrollToIndexOptions) => {
         this.controller.scroller?.scrollToIndex(value, smooth, align, options)
       }
-
-    this.dataSource.onDataCountChange = (count: number) => {
-      this._isEmpty = count === 0
-    }
   }
 
   build() {
@@ -237,9 +242,9 @@ export struct RefreshList {
         return
       }
       // 加载更多数据逻辑
-      if (this.onLoadMore && this.canLoadMore && !this.refreshHeaderData.refreshing) {
-        this.canLoadMore = false;
-        this.isLoadingMore = true;
+      if (this.onLoadMore && this._canLoadMore && !this.refreshHeaderData.refreshing) {
+        this._canLoadMore = false;
+        this._isLoadingMore = true;
         this.refreshFooterData.state = RefreshFooterState.Loading
         this.onLoadMore?.()
       }
@@ -253,8 +258,8 @@ export struct RefreshList {
         return
       }
       // 只有当向上滑动时触发新数据加载
-      if (offset > 5 && !this.isLoadingMore && !this.refreshHeaderData.refreshing) {
-        this.canLoadMore = true;
+      if (offset > 5 && !this._isLoadingMore && !this.refreshHeaderData.refreshing) {
+        this._canLoadMore = true;
       }
       return { offsetRemain: offset };
     })
