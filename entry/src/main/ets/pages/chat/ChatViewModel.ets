@@ -11,35 +11,22 @@ import { ItemModel } from '../../models/ItemModel'
 export class ChatViewModel {
   dataSource: RefreshDataSource = new RefreshDataSource()
   controller: RefreshController = new RefreshController()
-  private currentPage: number = 1
-  private pageSize: number = 20
 
   refresh(): void {
-    this.requestPage(1)
+    this.requestPage()
   }
 
-  loadMore(): void {
-    this.requestPage(this.currentPage + 1)
-  }
-
-  requestPage(page: number) {
+  requestPage() {
     // 模拟网络请求延迟
     setTimeout(() => {
-      this.currentPage = page
-      const data = this.generateData(this.pageSize)
-      if (page === 1) {
-        this.dataSource.deleteAll()
-      }
+      const data = this.generateData()
+      this.dataSource.deleteAll()
       this.dataSource.pushDataArray(data)
-
-      // 模拟最多5页数据
-      const hasMore = page < 5
-      this.controller.setHasmore(hasMore)
       this.controller.finishRefresh()
     }, 800)
   }
 
-  private generateData(count: number): ItemModel[] {
+  private generateData(): ItemModel[] {
     const names = [
       '张三', '李四', '王五', '赵六', '钱七', '孙八', '周九', '吴十',
       '郑十一', '王十二', '冯十三', '陈十四', '褚十五', '卫十六',
@@ -62,9 +49,15 @@ export class ChatViewModel {
       '1小时前', '2小时前', '昨天', '前天', '周一', '周二'
     ]
 
+    const colors = [
+      '#4CAF50', '#2196F3', '#FF9800', '#9C27B0', '#F44336',
+      '#00BCD4', '#8BC34A', '#FFC107', '#E91E63', '#607D8B'
+    ]
+
+    const count = names.length
     const result: ItemModel[] = []
     for (let index = 0; index < count; index++) {
-      const globalIndex = (this.currentPage - 1) * this.pageSize + index
+      const globalIndex = index
       const isOnline = Math.random() > 0.3 // 70%在线概率
       const hasUnread = Math.random() > 0.6 // 40%有未读消息
       const unreadCount = hasUnread ? Math.floor(Math.random() * 20) + 1 : 0
@@ -76,8 +69,9 @@ export class ChatViewModel {
       item.time = timeFormats[Math.floor(Math.random() * timeFormats.length)]
       item.isOnline = isOnline
       item.unreadCount = unreadCount
-      item.avatar = `https://i.pravatar.cc/100?img=${(globalIndex % 50) + 1}`
+      item.avatar = item.name.charAt(0)
       item.isPinned = globalIndex < 3 // 前3个置顶
+      item.avatarColor = colors[globalIndex % colors.length]
 
       result.push(item)
     }

@@ -30,18 +30,13 @@ struct ChatListPage {
           dataSource: this.viewModel.dataSource,
           controller: this.viewModel.controller,
           onRefresh: () => this.viewModel.refresh(),
-          onLoadMore: () => this.viewModel.loadMore(),
           itemLayout: (item: Object, index: number) => this.chatItemLayout(item as ItemModel),
-
-          // 聊天列表配置
-          itemSpace: 0,
           divider: {
             strokeWidth: 0.5,
             color: '#f0f0f0',
             startMargin: 70,
             endMargin: 0
           },
-
           keyGenerator: (item: ItemModel) => item.id
         })
           .layoutWeight(1)
@@ -61,7 +56,7 @@ struct ChatListPage {
   searchHeader(): void {
     Row() {
       Row() {
-        Image($r('sys.media.ohos_app_icon'))
+        Image($r('sys.media.ohos_ic_public_search_filled'))
           .width(16)
           .height(16)
           .fillColor('#999')
@@ -98,11 +93,15 @@ struct ChatListPage {
       Row() {
         // 头像
         Stack() {
-          Image(item.avatar || $r('app.media.app_icon'))
+          Text(item.avatar)
+            .backgroundColor(item.avatarColor)
+            .fontColor('#fff')
+            .fontSize(20)
+            .fontWeight(FontWeight.Medium)
+            .textAlign(TextAlign.Center)
+            .borderRadius(25)
             .width(50)
             .height(50)
-            .borderRadius(25)
-            .objectFit(ImageFit.Cover)
 
           // 在线状态指示器
           if (item.isOnline) {
@@ -131,21 +130,6 @@ struct ChatListPage {
           .alignItems(VerticalAlign.Center)
 
           Row() {
-            // 消息类型图标
-            if (item.messageType === 'image') {
-              Image($r('sys.media.ohos_app_icon'))
-                .width(14)
-                .height(14)
-                .fillColor('#999')
-                .margin({ right: 4 })
-            } else if (item.messageType === 'voice') {
-              Image($r('sys.media.ohos_app_icon'))
-                .width(14)
-                .height(14)
-                .fillColor('#999')
-                .margin({ right: 4 })
-            }
-
             Text(item.lastMessage || '暂无消息')
               .fontSize(14)
               .fontColor('#666')
@@ -190,17 +174,25 @@ struct ChatListPage {
     .onClick(() => {
       console.log(`打开聊天: ${item.name || item.title}`)
     })
-    .gesture(
-      // 长按手势
-      LongPressGesture({ repeat: false })
-        .onAction(() => {
-          this.showChatOptions(item)
-        })
-    )
+    .swipeAction({
+      end: () => this.slideRightMenuLayout(item)
+    })
   }
 
-  private showChatOptions(item: ItemModel): void {
-    // 显示聊天选项菜单（置顶、删除、标记已读等）
-    console.log(`显示聊天选项: ${item.name || item.title}`)
+  @Builder
+  slideRightMenuLayout(item: ItemModel): void {
+    Row() {
+      Text('删除')
+        .height('100%')
+        .fontColor('#fff')
+        .backgroundColor(Color.Red)
+        .textAlign(TextAlign.Center)
+        .fontSize(14)
+        .width(80)
+        .onClick(() => {
+          this.viewModel.dataSource.deleteData(item)
+        })
+    }
+    .layoutWeight(1)
   }
 }

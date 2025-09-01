@@ -37,13 +37,15 @@ export struct RefreshList {
   // 是否展示空布局
   @Prop showEmpty: boolean = true
   // 缓存的列表项数量
-  @State cachedCount: number = 4
+  @Prop cachedCount: number = 4
+  // 当item大于多少时，才显示加载更多组件,通常为一屏能显示的item数量
+  @Prop showLoadMoreGreaterCount: number = 5
   // 设置内容区域起始偏移量
-  @State contentStartOffset: number = 0
+  @Prop contentStartOffset: number = 0
   // 设置内容区末尾偏移量
-  @State contentEndOffset: number = 0
+  @Prop contentEndOffset: number = 0
   // 吸顶样式
-  @State sticky: StickyStyle = StickyStyle.Header | StickyStyle.Footer;
+  @Prop sticky: StickyStyle = StickyStyle.Header | StickyStyle.Footer;
   // item 间距
   @Prop itemSpace: number = 0
   // 滚动条状态
@@ -121,7 +123,7 @@ export struct RefreshList {
     this.controller.scroller = this.scroller
 
     this.controller.setHasmore = (hasmore: boolean) => {
-      this.refreshFooterData.state = Boolean(Number(hasmore)) ? RefreshFooterState.Done : RefreshFooterState.NoMore
+      this.refreshFooterData.state = Boolean(Number(hasmore)) ? RefreshFooterState.None : RefreshFooterState.NoMore
     }
     this.controller.onRefresh = () => {
       if (this.onRefresh) {
@@ -137,7 +139,7 @@ export struct RefreshList {
       this._isLoadingMore = false
       this.showLoading = false
       this._isEmpty = total === 0
-      this.refreshFooterData.isShow = total >= 5
+      this.refreshFooterData.isShow = total > this.showLoadMoreGreaterCount
     }
 
     this.controller.hideLoadMore = (hide: boolean) => {
@@ -242,7 +244,7 @@ export struct RefreshList {
         return
       }
       // 加载更多数据逻辑
-      if (this.onLoadMore && this._canLoadMore && !this.refreshHeaderData.refreshing) {
+      if (!this._isEmpty && this.onLoadMore && this._canLoadMore && !this.refreshHeaderData.refreshing) {
         this._canLoadMore = false;
         this._isLoadingMore = true;
         this.refreshFooterData.state = RefreshFooterState.Loading

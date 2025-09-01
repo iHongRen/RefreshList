@@ -13,30 +13,27 @@ export class RefreshHeaderData {
 }
 
 export enum RefreshFooterState {
-  Loading = 0, //刷新中
-  Done = 1, //完成
+  None = 0, //默认
+  Loading = 1, //刷新中
   NoMore = 2, //没有更多
 }
 
 @Observed
 export class RefreshFooterData {
   @Track isShow: boolean = true //是否显示
-  @Track state: RefreshFooterState = RefreshFooterState.Done //完成态
+  @Track state: RefreshFooterState = RefreshFooterState.None
+  @Track noneText: string = '上拉加载更多' //默认文本
   @Track loadingText: string = '加载中...' //加载中文本
-  @Track doneText: string = '加载完成' //完成后的文本
   @Track noMoreText: string = '亲，没有更多了' //没有更多文本
 
   footerText(): string {
     if (this.state === RefreshFooterState.Loading) {
       return this.loadingText
     }
-    if (this.state === RefreshFooterState.Done) {
-      return this.doneText
-    }
     if (this.state === RefreshFooterState.NoMore) {
       return this.noMoreText
     }
-    return ''
+    return this.noneText
   }
 }
 

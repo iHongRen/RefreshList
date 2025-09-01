@@ -31,16 +31,22 @@ struct CustomListPage {
         onRefresh: () => this.viewModel.refresh(),
         onLoadMore: () => this.viewModel.loadMore(),
 
-        // 完全自定义的刷新和加载组件
+        // 自定义的刷新和加载组件
         refreshHeaderLayout: () => this.refreshHeaderLayout(),
         refreshFooterLayout: () => this.refreshFooterLayout(),
 
         // 自定义列表内容布局
         customLayout: () => this.customLayout(),
 
-        // 自定义状态布局
+        // 自定义加载中布局
         loadingLayout: () => this.loadingBuilder(),
+
+        // 自定义空页面布局
         emptyLayout: () => this.emptyBuilder(),
+
+        // 自定义的刷新和加载数据
+        refreshHeaderData: this.refreshHeaderData,
+        refreshFooterData: this.refreshFooterData,
 
         // 样式配置
         divider: { strokeWidth: 0, color: 'transparent' },
@@ -73,41 +79,19 @@ struct CustomListPage {
   @Builder
   refreshHeaderLayout(): void {
     Column() {
-      Row() {
-        // 自定义加载动画
-        LoadingProgress()
-          .width(24)
-          .height(24)
-          .color('#667eea')
-
-        Text('正在刷新数据...')
-          .fontSize(14)
-          .fontColor('#666')
-          .margin({ left: 8 })
-      }
-      .justifyContent(FlexAlign.Center)
-
-      // 进度条
-      Progress({
-        value: 50, total: 100, type: ProgressType.Linear
-      })
-        .width('80%')
-        .height(2)
-        .color('#667eea')
-        .backgroundColor('#e0e0e0')
-        .margin({ top: 8 })
+      Image($r('app.media.custom_header'))
+        .width(34)
     }
-    .width('100%')
-    .height(80)
-    .justifyContent(FlexAlign.Center)
-    .backgroundColor('#fff')
+    .padding(10)
   }
 
   // 自定义刷新底部动画
   @Builder
   refreshFooterLayout(): void {
     Column() {
+      // 根据不同状态显示不同内容
       if (this.refreshFooterData.state === RefreshFooterState.Loading) {
+        // 加载中状态
         Row() {
           LoadingProgress()
             .width(20)
@@ -120,15 +104,9 @@ struct CustomListPage {
             .margin({ left: 6 })
         }
         .justifyContent(FlexAlign.Center)
-      } else if (this.refreshFooterData.state === RefreshFooterState.Done) {
-        Row() {
-          Text('加载完成')
-            .fontSize(12)
-            .fontColor('#999')
-            .margin({ left: 6 })
-        }
-        .justifyContent(FlexAlign.Center)
-      } else {
+
+      } else if (this.refreshFooterData.state === RefreshFooterState.NoMore) {
+        // 没有更多数据状态
         Row() {
           Divider()
             .width(60)
@@ -147,6 +125,14 @@ struct CustomListPage {
         }
         .justifyContent(FlexAlign.Center)
         .alignItems(VerticalAlign.Center)
+      } else {
+        // 默认状态或其他状态
+        Row() {
+          Text('上拉加载更多')
+            .fontSize(12)
+            .fontColor('#999')
+        }
+        .justifyContent(FlexAlign.Center)
       }
     }
     .width('100%')
