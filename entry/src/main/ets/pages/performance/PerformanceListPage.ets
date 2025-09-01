@@ -74,6 +74,7 @@ struct PerformanceListPage {
           this.showPerformanceInfo = !this.showPerformanceInfo
         })
     }
+    .height('100%')
   }
 
   @Builder

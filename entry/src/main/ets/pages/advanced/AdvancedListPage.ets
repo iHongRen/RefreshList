@@ -127,6 +127,7 @@ struct AdvancedListPage {
           this.viewModel.dataSource.deleteAll()
         })
     }
+    .height('100%')
   }
 
   @Builder

@@ -93,15 +93,12 @@ struct ChatListPage {
       Row() {
         // 头像
         Stack() {
-          Text(item.avatar)
-            .backgroundColor(item.avatarColor)
-            .fontColor('#fff')
-            .fontSize(20)
-            .fontWeight(FontWeight.Medium)
-            .textAlign(TextAlign.Center)
+          Image(item.avatar)
+            .alt($r('app.media.foreground'))
             .borderRadius(25)
             .width(50)
             .height(50)
+            .objectFit(ImageFit.Cover)
 
           // 在线状态指示器
           if (item.isOnline) {

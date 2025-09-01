@@ -49,11 +49,6 @@ export class ChatViewModel {
       '1小时前', '2小时前', '昨天', '前天', '周一', '周二'
     ]
 
-    const colors = [
-      '#4CAF50', '#2196F3', '#FF9800', '#9C27B0', '#F44336',
-      '#00BCD4', '#8BC34A', '#FFC107', '#E91E63', '#607D8B'
-    ]
-
     const count = names.length
     const result: ItemModel[] = []
     for (let index = 0; index < count; index++) {
@@ -69,9 +64,8 @@ export class ChatViewModel {
       item.time = timeFormats[Math.floor(Math.random() * timeFormats.length)]
       item.isOnline = isOnline
       item.unreadCount = unreadCount
-      item.avatar = item.name.charAt(0)
+      item.avatar = `https://picsum.photos/100/100?random=${globalIndex}`
       item.isPinned = globalIndex < 3 // 前3个置顶
-      item.avatarColor = colors[globalIndex % colors.length]
 
       result.push(item)
     }
