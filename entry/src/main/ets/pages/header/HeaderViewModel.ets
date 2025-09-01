@@ -9,10 +9,11 @@ import { RefreshController, RefreshDataSource } from "@cxy/refreshlist"
 import { ItemModel } from "../../models/ItemModel"
 
 export class HeaderViewModel {
-  dataSource: RefreshDataSource = new RefreshDataSource()
-  controller: RefreshController = new RefreshController()
-  private currentPage: number = 1
-  private pageSize: number = 15
+  @Track dataSource: RefreshDataSource = new RefreshDataSource()
+  @Track controller: RefreshController = new RefreshController()
+  @Track totalCount: number = 0
+  @Track currentPage: number = 1
+  @Track pageSize: number = 15
 
   refresh(): void {
     this.requestData(1)
@@ -23,15 +24,7 @@ export class HeaderViewModel {
   }
 
   getTotalCount(): number {
-    return 100 // 模拟总数据量
-  }
-
-  getLoadedCount(): number {
-    return this.dataSource.totalCount()
-  }
-
-  getCurrentPage(): number {
-    return this.currentPage
+    return 7 * this.pageSize // 模拟总数据量
   }
 
   private async requestData(page: number): Promise<void> {
@@ -47,6 +40,7 @@ export class HeaderViewModel {
       const hasMore = page < 7
       this.controller.setHasmore(hasMore)
       this.controller.finishRefresh()
+      this.totalCount = this.dataSource.totalCount()
     }, 1000)
   }
 

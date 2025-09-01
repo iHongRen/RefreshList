@@ -144,7 +144,7 @@ struct SearchListPage {
     ListItem() {
       Row() {
         // 搜索结果图标
-        Image(item.image || $r('sys.media.ohos_app_icon'))
+        Image(item.image || $r('sys.media.ohos_ic_public_search_filled'))
           .width(50)
           .height(50)
           .borderRadius(8)
@@ -230,7 +230,7 @@ struct SearchListPage {
   @Builder
   searchEmptyLayout(): void {
     Column() {
-      Image($r('sys.media.ohos_app_icon'))
+      Image($r('sys.media.ohos_ic_public_search_filled'))
         .width(80)
         .height(80)
         .fillColor('#ddd')

@@ -6,12 +6,18 @@
  */
 
 import { RefreshList } from '@cxy/refreshlist'
+import { RefreshLoadingView } from '@cxy/refreshlist/src/main/ets/refreshlist/RefreshLoadingView'
 import { ItemModel } from '../../models/ItemModel'
 import { HeaderViewModel } from './HeaderViewModel'
 
 @Builder
 function routerBuilder() {
   HeaderListPage()
+}
+
+interface StatItem {
+  title: string,
+  count: string
 }
 
 @Component
@@ -26,15 +32,10 @@ struct HeaderListPage {
         controller: this.viewModel.controller,
         onRefresh: () => this.viewModel.refresh(),
         onLoadMore: () => this.viewModel.loadMore(),
-
         // 自定义头部布局
         headerLayout: () => this.headerLayout(),
-
+        loadingLayout: () => this.loadingLayout(),
         itemLayout: (item: Object, index: number) => this.itemLayout(item as ItemModel),
-
-        // 自定义样式
-        divider: { strokeWidth: 0.5, color: '#f0f0f0' },
-
         keyGenerator: (item: ItemModel) => item.id
       })
         .backgroundColor('#f8f9fa')
@@ -44,6 +45,11 @@ struct HeaderListPage {
       this.title = ctx.pathInfo.param as string
       this.viewModel.refresh()
     })
+  }
+
+  @Builder
+  loadingLayout(): void {
+    RefreshLoadingView().height(200)
   }
 
   @Builder
@@ -69,16 +75,16 @@ struct HeaderListPage {
             .fontWeight(FontWeight.Bold)
             .margin({ bottom: 8 })
 
-          Text('高性能的下拉刷新和上拉加载组件')
+          Text('简单易用的下拉刷新和上拉加载组件')
             .fontSize(14)
             .fontColor('#ffffff80')
             .margin({ bottom: 20 })
 
           // 统计信息
           Row() {
-            this.statItem('总数据', `${this.viewModel.getTotalCount()}`)
-            this.statItem('已加载', `${this.viewModel.getLoadedCount()}`)
-            this.statItem('页数', `${this.viewModel.getCurrentPage()}`)
+            this.statItem({ title: '总数据', count: `${this.viewModel.getTotalCount()}` })
+            this.statItem({ title: '已加载', count: `${this.viewModel.totalCount}` })
+            this.statItem({ title: '页数', count: `${this.viewModel.currentPage}` })
           }
           .width('100%')
           .justifyContent(FlexAlign.SpaceAround)
@@ -94,8 +100,8 @@ struct HeaderListPage {
       // 功能卡片区域
       Row() {
         this.featureCard('🔄', '下拉刷新', '支持自定义刷新动画')
-        this.featureCard('📱', '上拉加载', '智能加载更多数据')
-        this.featureCard('⚡', '高性能', '流畅的滚动体验')
+        this.featureCard('🚀', '上拉加载', '加载更多数据')
+        this.featureCard('⚒️', '易用', '集成Loading和空页面')
       }
       .width('100%')
       .padding({
@@ -108,7 +114,7 @@ struct HeaderListPage {
 
       // 分隔线
       Divider()
-        .color('#e0e0e0')
+        .color('#eee')
         .strokeWidth(1)
         .margin({ left: 16, right: 16 })
     }
@@ -116,15 +122,15 @@ struct HeaderListPage {
   }
 
   @Builder
-  statItem(label: string, value: string): void {
+  statItem(item: StatItem): void {
     Column() {
-      Text(value)
-        .fontSize(20)
+      Text(item.title)
+        .fontSize(18)
         .fontColor('#fff')
         .fontWeight(FontWeight.Bold)
 
-      Text(label)
-        .fontSize(12)
+      Text(item.count)
+        .fontSize(14)
         .fontColor('#ffffff80')
         .margin({ top: 4 })
     }
@@ -164,74 +170,78 @@ struct HeaderListPage {
   @Builder
   itemLayout(item: ItemModel): void {
     ListItem() {
-      Row() {
-        // 左侧图标
-        Column() {
-          Text(item.initial || '📄')
-            .fontSize(16)
-            .fontColor('#fff')
-        }
-        .width(40)
-        .height(40)
-        .borderRadius(20)
-        .backgroundColor(item.avatarColor || '#4CAF50')
-        .justifyContent(FlexAlign.Center)
+      Column() {
+        Row() {
+          // 左侧图标
+          Column() {
+            Text(item.initial || '📄')
+              .fontSize(16)
+              .fontColor('#fff')
+          }
+          .width(40)
+          .height(40)
+          .borderRadius(20)
+          .backgroundColor(item.avatarColor || '#4CAF50')
+          .justifyContent(FlexAlign.Center)
 
-        // 内容区域
-        Column() {
-          Text(item.title)
-            .fontSize(16)
-            .fontColor('#333')
-            .fontWeight(FontWeight.Medium)
-            .maxLines(1)
-            .textOverflow({ overflow: TextOverflow.Ellipsis })
-
-          if (item.description) {
-            Text(item.description)
-              .fontSize(14)
-              .fontColor('#666')
-              .maxLines(2)
+          // 内容区域
+          Column() {
+            Text(item.title)
+              .fontSize(16)
+              .fontColor('#333')
+              .fontWeight(FontWeight.Medium)
+              .maxLines(1)
               .textOverflow({ overflow: TextOverflow.Ellipsis })
-              .margin({ top: 4 })
-          }
 
-          // 底部信息
-          Row() {
-            Text(item.time || '刚刚')
-              .fontSize(12)
-              .fontColor('#999')
-
-            if (item.category) {
-              Text(item.category)
-                .fontSize(10)
-                .fontColor('#2196F3')
-                .backgroundColor('#e3f2fd')
-                .padding({
-                  left: 6,
-                  right: 6,
-                  top: 2,
-                  bottom: 2
-                })
-                .borderRadius(4)
-                .margin({ left: 8 })
+            if (item.description) {
+              Text(item.description)
+                .fontSize(14)
+                .fontColor('#666')
+                .maxLines(2)
+                .textOverflow({ overflow: TextOverflow.Ellipsis })
+                .margin({ top: 4 })
             }
-          }
-          .width('100%')
-          .margin({ top: 8 })
-        }
-        .layoutWeight(1)
-        .margin({ left: 12 })
-        .alignItems(HorizontalAlign.Start)
 
-        // 右侧箭头
-        Image($r('sys.media.ohos_ic_public_arrow_right'))
-          .width(16)
-          .height(16)
-          .fillColor('#ccc')
+            // 底部信息
+            Row() {
+              Text(item.time || '刚刚')
+                .fontSize(12)
+                .fontColor('#999')
+
+              if (item.category) {
+                Text(item.category)
+                  .fontSize(10)
+                  .fontColor('#2196F3')
+                  .backgroundColor('#e3f2fd')
+                  .padding({
+                    left: 6,
+                    right: 6,
+                    top: 2,
+                    bottom: 2
+                  })
+                  .borderRadius(4)
+                  .margin({ left: 8 })
+              }
+            }
+            .width('100%')
+            .margin({ top: 8 })
+          }
+          .layoutWeight(1)
+          .margin({ left: 12 })
+          .alignItems(HorizontalAlign.Start)
+
+          // 右侧箭头
+          Image($r('sys.media.ohos_ic_public_arrow_right'))
+            .width(16)
+            .height(16)
+            .fillColor('#ccc')
+        }
+        .width('100%')
+        .padding(16)
+        .backgroundColor('#fff')
+
+        Divider().strokeWidth(0.5).color('#eee')
       }
-      .width('100%')
-      .padding(16)
-      .backgroundColor('#fff')
     }
     .onClick(() => {
       console.log(`点击项目: ${item.title}`)

@@ -160,6 +160,8 @@ struct DynamicListPage {
       .fontSize(18)
       .fontColor(Color.White)
       .fontWeight(FontWeight.Bold)
+      .width('100%')
+      .textAlign(TextAlign.Center)
   }
 
   @Builder
@@ -171,7 +173,10 @@ struct DynamicListPage {
           Circle({ width: 50, height: 50 })
             .fill(item.avatarColor || '#007AFF')
             .overlay(
-              this.overlyBuilder(item.initial || 'D')
+              this.overlyBuilder(item.initial || 'D'),
+              {
+                align: Alignment.Center
+              }
             )
 
           // 实时活动指示器

@@ -41,14 +41,6 @@
       }
     },
     {
-      "name": "waterfall",
-      "pageSourceFile": "src/main/ets/pages/waterfall/WaterfallListPage.ets",
-      "buildFunction": "routerBuilder",
-      "data": {
-        "description": "page"
-      }
-    },
-    {
       "name": "chat",
       "pageSourceFile": "src/main/ets/pages/chat/ChatListPage.ets",
       "buildFunction": "routerBuilder",

@@ -41,27 +41,31 @@ export struct RefreshList {
   // 当item大于多少时，才显示加载更多组件,通常为一屏能显示的item数量
   @Prop showLoadMoreGreaterCount: number = 5
   // 设置内容区域起始偏移量
-  @Prop contentStartOffset: number = 0
+  @Prop contentStartOffset: number
   // 设置内容区末尾偏移量
-  @Prop contentEndOffset: number = 0
+  @Prop contentEndOffset: number
   // 吸顶样式
   @Prop sticky: StickyStyle = StickyStyle.Header | StickyStyle.Footer;
   // item 间距
-  @Prop itemSpace: number = 0
+  @Prop itemSpace: number
   // 滚动条状态
   @Prop barState: BarState = BarState.On
+  // 滚动条颜色
+  @Prop scrollBarColor: Color | number | string
+  // 滚动条宽度
+  @Prop scrollBarWidth: string | number
   // 设置下拉跟手系数。
-  @Prop pullDownRatio: number = 0.62
+  @Prop pullDownRatio: number
   // 分割线样式
   @Prop divider: RefreshListDivider | null = null
   // 设置List组件的布局列数或行数
-  @Prop lanes: number = 1
+  @Prop lanes: number
   // 列间距
-  @Prop gutter: Dimension = 0
+  @Prop gutter: Dimension
   // 设置显示区域上方插入或删除数据时是否要保持可见内容位置不变。
   @Prop maintainVisibleContentPosition: boolean = false
   // List 的 EdgeEffect
-  @Prop edfeEffect: EdgeEffect = EdgeEffect.Spring
+  @Prop edfeEffect: EdgeEffect
   // 用于自定义更多 List 属性
   @State listAttrModifier: RefreshListAttrModifier = new RefreshListAttrModifier()
   // 刷新头部状态数据
@@ -211,13 +215,11 @@ export struct RefreshList {
           this.loadingLayout()
         }
         .width('100%')
-        .height('100%')
       } else if (this.showEmpty && this._isEmpty) {
         ListItem() {
           this.emptyLayout()
         }
         .width('100%')
-        .height('100%')
       } else if (this.onLoadMore && !this.refreshHeaderData.refreshing) {
         ListItem() {
           this.refreshFooterLayout()
@@ -228,7 +230,8 @@ export struct RefreshList {
     .maintainVisibleContentPosition(this.maintainVisibleContentPosition)
     .edgeEffect(this.edfeEffect, { alwaysEnabled: true })
     .scrollBar(this.barState)
-    .scrollBarColor('#bbb')
+    .scrollBarColor(this.scrollBarColor)
+    .scrollBarWidth(this.scrollBarWidth)
     .contentStartOffset(this.contentStartOffset)
     .contentEndOffset(this.contentEndOffset)
     .sticky(this.sticky)

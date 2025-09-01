@@ -8,7 +8,6 @@ struct Index {
     ['HeaderView', 'header'],
     ['自定义使用', 'custom'],
     ['网格布局示例', 'grid'],
-    ['瀑布流布局', 'waterfall'],
     ['聊天列表示例', 'chat'],
     ['搜索结果示例', 'search'],
     ['无限滚动示例', 'infinite'],
@@ -42,6 +41,7 @@ struct Index {
         })
       }
       .height('100%')
+      .edgeEffect(EdgeEffect.Spring, { alwaysEnabled: true })
     }
     .titleMode(NavigationTitleMode.Mini)
     .hideBackButton(true)
