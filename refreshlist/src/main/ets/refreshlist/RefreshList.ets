@@ -92,6 +92,7 @@ export struct RefreshList {
   onScrollIndex?: (start: number, end: number) => void
   //////----------- 以下，不需要作为属性传值 ----------///////
   @State _isEmpty: boolean = false
+  @State _listWidth: number | string = '100%'
   private _canLoadMore: boolean = false;
   private _isLoadingMore: boolean = false;
 
@@ -214,17 +215,17 @@ export struct RefreshList {
         ListItem() {
           this.loadingLayout()
         }
-        .width('100%')
+        .width(this._listWidth)
       } else if (this.showEmpty && this._isEmpty) {
         ListItem() {
           this.emptyLayout()
         }
-        .width('100%')
+        .width(this._listWidth)
       } else if (this.onLoadMore && !this.refreshHeaderData.refreshing) {
         ListItem() {
           this.refreshFooterLayout()
         }
-        .width('100%')
+        .width(this._listWidth)
       }
     }
     .maintainVisibleContentPosition(this.maintainVisibleContentPosition)
@@ -269,5 +270,8 @@ export struct RefreshList {
       return { offsetRemain: offset };
     })
     .onDidScroll(this.onDidScroll)
+    .onAreaChange((oldValue: Area, newValue: Area) => {
+      this._listWidth = newValue.width as number
+    })
   }
 }

@@ -33,9 +33,6 @@ struct GridListPage {
         gutter: 10, // 列间距
         itemSpace: 10, // 行间距
 
-        // 自定义头部
-        headerLayout: () => this.headerLayout(),
-
         keyGenerator: (item: ItemModel) => item.id
       })
     }
@@ -44,34 +41,6 @@ struct GridListPage {
       this.title = ctx.pathInfo.param as string
       this.viewModel.refresh()
     })
-  }
-
-  @Builder
-  headerLayout(): void {
-    Column() {
-      Text('商品推荐')
-        .fontSize(20)
-        .fontWeight(FontWeight.Bold)
-        .padding(15)
-        .width('100%')
-        .textAlign(TextAlign.Start)
-
-      // 轮播图区域
-      Row() {
-        ForEach([1, 2, 3], (item: number) => {
-          Image($r('app.media.app_icon'))
-            .width('30%')
-            .height(80)
-            .borderRadius(8)
-            .objectFit(ImageFit.Cover)
-            .margin({ right: item < 3 ? 5 : 0 })
-        })
-      }
-      .width('100%')
-      .padding({ left: 15, right: 15, bottom: 15 })
-      .justifyContent(FlexAlign.SpaceBetween)
-    }
-    .backgroundColor('#f8f8f8')
   }
 
   @Builder

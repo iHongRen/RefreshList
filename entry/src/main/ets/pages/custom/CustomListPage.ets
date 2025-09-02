@@ -167,7 +167,7 @@ struct CustomListPage {
         .margin({ top: 16 })
     }
     .width('100%')
-    .height(200)
+    .height('100%')
     .justifyContent(FlexAlign.Center)
   }
 
