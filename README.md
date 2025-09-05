@@ -24,9 +24,9 @@
 ohpm install @cxy/refreshlist
 ```
 
-### 本地依赖
+### 通过本地依赖安装
 
-在项目的 `oh-package.json5` 文件中添加依赖：
+在项目的 `oh-package.json5` 文件中添加依赖， 然后执行同步操作：
 
 ```json5
 {
@@ -36,88 +36,119 @@ ohpm install @cxy/refreshlist
 }
 ```
 
-## 🚀 快速开始指南
+## 🚀 快速开始
 
-### 1. 创建数据模型
-
+#### 1️⃣ 创建数据模型
 ```typescript
 // ItemModel.ets
 export class ItemModel {
   id: string = ''
   title: string = ''
+  
+  // 基础属性
+  description?: string
+  category?: string
+  
+  // 显示属性
+  avatarColor?: string
+  initial?: string
+  time?: string
+  
+  // 状态属性
+  isNew?: boolean
+  isOnline?: boolean
+  
+  // 扩展属性（根据场景使用）
+  lastMessage?: string    // 聊天场景
+  unreadCount?: number    // 消息数量
+  price?: string          // 商品场景
+  views?: number          // 浏览量
+  likes?: number          // 点赞数
 
-  constructor(id: string, title: string) {
+  constructor(id: string = '', title: string = '') {
     this.id = id
     this.title = title
   }
 }
 ```
 
-### 2. 创建ViewModel
-
+#### 2️⃣ 创建ViewModel
 ```typescript
 // SimpleViewModel.ets
 import { RefreshController, RefreshDataSource } from "@cxy/refreshlist"
 import { ItemModel } from "./ItemModel"
 
 export class SimpleViewModel {
-  @Track dataSource: RefreshDataSource = new RefreshDataSource
-  @Track controller: RefreshController = new RefreshController()
-  private curpage: number = 1
+  dataSource: RefreshDataSource = new RefreshDataSource()
+  controller: RefreshController = new RefreshController()
+  private currentPage: number = 1
+  private pageSize: number = 20
 
   refresh(): void {
     this.requestData(1)
   }
 
   loadMore(): void {
-    this.requestData(this.curpage + 1)
+    this.requestData(this.currentPage + 1)
   }
 
-  async requestData(page: number): Promise<void> {
-    // 模拟网络请求
+  private async requestData(page: number): Promise<void> {
+    // 模拟网络请求延迟
     setTimeout(() => {
-      const count = page === 1 ? 0 : this.dataSource.totalCount()
-      const list = this.generateData(count)
+      this.currentPage = page
+      const data = this.generateSimpleData(this.pageSize)
+
       if (page === 1) {
         this.dataSource.deleteAll()
       }
-      this.dataSource.pushDataArray(list)
+      this.dataSource.pushDataArray(data)
 
-      // 是否还有更多数据
-      const hasmore = this.dataSource.totalCount() < 50
-      this.controller.setHasmore(hasmore)
+      // 模拟最多5页数据
+      const hasMore = page < 5
+      this.controller.setHasmore(hasMore)
       this.controller.finishRefresh()
 
-      this.curpage = page
-    }, 500)
+    }, 800)
   }
 
-  private generateData(count: number): ItemModel[] {
-    const list: ItemModel[] = []
-    for (let i = 0; i < 20; i++) {
-      const item = new ItemModel(`${count + i}`, `item${count + i}`)
-      list.push(item)
+  private generateSimpleData(count: number): ItemModel[] {
+    const categories = [
+      '基础功能', '核心特性', '用户体验', '性能优化', '界面设计'
+    ]
+    const colors = [
+      '#4CAF50', '#2196F3', '#FF9800', '#9C27B0', '#F44336'
+    ]
+
+    const result: ItemModel[] = []
+    for (let i = 0; i < count; i++) {
+      const globalIndex = (this.currentPage - 1) * this.pageSize + i
+      const categoryIndex = globalIndex % categories.length
+
+      const item = new ItemModel(`simple_${globalIndex}`, `${categories[categoryIndex]} ${globalIndex + 1}`)
+      item.description = `展示基础的刷新和加载更多功能，简单易用的列表组件。`
+      item.category = categories[categoryIndex]
+      item.avatarColor = colors[categoryIndex]
+      item.initial = categories[categoryIndex].charAt(0)
+      item.time = '刚刚'
+      item.isNew = i < 3 && this.currentPage === 1 // 第一页前3个标记为新
+
+      result.push(item)
     }
-    return list
+    return result
   }
 }
 ```
 
-### 3. 使用组件
-
+#### 3️⃣ 使用组件
 ```typescript
-// MyPage.ets
+// SimpleListPage.ets
 import { RefreshList } from '@cxy/refreshlist'
 import { SimpleViewModel } from './SimpleViewModel'
 import { ItemModel } from './ItemModel'
 
 @Component
-struct MyPage {
+struct SimpleListPage {
   @State viewModel: SimpleViewModel = new SimpleViewModel()
-
-  aboutToAppear() {
-    this.viewModel.refresh()
-  }
 
   build() {
     RefreshList({
@@ -126,20 +157,92 @@ struct MyPage {
       onRefresh: () => this.viewModel.refresh(),
       onLoadMore: () => this.viewModel.loadMore(),
       itemLayout: (item: Object, index: number) => this.itemLayout(item as ItemModel),
-      keyGenerator: (item: ItemModel) => item.id //设置唯一key
+      divider: { strokeWidth: 0.5, color: '#f0f0f0' },
+      keyGenerator: (item: ItemModel) => item.id
     })
+    .backgroundColor('#f8f9fa')
+  }
+
+  aboutToAppear() {
+    this.viewModel.refresh()
   }
 
   @Builder
   itemLayout(item: ItemModel): void {
     ListItem() {
-      Text(item.title)
-        .fontSize(16)
-        .padding(15)
+      Row() {
+        // 左侧图标
+        Column() {
+          Text(item.initial || item.title.charAt(0))
+            .fontSize(16)
+            .fontColor('#fff')
+            .fontWeight(FontWeight.Medium)
+        }
+        .width(40)
+        .height(40)
+        .borderRadius(20)
+        .backgroundColor(item.avatarColor || '#4CAF50')
+        .justifyContent(FlexAlign.Center)
+
+        // 内容区域
+        Column() {
+          Text(item.title)
+            .fontSize(16)
+            .fontColor('#333')
+            .fontWeight(FontWeight.Medium)
+            .maxLines(1)
+            .textOverflow({ overflow: TextOverflow.Ellipsis })
+
+          if (item.description) {
+            Text(item.description)
+              .fontSize(14)
+              .fontColor('#666')
+              .maxLines(2)
+              .textOverflow({ overflow: TextOverflow.Ellipsis })
+              .margin({ top: 4 })
+          }
+
+          // 底部信息
+          Row() {
+            Text(item.time || '刚刚')
+              .fontSize(12)
+              .fontColor('#999')
+
+            if (item.isNew) {
+              Text('NEW')
+                .fontSize(10)
+                .fontColor('#fff')
+                .backgroundColor('#ff4444')
+                .padding({ left: 6, right: 6, top: 2, bottom: 2 })
+                .borderRadius(8)
+                .margin({ left: 8 })
+            }
+          }
+          .width('100%')
+          .margin({ top: 8 })
+        }
+        .layoutWeight(1)
+        .margin({ left: 12 })
+        .alignItems(HorizontalAlign.Start)
+
+        // 右侧箭头
+        Image($r('sys.media.ohos_ic_public_arrow_right'))
+          .width(16)
+          .height(16)
+          .fillColor('#ccc')
+      }
+      .width('100%')
+      .padding(16)
+      .backgroundColor('#fff')
     }
+    .onClick(() => {
+      console.log(`点击项目: ${item.title}`)
+    })
   }
 }
 ```
+
+🎉 **就是这么简单！** 三步即可拥有一个功能完整的刷新列表。
 
 ## 📚 API 文档
 
@@ -156,7 +259,7 @@ struct MyPage {
 
 | 属性                  | 类型                                      | 默认值    | 说明                           |
 |---------------------|-----------------------------------------|--------|------------------------------|
-| itemLayout          | (item: ESObject, index: number) => void | -      | 列表项布局                        |
+| itemLayout          | (item: Object, index: number) => void  | -      | 列表项布局，必需属性                   |
 | customLayout        | () => void                              | -      | 自定义布局，完全自定义LazyForEach部分     |
 | headerLayout        | () => void                              | -      | 列表头部布局，类似iOS的tableHeaderView |
 | loadingLayout       | () => void                              | 默认加载视图 | 加载中状态的布局                     |
@@ -164,30 +267,29 @@ struct MyPage {
 | refreshHeaderLayout | () => void                              | 默认刷新头部 | 自定义下拉刷新头部布局                  |
 | refreshFooterLayout | () => void                              | 默认刷新底部 | 自定义上拉加载底部布局                  |
 
-#### 状态属性
+#### 数据状态属性
 
-| 属性          | 类型      | 默认值  | 说明        |
-|-------------|---------|------|-----------|
-| showLoading | boolean | true | 是否显示加载状态  |
-| showEmpty   | boolean | true | 是否显示空数据状态 |
+| 属性                | 类型                | 默认值 | 说明                    |
+|-------------------|-------------------|-----|---------------------|
+| refreshHeaderData | RefreshHeaderData | -   | 下拉刷新头部数据，用于自定义刷新头部状态 |
+| refreshFooterData | RefreshFooterData | -   | 上拉加载底部数据，用于自定义加载底部状态 |
+| showLoading       | boolean           | true | 是否显示加载状态            |
+| showEmpty         | boolean           | true | 是否显示空数据状态           |
 
 #### 列表配置属性
 
-| 属性                             | 类型                         | 默认值                                      | 说明                              |
-|--------------------------------|----------------------------|------------------------------------------|---------------------------------|
-| cachedCount                    | number                     | 4                                        | 缓存的列表项数量，用于性能优化，建议使用列表能显示列表项的一半 |
-| contentStartOffset             | number                     | 0                                        | 设置内容区域起始偏移量                     |
-| contentEndOffset               | number                     | 0                                        | 设置内容区末尾偏移量                      |
-| sticky                         | StickyStyle                | StickyStyle.Header \| StickyStyle.Footer | 吸顶样式                            |
-| itemSpace                      | number                     | 0                                        | 列表项间距                           |
-| barState                       | BarState                   | BarState.On                              | 滚动条状态                           |
-| pullDownRatio                  | number                     | 0.62                                     | 设置下拉跟手系数，禁止下拉设置0                |
-| divider                        | RefreshListDivider \| null | null                                     | 分割线样式                           |
-| lanes                          | number                     | 1                                        | 设置List组件的布局列数或行数                |
-| gutter                         | Dimension                  | 0                                        | 列间距                             |
-| maintainVisibleContentPosition | boolean                    | false                                    | 插入或删除数据时是否保持可见内容位置不变            |
-| edfeEffect                     | EdgeEffect                 | EdgeEffect.Spring                        | List的EdgeEffect效果               |
-| listAttrModifier               | RefreshListAttrModifier    | new RefreshListAttrModifier()            | 用于自定义更多List属性                   |
+| 属性                             | 类型                      | 默认值                   | 说明                              |
+|--------------------------------|-------------------------|----------------------|---------------------------------|
+| cachedCount                    | number                  | 4                    | 缓存的列表项数量，用于性能优化，建议使用列表能显示列表项的一半 |
+| itemSpace                      | number                  | 0                    | 列表项间距                           |
+| pullDownRatio                  | number                  | 0.62                 | 设置下拉跟手系数，禁止下拉设置0                |
+| divider                        | RefreshListDivider      | null                 | 分割线样式                           |
+| lanes                          | number                  | 1                    | 设置List组件的布局列数或行数（网格布局）          |
+| gutter                         | Dimension               | 0                    | 列间距（网格布局时使用）                    |
+| maintainVisibleContentPosition | boolean                 | false                | 插入或删除数据时是否保持可见内容位置不变            |
+| edfeEffect                     | EdgeEffect              | EdgeEffect.Spring    | List的EdgeEffect效果               |
+| listAttrModifier               | RefreshListAttrModifier | -                    | 用于自定义更多List属性                   |
+| barState                       | BarState                | BarState.On          | 滚动条状态                           |
 
 #### 回调函数
 
@@ -195,8 +297,8 @@ struct MyPage {
 |---------------|-------------------------------------------|--------------|
 | onRefresh     | () => void                                | 下拉刷新时的回调函数   |
 | onLoadMore    | () => void                                | 上拉加载更多时的回调函数 |
-| keyGenerator  | (item: ESObject, index: number) => string | 列表项唯一标识生成器   |
-| onDidScroll   | OnScrollCallback                          | 滚动时的回调函数     |
+| keyGenerator  | (item: Object, index: number) => string  | 列表项唯一标识生成器   |
+| onDidScroll   | (scrollOffset: number, scrollState: ScrollState) => void | 滚动时的回调函数     |
 | onReachEnd    | () => void                                | 滚动到底部时的回调函数  |
 | onScrollIndex | (start: number, end: number) => void      | 滚动到索引时的回调函数  |
 
@@ -208,7 +310,7 @@ RefreshController 提供了控制刷新列表的各种方法：
 
 | 属性       | 类型           | 说明      |
 |----------|--------------|---------|
-| scroller | ListScroller | 列表滚动控制器 |
+| scroller | ListScroller | 列表滚动控制器，可用于获取滚动位置等信息 |
 
 #### 方法
 
@@ -219,6 +321,42 @@ RefreshController 提供了控制刷新列表的各种方法：
 | hideLoadMore  | (hide: boolean)                                                                        | void | 隐藏或显示加载更多组件       |
 | onRefresh     | ()                                                                                     | void | 手动触发下拉刷新          |
 | scrollToIndex | (index: number, smooth?: boolean, align?: ScrollAlign, options?: ScrollToIndexOptions) | void | 滚动到指定索引位置         |
+
+#### 使用示例
+
+```typescript
+export class SimpleViewModel {
+  controller: RefreshController = new RefreshController()
+
+  refresh(): void {
+    // 模拟网络请求
+    setTimeout(() => {
+      // 处理数据...
+      
+      // 必须调用finishRefresh结束刷新状态
+      this.controller.finishRefresh()
+      
+      // 设置是否还有更多数据
+      this.controller.setHasmore(hasMore)
+    }, 1000)
+  }
+
+  // 手动触发刷新
+  manualRefresh(): void {
+    this.controller.onRefresh()
+  }
+
+  // 滚动到顶部
+  scrollToTop(): void {
+    this.controller.scrollToIndex(0, true)
+  }
+
+  // 获取当前滚动位置
+  getCurrentOffset(): number {
+    return this.controller.scroller.currentOffset().yOffset
+  }
+}
+```
 
 ### RefreshDataSource 数据源
 
@@ -282,7 +420,50 @@ RefreshGroupDataSource 继承自 RefreshDataSource，专门用于管理分组列
 
 | 方法             | 参数                                                  | 返回值  | 说明           |
 |----------------|-----------------------------------------------------|------|--------------|
-| addListToGroup | (list: Object[], getTitle: (e: ESObject) => string) | void | 将数据列表按标题分组添加 |
+| addListToGroup | (list: Object[], getTitle: (e: Object) => string) | void | 将数据列表按标题分组添加 |
+
+#### 使用示例
+
+```typescript
+// 基础数据源使用
+export class SimpleViewModel {
+  dataSource: RefreshDataSource = new RefreshDataSource()
+
+  refresh(): void {
+    // 清空现有数据
+    this.dataSource.deleteAll()
+    
+    // 添加新数据
+    const newData = this.generateData()
+    this.dataSource.pushDataArray(newData)
+  }
+
+  addItem(item: ItemModel): void {
+    this.dataSource.pushData(item)
+  }
+
+  removeItem(item: ItemModel): void {
+    this.dataSource.deleteData(item)
+  }
+
+  updateItem(index: number, newItem: ItemModel): void {
+    this.dataSource.repalceIndex(index, newItem)
+  }
+}
+
+// 分组数据源使用
+export class GroupViewModel {
+  dataSource: RefreshGroupDataSource = new RefreshGroupDataSource()
+
+  refresh(): void {
+    this.dataSource.deleteAll()
+    
+    const allItems = this.generateData()
+    // 按category字段自动分组
+    this.dataSource.addListToGroup(allItems, (item) => item.category)
+  }
+}
+```
 
 ### RefreshGroupModel 分组模型
 
@@ -306,11 +487,24 @@ constructor(title: string, dataSource: RefreshDataSource)
 
 下拉刷新头部的状态数据：
 
-| 属性            | 类型            | 说明                                        |
-|---------------|---------------|-------------------------------------------|
-| refreshState  | RefreshStatus | 刷新状态（Inactive、Drag、OverDrag、Refresh、Done） |
-| refreshOffset | number        | 下拉偏移量                                     |
-| refreshing    | boolean       | 是否正在刷新                                    |
+| 属性            | 类型                              | 默认值                    | 说明                                        |
+|---------------|----------------------------------|-------------------------|-------------------------------------------|
+| state         | RefreshStatus                    | RefreshStatus.Inactive  | 刷新状态（Inactive、Drag、OverDrag、Refresh、Done） |
+| offset        | number                           | 0                       | 下拉偏移量                                     |
+| dragText      | ResourceStr                      | '下拉刷新'                 | 下拉时显示的文本                                  |
+| overDragText  | ResourceStr                      | '释放刷新'                 | 超过阈值时显示的文本                                |
+| refreshText   | ResourceStr                      | '刷新中...'               | 刷新中显示的文本                                  |
+| doneText      | ResourceStr                      | '刷新完成'                 | 刷新完成显示的文本                                 |
+| textColor     | ResourceColor                    | '#bbb'                  | 文本颜色                                      |
+| font          | Font                             | { size: 13 }            | 文本字体                                      |
+| loadingColor  | ResourceColor \| LinearGradient  | LinearGradient          | loading 颜色                                |
+| loadingSize   | SizeOptions                      | { width: 20, height: 20 } | loading 大小                                |
+
+#### 方法
+
+| 方法      | 参数 | 返回值        | 说明            |
+|---------|----|-----------|--------------|
+| getText | () | ResourceStr | 根据当前状态返回对应的文本 |
 
 ### RefreshFooterData 刷新底部数据
 
@@ -319,16 +513,20 @@ constructor(title: string, dataSource: RefreshDataSource)
 | 属性          | 类型                 | 默认值                     | 说明           |
 |-------------|--------------------|-------------------------|--------------|
 | isShow      | boolean            | true                    | 是否显示底部组件     |
-| state       | RefreshFooterState | RefreshFooterState.Done | 加载状态         |
-| loadingText | string             | '加载中...'                | 加载中显示的文本     |
-| doneText    | string             | '加载完成'                  | 加载完成显示的文本    |
-| noMoreText  | string             | '亲，没有更多了'               | 没有更多数据时显示的文本 |
+| state       | RefreshFooterState | RefreshFooterState.None | 加载状态         |
+| noneText    | ResourceStr        | '上拉加载更多'               | 默认状态显示的文本    |
+| loadingText | ResourceStr        | '加载中...'                | 加载中显示的文本     |
+| noMoreText  | ResourceStr        | '没有更多了'                | 没有更多数据时显示的文本 |
+| textColor   | ResourceColor      | '#bbb'                  | 文本颜色         |
+| font        | Font               | { size: 13 }            | 文本字体         |
+| loadingColor| ResourceColor      | '#bbb'                  | loading 颜色    |
+| loadingSize | SizeOptions        | { width: 20, height: 20 } | loading 大小    |
 
 #### 方法
 
-| 方法         | 参数 | 返回值    | 说明            |
-|------------|----|--------|---------------|
-| footerText | () | string | 根据当前状态返回对应的文本 |
+| 方法      | 参数 | 返回值        | 说明            |
+|---------|----|-----------|--------------|
+| getText | () | ResourceStr | 根据当前状态返回对应的文本 |
 
 ### RefreshFooterState 枚举
 
@@ -336,9 +534,84 @@ constructor(title: string, dataSource: RefreshDataSource)
 
 | 值       | 数值 | 说明     |
 |---------|----|--------|
-| Loading | 0  | 正在加载中  |
-| Done    | 1  | 加载完成   |
+| None    | 0  | 默认状态   |
+| Loading | 1  | 正在加载中  |
 | NoMore  | 2  | 没有更多数据 |
+| NoMore  | 2  | 没有更多数据 |
+
+### RefreshGlobalConfig 全局配置
+
+全局配置类，用于设置所有RefreshList组件的默认样式和行为：
+
+#### 静态属性
+
+| 属性                  | 类型                                    | 默认值                    | 说明           |
+|---------------------|---------------------------------------|-------------------------|--------------|
+| headerBuilder       | WrappedBuilder<[IRefreshHeaderData]>  | -                       | 全局自定义刷新头部构建器 |
+| footerBuilder       | WrappedBuilder<[IRefreshFooterData]>  | -                       | 全局自定义刷新底部构建器 |
+| loadingBuilder      | WrappedBuilder<[]>                    | -                       | 全局自定义加载构建器   |
+| emptyBuilder        | WrappedBuilder<[]>                    | -                       | 全局自定义空状态构建器  |
+| headerInactiveText  | ResourceStr                           | '刷新'                    | 头部非活动状态文本    |
+| headerDragText      | ResourceStr                           | '下拉刷新'                 | 头部下拉状态文本     |
+| headerOverDragText  | ResourceStr                           | '释放刷新'                 | 头部超过阈值状态文本   |
+| headerRefreshText   | ResourceStr                           | '刷新中...'               | 头部刷新中状态文本    |
+| headerDoneText      | ResourceStr                           | '刷新完成'                 | 头部刷新完成状态文本   |
+| footerNoneText      | ResourceStr                           | '上拉加载更多'               | 底部默认状态文本     |
+| footerLoadingText   | ResourceStr                           | '加载中...'               | 底部加载中状态文本    |
+| footerNoMoreText    | ResourceStr                           | '没有更多了'                | 底部没有更多数据状态文本 |
+| headerTextColor     | ResourceColor                         | '#bbb'                  | 头部文本颜色       |
+| footerTextColor     | ResourceColor                         | '#bbb'                  | 底部文本颜色       |
+| headerTextFont      | Font                                  | { size: 13 }            | 头部文本字体       |
+| footerTextFont      | Font                                  | { size: 13 }            | 底部文本字体       |
+| headerLoadingColor  | ResourceColor \| LinearGradient       | LinearGradient          | 头部loading颜色   |
+| footerLoadingColor  | ResourceColor                         | '#bbb'                  | 底部loading颜色   |
+| headerLoadingSize   | SizeOptions                           | { width: 20, height: 20 } | 头部loading大小   |
+| footerLoadingSize   | SizeOptions                           | { width: 20, height: 20 } | 底部loading大小   |
+
+#### 使用示例
+
+```typescript
+import { RefreshGlobalConfig, IRefreshHeaderData, RefreshStatus } from '@cxy/refreshlist'
+
+// 全局自定义刷新头部
+@Builder
+function globalHeaderBuilder(item: IRefreshHeaderData) {
+  GlobalHeader({ data: item.data })
+}
+
+// 配置全局设置
+function setupGlobalConfig() {
+  RefreshGlobalConfig.headerBuilder = wrapBuilder(globalHeaderBuilder)
+  RefreshGlobalConfig.headerDragText = '下拉刷新数据'
+  RefreshGlobalConfig.headerOverDragText = '释放立即刷新'
+  RefreshGlobalConfig.headerRefreshText = '正在刷新数据...'
+  RefreshGlobalConfig.headerDoneText = '刷新成功'
+  RefreshGlobalConfig.footerNoneText = '上拉加载更多'
+  RefreshGlobalConfig.footerLoadingText = '数据加载中...'
+  RefreshGlobalConfig.footerNoMoreText = '亲，没有更多了'
+  RefreshGlobalConfig.headerTextColor = '#333'
+  RefreshGlobalConfig.footerTextColor = '#666'
+}
+
+// 在应用启动时调用
+setupGlobalConfig()
+```
+
+### IRefreshHeaderData 接口
+
+刷新头部数据接口：
+
+| 属性   | 类型                | 说明       |
+|------|-------------------|----------|
+| data | RefreshHeaderData | 刷新头部状态数据 |
+
+### IRefreshFooterData 接口
+
+刷新底部数据接口：
+
+| 属性   | 类型                | 说明       |
+|------|-------------------|----------|
+| data | RefreshFooterData | 刷新底部状态数据 |
 
 ### RefreshListDivider 分割线接口
 
@@ -359,14 +632,25 @@ constructor(title: string, dataSource: RefreshDataSource)
 export class RefreshListAttrModifier implements AttributeModifier<ListAttribute> {
   applyNormalAttribute(instance: ListAttribute): void {
     // 在这里可以自定义更多List属性
+    // 例如：背景色、边框、阴影等
+  }
+}
+
+// 使用示例
+class CustomAttrModifier extends RefreshListAttrModifier {
+  applyNormalAttribute(instance: ListAttribute): void {
+    instance.backgroundColor('#f5f5f5')
+    instance.borderRadius(10)
+    instance.padding(10)
   }
 }
 ```
 
-## 使用示例
+## 💡 使用示例精选
 
-### 1. 普通列表
+基于项目中10个完整示例的核心代码，涵盖各种实际使用场景：
 
+### 1. 基础列表 - 最简单的使用方式
 ```typescript
 @Component
 struct SimpleList {
@@ -379,26 +663,98 @@ struct SimpleList {
       onRefresh: () => this.viewModel.refresh(),
       onLoadMore: () => this.viewModel.loadMore(),
       itemLayout: (item: Object, index: number) => this.itemLayout(item as ItemModel),
-      divider: { strokeWidth: 1, color: '#ddd' },
+      divider: { strokeWidth: 0.5, color: '#f0f0f0' },
       keyGenerator: (item: ItemModel) => item.id
     })
+    .backgroundColor('#f8f9fa')
   }
 
   @Builder
   itemLayout(item: ItemModel): void {
     ListItem() {
-      Text(item.title)
-        .fontColor('#333')
-        .fontSize(15)
-        .padding(15)
+      Row() {
+        // 左侧图标
+        Column() {
+          Text(item.initial || item.title.charAt(0))
+            .fontSize(16)
+            .fontColor('#fff')
+            .fontWeight(FontWeight.Medium)
+        }
+        .width(40).height(40)
+        .borderRadius(20)
+        .backgroundColor(item.avatarColor || '#4CAF50')
+        .justifyContent(FlexAlign.Center)
+
+        // 内容区域
+        Column() {
+          Text(item.title)
+            .fontSize(16)
+            .fontColor('#333')
+            .fontWeight(FontWeight.Medium)
+          
+          if (item.description) {
+            Text(item.description)
+              .fontSize(14)
+              .fontColor('#666')
+              .maxLines(2)
+              .textOverflow({ overflow: TextOverflow.Ellipsis })
+              .margin({ top: 4 })
+          }
+
+          // 底部信息
+          Row() {
+            Text(item.time || '刚刚')
+              .fontSize(12)
+              .fontColor('#999')
+
+            if (item.isNew) {
+              Text('NEW')
+                .fontSize(10)
+                .fontColor('#fff')
+                .backgroundColor('#ff4444')
+                .padding({ left: 6, right: 6, top: 2, bottom: 2 })
+                .borderRadius(8)
+                .margin({ left: 8 })
+            }
+          }
+          .width('100%')
+          .margin({ top: 8 })
+        }
+        .layoutWeight(1)
+        .margin({ left: 12 })
+        .alignItems(HorizontalAlign.Start)
+
+        // 右侧箭头
+        Image($r('sys.media.ohos_ic_public_arrow_right'))
+          .width(16)
+          .height(16)
+          .fillColor('#ccc')
+      }
+      .width('100%')
+      .padding(16)
+      .backgroundColor('#fff')
     }
+    .onClick(() => {
+      console.log(`点击项目: ${item.title}`)
+    })
   }
 }
 ```
 
-### 2. 分组列表
+### 2. 分组列表 - 自动分组功能
 
 ```typescript
+// ViewModel中自动分组
+refresh() {
+  setTimeout(() => {
+    this.dataSource.deleteAll()
+    const allItems = this.generateData()
+    // 按category字段自动分组
+    this.dataSource.addListToGroup(allItems, (item) => item.category)
+    this.controller.finishRefresh()
+  }, 800)
+}
+
 @Component
 struct GroupList {
   @State viewModel: GroupViewModel = new GroupViewModel()
@@ -410,40 +766,506 @@ struct GroupList {
       onRefresh: () => this.viewModel.refresh(),
       onLoadMore: () => this.viewModel.loadMore(),
       itemLayout: (group: Object, index: number) => this.groupLayout(group as RefreshGroupModel),
+      divider: { strokeWidth: 0, color: 'transparent' },
       keyGenerator: (group: RefreshGroupModel) => group.title
     })
+    .backgroundColor('#f5f5f5')
   }
 
   @Builder
   groupLayout(group: RefreshGroupModel): void {
-    ListItemGroup({ header: this.sectionHeader(group) }) {
+    ListItemGroup({
+      header: this.sectionHeader(group),
+      space: 8
+    }) {
       LazyForEach(group.dataSource, (item: ItemModel, index: number) => {
         ListItem() {
-          Text(item.title)
-            .fontColor('#333')
-            .fontSize(15)
-            .padding(15)
+          this.groupItemLayout(item, index)
         }
       }, (item: ItemModel) => item.id)
     }
+    .margin({ bottom: 16 })
   }
 
   @Builder
   sectionHeader(group: RefreshGroupModel): void {
-    Text(group.title)
-      .fontSize(16)
-      .fontWeight(FontWeight.Bold)
-      .padding(10)
-      .backgroundColor('#f5f5f5')
+    Row() {
+      // 分组图标
+      Column() {
+        Text(group.title.charAt(0))
+          .fontSize(14)
+          .fontColor('#fff')
+          .fontWeight(FontWeight.Bold)
+      }
+      .width(32).height(32)
+      .borderRadius(16)
+      .backgroundColor('#2196F3')
+      .justifyContent(FlexAlign.Center)
+
+      // 分组标题和统计
+      Column() {
+        Text(group.title)
+          .fontSize(16)
+          .fontColor('#333')
+          .fontWeight(FontWeight.Medium)
+
+        Text(`${group.dataSource.totalCount()} 项`)
+          .fontSize(12)
+          .fontColor('#666')
+          .margin({ top: 2 })
+      }
+      .layoutWeight(1)
+      .margin({ left: 12 })
+      .alignItems(HorizontalAlign.Start)
+    }
+    .width('100%')
+    .padding(12)
+    .backgroundColor('#fff')
+    .borderRadius({ topLeft: 12, topRight: 12 })
+  }
+
+  @Builder
+  groupItemLayout(item: ItemModel, index: number): void {
+    Row() {
+      Text(`${index + 1}`)
+        .fontSize(12)
+        .fontColor('#999')
+        .width(24)
+        .textAlign(TextAlign.Center)
+
+      Column() {
+        Text(item.title)
+          .fontSize(15)
+          .fontColor('#333')
+          .maxLines(1)
+          .textOverflow({ overflow: TextOverflow.Ellipsis })
+
+        if (item.description) {
+          Text(item.description)
+            .fontSize(13)
+            .fontColor('#666')
+            .maxLines(2)
+            .textOverflow({ overflow: TextOverflow.Ellipsis })
+            .margin({ top: 4 })
+        }
+      }
+      .layoutWeight(1)
+      .margin({ left: 12 })
+      .alignItems(HorizontalAlign.Start)
+    }
+    .width('100%')
+    .padding(12)
+    .backgroundColor('#fff')
   }
 }
 ```
 
-### 3. 带 HeaderView 的列表
+### 3. 网格布局 - 商品展示
+```typescript
+@Component
+struct GridList {
+  @State viewModel: GridViewModel = new GridViewModel()
 
+  build() {
+    RefreshList({
+      dataSource: this.viewModel.dataSource,
+      controller: this.viewModel.controller,
+      onRefresh: () => this.viewModel.refresh(),
+      onLoadMore: () => this.viewModel.loadMore(),
+      itemLayout: (item: Object, index: number) => this.gridItemLayout(item as ItemModel),
+
+      // 网格布局配置
+      lanes: 2,        // 两列布局
+      gutter: 10,      // 列间距
+      itemSpace: 10,   // 行间距
+
+      keyGenerator: (item: ItemModel) => item.id
+    })
+  }
+
+  @Builder
+  gridItemLayout(item: ItemModel): void {
+    ListItem() {
+      Column() {
+        // 商品图片
+        Image(item.image || $r('app.media.app_icon'))
+          .width('100%')
+          .height(120)
+          .borderRadius({ topLeft: 8, topRight: 8 })
+          .objectFit(ImageFit.Cover)
+
+        // 商品信息
+        Column() {
+          Text(item.title)
+            .fontSize(14)
+            .fontColor('#333')
+            .maxLines(2)
+            .textOverflow({ overflow: TextOverflow.Ellipsis })
+
+          Text(`¥${item.price || '99.00'}`)
+            .fontSize(16)
+            .fontColor('#ff4444')
+            .fontWeight(FontWeight.Bold)
+            .margin({ top: 8 })
+
+          Row() {
+            Text(`销量${item.sales || '999+'}`)
+              .fontSize(12)
+              .fontColor('#999')
+
+            // 星级评价
+            Row() {
+              ForEach([1, 2, 3, 4, 5], (star: number) => {
+                Text('⭐')
+                  .fontSize(12)
+                  .fontColor(star <= (item.rating || 4) ? '#ffcc00' : '#ddd')
+              })
+            }
+          }
+          .width('100%')
+          .justifyContent(FlexAlign.SpaceBetween)
+          .margin({ top: 5 })
+        }
+        .padding(10)
+        .alignItems(HorizontalAlign.Start)
+      }
+      .width('100%')
+      .backgroundColor(Color.White)
+      .borderRadius(8)
+      .shadow({
+        radius: 4,
+        color: '#1f000000',
+        offsetX: 0,
+        offsetY: 2
+      })
+    }
+  }
+}
+```
+
+### 4. 聊天列表 - 仿微信样式
+```typescript
+@Component
+struct ChatList {
+  @State viewModel: ChatViewModel = new ChatViewModel()
+
+  build() {
+    Column() {
+      // 顶部搜索栏
+      this.searchHeader()
+
+      // 聊天列表
+      RefreshList({
+        dataSource: this.viewModel.dataSource,
+        controller: this.viewModel.controller,
+        onRefresh: () => this.viewModel.refresh(),
+        itemLayout: (item: Object, index: number) => this.chatItemLayout(item as ItemModel),
+        divider: {
+          strokeWidth: 0.5,
+          color: '#f0f0f0',
+          startMargin: 70,
+          endMargin: 0
+        },
+        keyGenerator: (item: ItemModel) => item.id
+      })
+      .layoutWeight(1)
+    }
+    .backgroundColor('#f8f8f8')
+  }
+
+  @Builder
+  searchHeader(): void {
+    Row() {
+      Row() {
+        Image($r('sys.media.ohos_ic_public_search_filled'))
+          .width(16).height(16).fillColor('#999')
+
+        Text('搜索聊天记录')
+          .fontSize(14).fontColor('#999').margin({ left: 8 })
+      }
+      .padding({ left: 12, right: 12, top: 8, bottom: 8 })
+      .backgroundColor('#f0f0f0')
+      .borderRadius(20)
+      .layoutWeight(1)
+
+      Image($r('sys.media.ohos_ic_public_add'))
+        .width(24).height(24).fillColor('#007AFF').margin({ left: 12 })
+    }
+    .width('100%').padding(15).backgroundColor(Color.White)
+  }
+
+  @Builder
+  chatItemLayout(item: ItemModel): void {
+    ListItem() {
+      Row() {
+        // 头像
+        Stack() {
+          Image(item.avatar)
+            .alt($r('app.media.foreground'))
+            .borderRadius(25)
+            .width(50).height(50)
+            .objectFit(ImageFit.Cover)
+
+          // 在线状态指示器
+          if (item.isOnline) {
+            Circle({ width: 12, height: 12 })
+              .fill('#00C851')
+              .stroke(Color.White)
+              .strokeWidth(2)
+          }
+        }
+        .alignContent(Alignment.BottomEnd)
+
+        // 聊天信息
+        Column() {
+          Row() {
+            Text(item.name || item.title)
+              .fontSize(16)
+              .fontColor('#333')
+              .fontWeight(FontWeight.Medium)
+              .layoutWeight(1)
+
+            Text(item.time || '刚刚')
+              .fontSize(12)
+              .fontColor('#999')
+          }
+          .width('100%')
+          .alignItems(VerticalAlign.Center)
+
+          Row() {
+            Text(item.lastMessage || '暂无消息')
+              .fontSize(14)
+              .fontColor('#666')
+              .maxLines(1)
+              .textOverflow({ overflow: TextOverflow.Ellipsis })
+              .layoutWeight(1)
+
+            // 未读消息数
+            if (item.unreadCount && item.unreadCount > 0) {
+              Text(item.unreadCount > 99 ? '99+' : item.unreadCount.toString())
+                .fontSize(12)
+                .fontColor(Color.White)
+                .backgroundColor('#ff4444')
+                .borderRadius(10)
+                .padding({ left: 6, right: 6, top: 2, bottom: 2 })
+                .textAlign(TextAlign.Center)
+            }
+          }
+          .width('100%')
+          .alignItems(VerticalAlign.Center)
+          .margin({ top: 4 })
+        }
+        .layoutWeight(1)
+        .margin({ left: 12 })
+        .alignItems(HorizontalAlign.Start)
+      }
+      .width('100%')
+      .padding({ left: 15, right: 15, top: 12, bottom: 12 })
+      .alignItems(VerticalAlign.Top)
+    }
+    .backgroundColor(Color.White)
+    .swipeAction({
+      end: () => this.slideRightMenuLayout(item)
+    })
+  }
+
+  @Builder
+  slideRightMenuLayout(item: ItemModel): void {
+    Row() {
+      Text('删除')
+        .height('100%')
+        .fontColor('#fff')
+        .backgroundColor(Color.Red)
+        .textAlign(TextAlign.Center)
+        .fontSize(14)
+        .width(80)
+        .onClick(() => {
+          this.viewModel.dataSource.deleteData(item)
+        })
+    }
+    .layoutWeight(1)
+  }
+}
+```
+
+### 5. 带 HeaderView 的列表
 ```typescript
 @Component
 struct HeaderList {
+  @State viewModel: HeaderViewModel = new HeaderViewModel()
+
+  build() {
+    RefreshList({
+      dataSource: this.viewModel.dataSource,
+      controller: this.viewModel.controller,
+      onRefresh: () => this.viewModel.refresh(),
+      onLoadMore: () => this.viewModel.loadMore(),
+      
+      // 自定义头部布局
+      headerLayout: () => this.headerLayout(),
+      itemLayout: (item: Object, index: number) => this.itemLayout(item as ItemModel),
+      keyGenerator: (item: ItemModel) => item.id
+    })
+    .backgroundColor('#f8f9fa')
+  }
+
+  @Builder
+  headerLayout(): void {
+    Column() {
+      // 顶部横幅
+      Stack() {
+        // 背景渐变
+        Column()
+          .width('100%')
+          .height('100%')
+          .linearGradient({
+            direction: GradientDirection.Bottom,
+            colors: [['#667eea', 0.0], ['#764ba2', 1.0]]
+          })
+
+        // 内容区域
+        Column() {
+          Text('RefreshList 组件')
+            .fontSize(24)
+            .fontColor('#fff')
+            .fontWeight(FontWeight.Bold)
+            .margin({ bottom: 8 })
+
+          Text('简单易用的下拉刷新和上拉加载组件')
+            .fontSize(14)
+            .fontColor('#ffffff80')
+            .margin({ bottom: 20 })
+
+          // 统计信息
+          Row() {
+            this.statItem({ title: '总数据', count: `${this.viewModel.getTotalCount()}` })
+            this.statItem({ title: '已加载', count: `${this.viewModel.totalCount}` })
+            this.statItem({ title: '页数', count: `${this.viewModel.currentPage}` })
+          }
+          .width('100%')
+          .justifyContent(FlexAlign.SpaceAround)
+        }
+        .padding(20)
+        .width('100%')
+        .height('100%')
+        .justifyContent(FlexAlign.Center)
+      }
+      .width('100%')
+      .height(180)
+
+      // 功能卡片区域
+      Row() {
+        this.featureCard('🔄', '下拉刷新', '支持自定义刷新动画')
+        this.featureCard('🚀', '上拉加载', '加载更多数据')
+        this.featureCard('⚒️', '易用', '集成Loading和空页面')
+      }
+      .width('100%')
+      .padding(16)
+      .justifyContent(FlexAlign.SpaceBetween)
+    }
+    .backgroundColor('#fff')
+  }
+
+  @Builder
+  statItem(item: { title: string, count: string }): void {
+    Column() {
+      Text(item.count)
+        .fontSize(18)
+        .fontColor('#fff')
+        .fontWeight(FontWeight.Bold)
+
+      Text(item.title)
+        .fontSize(14)
+        .fontColor('#ffffff80')
+        .margin({ top: 4 })
+    }
+  }
+
+  @Builder
+  featureCard(icon: string, title: string, desc: string): void {
+    Column() {
+      Text(icon)
+        .fontSize(24)
+        .margin({ bottom: 8 })
+
+      Text(title)
+        .fontSize(14)
+        .fontColor('#333')
+        .fontWeight(FontWeight.Medium)
+        .margin({ bottom: 4 })
+
+      Text(desc)
+        .fontSize(12)
+        .fontColor('#666')
+        .textAlign(TextAlign.Center)
+        .maxLines(2)
+    }
+    .width('30%')
+    .padding(12)
+    .backgroundColor('#fff')
+    .borderRadius(8)
+    .shadow({
+      radius: 4,
+      color: '#1a000000',
+      offsetX: 0,
+      offsetY: 2
+    })
+  }
+}
+```
+
+### 6. 全局配置示例
+```typescript
+import { RefreshGlobalConfig, IRefreshHeaderData, RefreshStatus } from '@cxy/refreshlist'
+
+@Builder
+function globalHeaderBuilder(item: IRefreshHeaderData) {
+  GlobalHeader({ data: item.data })
+}
+
+@Component
+struct GlobalHeader {
+  @ObjectLink data: RefreshHeaderData
+
+  build() {
+    Column({ space: 5 }) {
+      if (this.data.state === RefreshStatus.Refresh) {
+        LoadingProgress()
+          .width(this.data.loadingSize.width)
+          .height(this.data.loadingSize.height)
+          .color(this.data.loadingColor)
+      } else {
+        Image($r('app.media.custom_loading'))
+          .height(25)
+      }
+
+      Text(this.data.getText())
+        .fontColor(this.data.textColor)
+        .fontSize(this.data.font.size)
+    }
+    .padding(10)
+  }
+}
+
+// 全局配置
+function setupGlobalConfig() {
+  RefreshGlobalConfig.headerBuilder = wrapBuilder(globalHeaderBuilder)
+  RefreshGlobalConfig.headerDragText = '下拉刷新数据'
+  RefreshGlobalConfig.headerOverDragText = '释放立即刷新'
+  RefreshGlobalConfig.headerRefreshText = '正在刷新数据...'
+  RefreshGlobalConfig.headerDoneText = '刷新成功'
+  RefreshGlobalConfig.footerNoneText = '上拉加载更多'
+  RefreshGlobalConfig.footerLoadingText = '数据加载中...'
+  RefreshGlobalConfig.footerNoMoreText = '亲，没有更多了'
+  RefreshGlobalConfig.headerTextColor = '#333'
+  RefreshGlobalConfig.footerTextColor = '#666'
+}
+
+// 在应用启动时调用
+setupGlobalConfig()
+
+@Component
+struct GlobalPage {
   @State viewModel: SimpleViewModel = new SimpleViewModel()
 
   build() {
@@ -452,6 +1274,12 @@ struct HeaderList {
       controller: this.viewModel.controller,
       onRefresh: () => this.viewModel.refresh(),
       onLoadMore: () => this.viewModel.loadMore(),
+      itemLayout: (item: Object, index: number) => this.itemLayout(item as ItemModel),
+      keyGenerator: (item: ItemModel) => item.id
+    })
+    // 全局配置会自动应用到所有RefreshList组件
+  }
+}
       headerLayout: () => this.headerLayout(),
       itemLayout: (item: Object, index: number) => this.itemLayout(item as ItemModel),
       keyGenerator: (item: ItemModel) => item.id
@@ -484,7 +1312,7 @@ struct HeaderList {
 ### 4. 自定义刷新样式
 
 ```typescript
-import { RefreshList, RefreshHeaderData, RefreshFooterData, RefreshFooterState } from '@cxy/refreshlist'
+import { RefreshList, RefreshHeaderData, RefreshFooterData, RefreshFooterState, RefreshStatus } from '@cxy/refreshlist'
 
 @Component
 struct CustomRefreshList {
@@ -511,13 +1339,14 @@ struct CustomRefreshList {
   customRefreshHeader(): void {
     Row() {
       LoadingProgress()
-        .width(20)
-        .height(20)
-        .visibility(this.refreshHeaderData.refreshing ? Visibility.Visible : Visibility.Hidden)
+        .width(this.refreshHeaderData.loadingSize.width)
+        .height(this.refreshHeaderData.loadingSize.height)
+        .color(this.refreshHeaderData.loadingColor)
+        .visibility(this.refreshHeaderData.state === RefreshStatus.Refresh ? Visibility.Visible : Visibility.Hidden)
       
-      Text(this.refreshHeaderData.refreshing ? '正在刷新...' : '下拉刷新')
-        .fontSize(14)
-        .fontColor('#666')
+      Text(this.refreshHeaderData.getText())
+        .fontSize(this.refreshHeaderData.font.size)
+        .fontColor(this.refreshHeaderData.textColor)
         .margin({ left: 8 })
     }
     .justifyContent(FlexAlign.Center)
@@ -531,16 +1360,17 @@ struct CustomRefreshList {
       Row() {
         if (this.refreshFooterData.state === RefreshFooterState.Loading) {
           LoadingProgress()
-            .width(16)
-            .height(16)
+            .width(this.refreshFooterData.loadingSize.width)
+            .height(this.refreshFooterData.loadingSize.height)
+            .color(this.refreshFooterData.loadingColor)
           Text(this.refreshFooterData.loadingText)
-            .fontSize(12)
-            .fontColor('#666')
+            .fontSize(this.refreshFooterData.font.size)
+            .fontColor(this.refreshFooterData.textColor)
             .margin({ left: 8 })
         } else {
-          Text(this.refreshFooterData.footerText())
-            .fontSize(12)
-            .fontColor('#999')
+          Text(this.refreshFooterData.getText())
+            .fontSize(this.refreshFooterData.font.size)
+            .fontColor(this.refreshFooterData.textColor)
         }
       }
       .justifyContent(FlexAlign.Center)
@@ -786,53 +1616,6 @@ struct AdvancedRefreshList {
 }
 ```
 
-## 🏗️ 项目结构
-
-```
-RefreshList/
-├── AppScope/                          # 应用配置
-│   └── app.json5                      # 应用配置文件
-├── entry/                             # 示例应用模块
-│   ├── src/main/ets/
-│   │   ├── entryability/              # 应用入口
-│   │   ├── pages/                     # 示例页面
-│   │   │   ├── Index.ets              # 主页面
-│   │   │   ├── simple/                # 普通列表示例
-│   │   │   │   ├── SimpleListPage.ets
-│   │   │   │   └── SimpleViewModel.ets
-│   │   │   ├── group/                 # 分组列表示例
-│   │   │   │   ├── GroupListPage.ets
-│   │   │   │   └── GroupViewModel.ets
-│   │   │   ├── header/                # HeaderView 示例
-│   │   │   │   └── HeaderListPage.ets
-│   │   │   └── custom/                # 自定义示例
-│   │   │       ├── CustomListPage.ets
-│   │   │       └── CustomListModel.ets
-│   │   ├── models/                    # 数据模型
-│   │   │   └── ItemModel.ets
-│   │   └── resources/                 # 资源文件
-│   └── oh-package.json5               # 模块配置
-├── refreshlist/                       # 组件库源码
-│   ├── Index.ets                      # 导出文件
-│   ├── BuildProfile.ets               # 构建配置
-│   ├── src/main/ets/refreshlist/      # 核心组件
-│   │   ├── RefreshList.ets            # 主组件
-│   │   ├── RefreshController.ets      # 控制器
-│   │   ├── RefreshDataSource.ets      # 数据源
-│   │   ├── RefreshGroupDataSource.ets # 分组数据源
-│   │   ├── RefreshGroupModel.ets      # 分组模型
-│   │   ├── RefreshState.ets           # 状态定义
-│   │   ├── RefreshHeader.ets          # 默认刷新头部
-│   │   ├── RefreshFooter.ets          # 默认刷新底部
-│   │   ├── RefreshEmptyView.ets       # 默认空数据视图
-│   │   ├── RefreshLoadingView.ets     # 默认加载视图
-│   │   ├── RefreshListAttrModifier.ets # 属性修饰器
-│   │   └── RefreshListDirvier.ets     # 分割线接口
-│   └── oh-package.json5               # 组件库配置
-├── oh-package.json5                   # 项目根配置
-├── LICENSE                            # 许可证
-└── README.md                          # 说明文档
-```
 
 ## 🔧 高级用法
 
@@ -929,16 +1712,40 @@ RefreshList({
 ### Q: 如何禁用上拉加载更多？
 
 ```typescript
-// 方法1：不传onLoadMore回调
+// 方法1：不传onLoadMore回调（推荐）
 RefreshList({
-  // ... 其他属性
   onRefresh: () => this.refresh(),
-  // 不传onLoadMore
+  // 不传onLoadMore即可禁用上拉加载
 })
 
-// 方法2：动态控制
-this.controller.hideLoadMore(true)
+// 方法2：动态控制显示/隐藏
+this.controller.hideLoadMore(true)  // 隐藏加载更多
+this.controller.setHasmore(false)   // 设置没有更多数据
 ```
+
+### Q: 如何实现无限滚动（不显示加载更多提示）？
+```typescript
+RefreshList({
+  onLoadMore: () => this.loadMore(),
+  refreshFooterLayout: () => {}, // 传入空布局隐藏底部提示
+})
+```
+
+### Q: 如何监听列表滚动事件？
+```typescript
+RefreshList({
+  onDidScroll: (scrollOffset: number, scrollState: ScrollState) => {
+    console.log(`滚动偏移: ${scrollOffset}`)
+    // 可以根据滚动位置实现悬浮按钮显示/隐藏等功能
+  },
+  onScrollIndex: (start: number, end: number) => {
+    console.log(`当前可见范围: ${start} - ${end}`)
+    // 可以用于埋点统计、预加载等
+  }
+})
+```
+
+
 
 # 作者
 
@@ -959,6 +1766,9 @@ DevEco-Studio 打开鸿蒙工程。
 
 7、[SelectableMenu](https://github.com/iHongRen/SelectableMenu) - 适用于聊天对话框中的文本选择菜单
 
-8、[RefreshList](https://github.com/iHongRen/RefreshList) - 简单易用的上拉下拉加载组件，自带 Loading 和空页面
+8、[RefreshList](https://github.com/iHongRen/RefreshList) - 功能完善的上拉下拉加载组件，支持各种自定义。
 
-🌟 如果项目对你有帮助，欢迎持续关注和 Star ，[赞助](https://ihongren.github.io/donate.html)
+
+
+如果项目对你有帮助，欢迎持续关注和 [🌟Star](https://github.com/iHongRen/RefreshList) ，[💖赞助](https://ihongren.github.io/donate.html)
+
