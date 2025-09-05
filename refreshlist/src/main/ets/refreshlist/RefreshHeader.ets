@@ -14,15 +14,21 @@ export struct RefreshHeader {
     Stack({ alignContent: Alignment.Bottom }) {
       // 可以通过刷新状态控制是否存在Progress组件
       // 当刷新状态处于下拉中或刷新中状态时Progress组件才存在
-      if (this.data.refreshState !== RefreshStatus.Inactive && this.data.refreshState !== RefreshStatus.Done) {
-        Progress({ value: this.data.refreshOffset, total: 64, type: ProgressType.Ring })
-          .width(20)
-          .height(20)
-          .style({ status: this.data.refreshing ? ProgressStatus.LOADING : ProgressStatus.PROGRESSING })
-          .margin(10)
-          .color(new LinearGradient([{ color: "#d8eaff", offset: 0 },
-            { color: "#0b72ea", offset: 1 }]))
+      Column({ space: 10 }) {
+        if (this.data.state !== RefreshStatus.Inactive && this.data.state !== RefreshStatus.Done) {
+          Progress({ value: this.data.offset, total: 64, type: ProgressType.Ring })
+            .size(this.data.loadingSize)
+            .color(this.data.loadingColor)
+            .style({
+              status: this.data.state === RefreshStatus.Refresh ? ProgressStatus.LOADING : ProgressStatus.PROGRESSING
+            })
+        }
+
+        Text(this.data.getText())
+          .fontColor(this.data.textColor)
+          .font(this.data.font)
       }
+      .margin(10)
     }
     .clip(true)
     .height("100%")

@@ -87,6 +87,14 @@
       "data": {
         "description": "page"
       }
+    },
+    {
+      "name": "global",
+      "pageSourceFile": "src/main/ets/pages/global/GlobalPage.ets",
+      "buildFunction": "routerBuilder",
+      "data": {
+        "description": "page"
+      }
     }
   ]
 }

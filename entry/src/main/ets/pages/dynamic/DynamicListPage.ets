@@ -253,7 +253,7 @@ struct DynamicListPage {
             }
 
             Row() {
-              Image($r('sys.media.ohos_app_icon'))
+              Image($r('sys.media.ohos_ic_public_email'))
                 .width(14)
                 .height(14)
                 .fillColor('#007AFF')
@@ -310,6 +310,7 @@ struct DynamicListPage {
             .fontSize(16)
             .width(40)
             .height(30)
+            .padding(0)
             .backgroundColor('#f0f0f0')
             .onClick(() => {
               this.likeItem(item, index)
@@ -319,6 +320,7 @@ struct DynamicListPage {
             .fontSize(16)
             .width(40)
             .height(30)
+            .padding(0)
             .backgroundColor('#f0f0f0')
             .margin({ top: 5 })
             .onClick(() => {

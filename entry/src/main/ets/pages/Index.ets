@@ -13,7 +13,8 @@ struct Index {
     ['无限滚动示例', 'infinite'],
     ['性能优化示例', 'performance'],
     ['动态内容示例', 'dynamic'],
-    ['高级综合示例', 'advanced']
+    ['高级综合示例', 'advanced'],
+    ['全局配置示例', 'global']
   ]
 
   build() {
@@ -47,9 +48,11 @@ struct Index {
     .hideBackButton(true)
     .mode(NavigationMode.Stack)
     .title('RefreshList Demo')
+
   }
 
   pushToName(item: string[]) {
     this.pageStack.pushPathByName(item[1], item[0])
   }
 }
+

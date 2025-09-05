@@ -114,7 +114,7 @@ struct SearchListPage {
         .margin({ bottom: 10 })
 
       Flex({ wrap: FlexWrap.Wrap, alignItems: ItemAlign.Center }) {
-        ForEach(this.viewModel.getHotSearchTags(), (tag: string, index: number) => {
+        ForEach(this.viewModel.hotTags, (tag: string, index: number) => {
           Text(tag)
             .fontSize(12)
             .fontColor('#666')
@@ -131,7 +131,7 @@ struct SearchListPage {
               this.searchText = tag
               this.performSearch()
             })
-        })
+        }, (tag: string) => tag)
       }
     }
     .width('100%')

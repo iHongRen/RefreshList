@@ -367,10 +367,10 @@ struct AdvancedListPage {
         // 背景动画
         Circle({ width: 40, height: 40 })
           .fill('#007AFF20')
-          .scale({ x: this.refreshHeaderData.refreshing ? 1.2 : 1 })
+          .scale({ x: this.refreshHeaderData.state == RefreshStatus.Refresh ? 1.2 : 1 })
           .animation({
             duration: 1000,
-            iterations: this.refreshHeaderData.refreshing ? -1 : 1,
+            iterations: this.refreshHeaderData.state == RefreshStatus.Refresh ? -1 : 1,
             playMode: PlayMode.Alternate
           })
 
@@ -379,14 +379,14 @@ struct AdvancedListPage {
           .width(24)
           .height(24)
           .fillColor('#007AFF')
-          .rotate({ angle: this.refreshHeaderData.refreshing ? 360 : 0 })
+          .rotate({ angle: this.refreshHeaderData.state == RefreshStatus.Refresh ? 360 : 0 })
           .animation({
             duration: 1000,
-            iterations: this.refreshHeaderData.refreshing ? -1 : 1
+            iterations: this.refreshHeaderData.state == RefreshStatus.Refresh ? -1 : 1
           })
       }
 
-      Text(this.refreshHeaderData.refreshing ? '正在刷新数据...' : '下拉刷新')
+      Text(this.refreshHeaderData.state == RefreshStatus.Refresh ? '正在刷新数据...' : '下拉刷新')
         .fontSize(14)
         .fontColor(this.currentTheme === 'dark' ? '#cccccc' : '#666')
         .margin({ top: 8 })

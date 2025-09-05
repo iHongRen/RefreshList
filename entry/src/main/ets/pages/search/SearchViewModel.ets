@@ -9,12 +9,12 @@ import { RefreshDataSource, RefreshController } from '@cxy/refreshlist'
 import { ItemModel } from '../../models/ItemModel'
 
 export class SearchViewModel {
-  dataSource: RefreshDataSource = new RefreshDataSource()
-  controller: RefreshController = new RefreshController()
-  private currentKeyword: string = ''
+  @Track dataSource: RefreshDataSource = new RefreshDataSource()
+  @Track controller: RefreshController = new RefreshController()
+  @Track currentKeyword: string = ''
   private currentPage: number = 1
   private pageSize: number = 20
-  private hotTags: string[] = [
+  @Track hotTags: string[] = [
     'HarmonyOS', 'ArkTS', 'RefreshList', '鸿蒙开发',
     '移动应用', 'UI组件', '性能优化', '用户体验'
   ]
@@ -61,10 +61,6 @@ export class SearchViewModel {
 
       this.controller.finishRefresh()
     }, 600)
-  }
-
-  getHotSearchTags(): string[] {
-    return this.hotTags
   }
 
   private performSearch(keyword: string, count: number): ItemModel[] {

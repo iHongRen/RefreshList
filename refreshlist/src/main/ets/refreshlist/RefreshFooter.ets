@@ -14,12 +14,14 @@ export struct RefreshFooter {
   build() {
     Row({ space: 10 }) {
       LoadingProgress()
-        .color('#bbb')
-        .width(30)
-        .height(30)
+        .color(this.data.loadingColor)
+        .size(this.data.loadingSize)
         .visibility(this.data.state === RefreshFooterState.Loading ? Visibility.Visible : Visibility.None)
 
-      Text(this.data.footerText()).fontColor('#999').fontSize(13)
+      Text(this.data.getText())
+        .fontColor(this.data.textColor)
+        .font(this.data.font)
+
     }.width("100%")
     .height(44)
     .justifyContent(FlexAlign.Center)

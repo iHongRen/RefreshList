@@ -14,6 +14,7 @@ import { RefreshListAttrModifier } from './RefreshListAttrModifier'
 import { RefreshListDivider } from './RefreshListDirvier'
 import { RefreshEmptyView } from './RefreshEmptyView'
 import { RefreshLoadingView } from './RefreshLoadingView'
+import { RefreshGlobalConfig } from './RefreshGlobalConfig'
 
 
 @Component
@@ -93,6 +94,7 @@ export struct RefreshList {
   //////----------- 以下，不需要作为属性传值 ----------///////
   @State _isEmpty: boolean = false
   @State _listWidth: number | string = '100%'
+  @State _refreshing: boolean = false //是否正在刷新
   private _canLoadMore: boolean = false;
   private _isLoadingMore: boolean = false;
 
@@ -108,7 +110,11 @@ export struct RefreshList {
 
   @Builder
   defaultRefreshHeader() {
-    RefreshHeader({ data: this.refreshHeaderData })
+    if (RefreshGlobalConfig.headerBuilder) {
+      RefreshGlobalConfig.headerBuilder?.builder({ data: this.refreshHeaderData })
+    } else {
+      RefreshHeader({ data: this.refreshHeaderData })
+    }
   }
 
   @Builder
@@ -133,13 +139,13 @@ export struct RefreshList {
     this.controller.onRefresh = () => {
       if (this.onRefresh) {
         this.scroller?.scrollEdge(Edge.Top)
-        this.refreshHeaderData.refreshing = true
+        this._refreshing = true
       }
     }
 
     this.controller.finishRefresh = () => {
       const total = this.dataSource?.totalItemCount()
-      this.refreshHeaderData.refreshing = false
+      this._refreshing = false
       this._canLoadMore = true
       this._isLoadingMore = false
       this.showLoading = false
@@ -159,24 +165,26 @@ export struct RefreshList {
 
   build() {
     Refresh({
-      refreshing: this.refreshHeaderData.refreshing,
+      refreshing: this._refreshing,
       builder: this.refreshHeaderLayout
     }) {
       this.listView()
     }
     .onOffsetChange((offset: number) => {
-      this.refreshHeaderData.refreshOffset = offset;
+      console.error('---' + offset)
+      this.refreshHeaderData.offset = offset;
     })
     .onStateChange((state: RefreshStatus) => {
       if (!this.onRefresh) {
-        this.refreshHeaderData.refreshState = RefreshStatus.Done;
+        this.refreshHeaderData.state = RefreshStatus.Done;
         return
       }
-      this.refreshHeaderData.refreshState = state;
+      console.error('-----' + state)
+      this.refreshHeaderData.state = state;
     })
     .onRefreshing(() => {
-      const isGuestureTrigger = !this.refreshHeaderData.refreshing
-      this.refreshHeaderData.refreshing = true
+      const isGuestureTrigger = !this._refreshing
+      this._refreshing = true
       if (this.onRefresh) {
         if (isGuestureTrigger) {
           this.onRefresh?.()
@@ -186,7 +194,7 @@ export struct RefreshList {
           }, 300)
         }
       } else {
-        this.refreshHeaderData.refreshing = false
+        this._refreshing = false
       }
     })
     .pullDownRatio(this.pullDownRatio)
@@ -221,7 +229,7 @@ export struct RefreshList {
           this.emptyLayout()
         }
         .width(this._listWidth)
-      } else if (this.onLoadMore && !this.refreshHeaderData.refreshing) {
+      } else if (this.onLoadMore && !this._refreshing) {
         ListItem() {
           this.refreshFooterLayout()
         }
@@ -248,7 +256,7 @@ export struct RefreshList {
         return
       }
       // 加载更多数据逻辑
-      if (!this._isEmpty && this.onLoadMore && this._canLoadMore && !this.refreshHeaderData.refreshing) {
+      if (!this._isEmpty && this.onLoadMore && this._canLoadMore && !this._refreshing) {
         this._canLoadMore = false;
         this._isLoadingMore = true;
         this.refreshFooterData.state = RefreshFooterState.Loading
@@ -264,7 +272,7 @@ export struct RefreshList {
         return
       }
       // 只有当向上滑动时触发新数据加载
-      if (offset > 5 && !this._isLoadingMore && !this.refreshHeaderData.refreshing) {
+      if (offset > 5 && !this._isLoadingMore && !this._refreshing) {
         this._canLoadMore = true;
       }
       return { offsetRemain: offset };
