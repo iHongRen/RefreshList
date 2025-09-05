@@ -5,12 +5,33 @@
  * @description : 高级示例数据管理
  */
 
-import { RefreshDataSource, RefreshController } from '@cxy/refreshlist'
+import { RefreshDataSource, RefreshController, RefreshListAttrModifier } from '@cxy/refreshlist'
 import { ItemModel } from '../../models/ItemModel'
 
+
+// 改变背景色
+class CustomAttrModifier extends RefreshListAttrModifier {
+  instance?: ListAttribute
+
+  applyNormalAttribute(instance: ListAttribute): void {
+    this.instance = instance
+  }
+
+  changeTheme(currentTheme: 'light' | 'dark') {
+    if (currentTheme === 'dark') {
+      this.instance?.backgroundColor('#1a1a1a')
+    } else {
+      this.instance?.backgroundColor('#ffffff')
+    }
+  }
+}
+
 export class AdvancedViewModel {
-  dataSource: RefreshDataSource = new RefreshDataSource()
-  controller: RefreshController = new RefreshController()
+  @Track dataSource: RefreshDataSource = new RefreshDataSource()
+  @Track controller: RefreshController = new RefreshController()
+  @Track showFloatingButton: boolean = false
+  @Track currentTheme: 'light' | 'dark' = 'light'
+  @Track customAttrModifier: CustomAttrModifier = new CustomAttrModifier()
   private currentPage: number = 1
   private pageSize: number = 15
 
@@ -37,6 +58,24 @@ export class AdvancedViewModel {
       this.controller.setHasmore(hasMore)
       this.controller.finishRefresh()
     }, 800)
+  }
+
+  showItemOptions(item: ItemModel, index: number): void {
+    // 显示项目操作菜单
+    console.log(`显示选项: ${item.title}, 索引: ${index}`)
+  }
+
+  addNewItem(): void {
+    const newItem = new ItemModel(`new_${Date.now()}`, `新添加的项目 ${Date.now()}`)
+    newItem.description = '这是一个动态添加的项目'
+    newItem.isNew = true
+    this.dataSource.insertData(0, newItem)
+    this.controller.scroller.scrollToIndex(1, true, ScrollAlign.CENTER)
+  }
+
+  toggleTheme(): void {
+    this.currentTheme = this.currentTheme === 'light' ? 'dark' : 'light'
+    this.customAttrModifier.changeTheme(this.currentTheme)
   }
 
   private generateData(count: number): ItemModel[] {

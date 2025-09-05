@@ -20,22 +20,6 @@ function routerBuilder() {
   AdvancedListPage()
 }
 
-// 改变背景色
-class CustomAttrModifier extends RefreshListAttrModifier {
-  instance?: ListAttribute
-
-  applyNormalAttribute(instance: ListAttribute): void {
-    this.instance = instance
-  }
-
-  changeTheme(currentTheme: 'light' | 'dark') {
-    if (currentTheme === 'dark') {
-      this.instance?.backgroundColor('#1a1a1a')
-    } else {
-      this.instance?.backgroundColor('#ffffff')
-    }
-  }
-}
 
 @Component
 struct AdvancedListPage {
@@ -43,12 +27,9 @@ struct AdvancedListPage {
   @State viewModel: AdvancedViewModel = new AdvancedViewModel()
   @State refreshHeaderData: RefreshHeaderData = new RefreshHeaderData()
   @State refreshFooterData: RefreshFooterData = new RefreshFooterData()
-  @State showFloatingButton: boolean = false
-  @State currentTheme: 'light' | 'dark' = 'light'
-  @State customAttrModifier: CustomAttrModifier = new CustomAttrModifier()
 
   aboutToAppear(): void {
-    this.customAttrModifier.changeTheme(this.currentTheme)
+    this.viewModel.customAttrModifier.changeTheme(this.viewModel.currentTheme)
   }
 
   build() {
@@ -75,19 +56,19 @@ struct AdvancedListPage {
           itemSpace: 2,
           pullDownRatio: 0.75,
           maintainVisibleContentPosition: true,
-          listAttrModifier: this.customAttrModifier,
+          listAttrModifier: this.viewModel.customAttrModifier,
 
           // 自定义分割线
           divider: {
             strokeWidth: 1,
-            color: this.currentTheme === 'dark' ? '#333' : '#f0f0f0',
+            color: this.viewModel.currentTheme === 'dark' ? '#333' : '#f0f0f0',
             startMargin: 60,
             endMargin: 0
           },
 
           // 滚动回调
           onDidScroll: (scrollOffset: number, scrollState: ScrollState) => {
-            this.showFloatingButton = this.viewModel.controller.scroller.currentOffset()
+            this.viewModel.showFloatingButton = this.viewModel.controller.scroller.currentOffset()
               .yOffset > 200
           },
 
@@ -95,7 +76,7 @@ struct AdvancedListPage {
         })
 
         // 浮动操作按钮
-        if (this.showFloatingButton) {
+        if (this.viewModel.showFloatingButton) {
           this.floatingActionButtons()
         }
 
@@ -185,21 +166,21 @@ struct AdvancedListPage {
               .fontSize(14)
               .fontWeight(FontWeight.Medium)
               .margin({ top: 8 })
-              .fontColor(this.currentTheme === 'dark' ? '#ddd' : '#333')
+              .fontColor(this.viewModel.currentTheme === 'dark' ? '#ddd' : '#333')
 
             Text(item.desc)
               .fontSize(12)
-              .fontColor(this.currentTheme === 'dark' ? '#eee' : '#666')
+              .fontColor(this.viewModel.currentTheme === 'dark' ? '#eee' : '#666')
               .margin({ top: 4 })
 
           }
           .layoutWeight(1)
           .padding(15)
-          .backgroundColor(this.currentTheme === 'dark' ? '#2a2a2a' : Color.White)
+          .backgroundColor(this.viewModel.currentTheme === 'dark' ? '#2a2a2a' : Color.White)
           .borderRadius(12)
           .shadow({
             radius: 8,
-            color: this.currentTheme === 'dark' ? '#00000040' : '#00000010',
+            color: this.viewModel.currentTheme === 'dark' ? '#00000040' : '#00000010',
             offsetY: 4
           })
         })
@@ -208,7 +189,7 @@ struct AdvancedListPage {
       .padding(15)
       .justifyContent(FlexAlign.SpaceBetween)
     }
-    .backgroundColor(this.currentTheme === 'dark' ? '#1a1a1a' : '#f8f8f8')
+    .backgroundColor(this.viewModel.currentTheme === 'dark' ? '#1a1a1a' : '#f8f8f8')
   }
 
   @Builder
@@ -244,7 +225,7 @@ struct AdvancedListPage {
           Row() {
             Text(item.title)
               .fontSize(16)
-              .fontColor(this.currentTheme === 'dark' ? '#ffffff' : '#333')
+              .fontColor(this.viewModel.currentTheme === 'dark' ? '#ffffff' : '#333')
               .fontWeight(FontWeight.Medium)
               .layoutWeight(1)
 
@@ -284,7 +265,7 @@ struct AdvancedListPage {
           if (item.description) {
             Text(item.description)
               .fontSize(14)
-              .fontColor(this.currentTheme === 'dark' ? '#cccccc' : '#666')
+              .fontColor(this.viewModel.currentTheme === 'dark' ? '#cccccc' : '#666')
               .maxLines(2)
               .textOverflow({ overflow: TextOverflow.Ellipsis })
               .margin({ top: 4 })
@@ -295,7 +276,7 @@ struct AdvancedListPage {
             Text(item.category || '默认')
               .fontSize(12)
               .fontColor('#999')
-              .backgroundColor(this.currentTheme === 'dark' ? '#333' : '#f0f0f0')
+              .backgroundColor(this.viewModel.currentTheme === 'dark' ? '#333' : '#f0f0f0')
               .borderRadius(4)
               .padding({
                 left: 6,
@@ -355,14 +336,14 @@ struct AdvancedListPage {
       .padding(15)
       .alignItems(VerticalAlign.Top)
     }
-    .backgroundColor(this.currentTheme === 'dark' ? '#2a2a2a' : Color.White)
+    .backgroundColor(this.viewModel.currentTheme === 'dark' ? '#2a2a2a' : Color.White)
     .onClick(() => {
       console.log(`点击高级项目: ${item.title}`)
     })
     .gesture(
       LongPressGesture({ repeat: false })
         .onAction(() => {
-          this.showItemOptions(item, index)
+          this.viewModel.showItemOptions(item, index)
         })
     )
   }
@@ -405,13 +386,13 @@ struct AdvancedListPage {
 
       Text(this.refreshHeaderData.getText())
         .fontSize(14)
-        .fontColor(this.currentTheme === 'dark' ? '#cccccc' : '#666')
+        .fontColor(this.viewModel.currentTheme === 'dark' ? '#cccccc' : '#666')
         .margin({ top: 8 })
     }
     .width('100%')
     .height(80)
     .justifyContent(FlexAlign.Center)
-    .backgroundColor(this.currentTheme === 'dark' ? '#1a1a1a' : '#f8f8f8')
+    .backgroundColor(this.viewModel.currentTheme === 'dark' ? '#1a1a1a' : '#f8f8f8')
     .padding(10)
   }
 
@@ -427,7 +408,7 @@ struct AdvancedListPage {
               .color('#007AFF')
             Text('加载更多精彩内容...')
               .fontSize(14)
-              .fontColor(this.currentTheme === 'dark' ? '#cccccc' : '#666')
+              .fontColor(this.viewModel.currentTheme === 'dark' ? '#cccccc' : '#666')
               .margin({ left: 8 })
           }
         } else if (this.refreshFooterData.state === RefreshFooterState.NoMore) {
@@ -448,7 +429,7 @@ struct AdvancedListPage {
       .width('100%')
       .height(60)
       .justifyContent(FlexAlign.Center)
-      .backgroundColor(this.currentTheme === 'dark' ? '#1a1a1a' : '#f8f8f8')
+      .backgroundColor(this.viewModel.currentTheme === 'dark' ? '#1a1a1a' : '#f8f8f8')
     }
   }
 
@@ -462,7 +443,7 @@ struct AdvancedListPage {
 
       Text('暂无数据')
         .fontSize(18)
-        .fontColor(this.currentTheme === 'dark' ? '#cccccc' : '#666')
+        .fontColor(this.viewModel.currentTheme === 'dark' ? '#cccccc' : '#666')
         .margin({ top: 20 })
 
       Text('下拉刷新试试看')
@@ -480,7 +461,7 @@ struct AdvancedListPage {
     .alignItems(HorizontalAlign.Center)
     .width('100%')
     .height('100%')
-    .backgroundColor(this.currentTheme === 'dark' ? '#1a1a1a' : Color.White)
+    .backgroundColor(this.viewModel.currentTheme === 'dark' ? '#1a1a1a' : Color.White)
   }
 
   @Builder
@@ -514,7 +495,7 @@ struct AdvancedListPage {
       .backgroundColor('#00C851')
       .margin({ top: 10 })
       .onClick(() => {
-        this.addNewItem()
+        this.viewModel.addNewItem()
       })
     }
     .position({ x: '85%', y: '75%' })
@@ -524,7 +505,7 @@ struct AdvancedListPage {
   @Builder
   themeToggleButton(): void {
     Button() {
-      Image(this.currentTheme === 'dark' ? $r('app.media.foreground') : $r('app.media.startIcon'))
+      Image(this.viewModel.currentTheme === 'dark' ? $r('app.media.foreground') : $r('app.media.startIcon'))
         .width(20)
         .height(20)
         .fillColor(Color.White)
@@ -532,28 +513,11 @@ struct AdvancedListPage {
     .width(40)
     .height(40)
     .borderRadius(20)
-    .backgroundColor(this.currentTheme === 'dark' ? '#ddd' : '#666')
+    .backgroundColor(this.viewModel.currentTheme === 'dark' ? '#ddd' : '#666')
     .position({ x: '85%', y: '10%' })
     .zIndex(10)
     .onClick(() => {
-      this.toggleTheme()
+      this.viewModel.toggleTheme()
     })
-  }
-
-  private showItemOptions(item: ItemModel, index: number): void {
-    // 显示项目操作菜单
-    console.log(`显示选项: ${item.title}, 索引: ${index}`)
-  }
-
-  private addNewItem(): void {
-    const newItem = new ItemModel(`new_${Date.now()}`, `新添加的项目 ${Date.now()}`)
-    newItem.description = '这是一个动态添加的项目'
-    newItem.isNew = true
-    this.viewModel.dataSource.insertData(0, newItem)
-  }
-
-  private toggleTheme(): void {
-    this.currentTheme = this.currentTheme === 'light' ? 'dark' : 'light'
-    this.customAttrModifier.changeTheme(this.currentTheme)
   }
 }
