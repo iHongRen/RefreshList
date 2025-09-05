@@ -28,7 +28,8 @@ export struct RefreshHeader {
           .fontColor(this.data.textColor)
           .font(this.data.font)
       }
-      .margin(10)
+      .padding({ top: 10 })
+      .height(64)
     }
     .clip(true)
     .height("100%")
