@@ -232,11 +232,14 @@ struct DynamicListPage {
           Row() {
             // 实时数值变化
             Row() {
-              Image($r('sys.media.ohos_app_icon'))
-                .width(14)
-                .height(14)
-                .fillColor('#ff4444')
+              Text() {
+                SymbolSpan($r('sys.symbol.heart_fill'))
+                  .fontWeight(FontWeight.Normal)
+                  .fontSize(12)
+                  .fontColor(['#ff0000'])
+              }
 
+              
               Text(`${item.likes || 0}`)
                 .fontSize(12)
                 .fontColor('#666')
@@ -253,10 +256,11 @@ struct DynamicListPage {
             }
 
             Row() {
-              Image($r('sys.media.ohos_ic_public_email'))
-                .width(14)
-                .height(14)
-                .fillColor('#007AFF')
+              Text() {
+                SymbolSpan($r('sys.symbol.eye'))
+                  .fontWeight(FontWeight.Normal)
+                  .fontSize(12)
+              }
 
               Text(`${item.views || 0}`)
                 .fontSize(12)

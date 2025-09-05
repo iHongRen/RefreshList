@@ -18,8 +18,7 @@ function routerBuilder() {
 struct SearchListPage {
   @State title: string = ''
   @State viewModel: SearchViewModel = new SearchViewModel()
-  @State searchText: string = ''
-  @State isSearching: boolean = false
+  @State imageMap: Map<string, boolean> = new Map()
 
   build() {
     NavDestination() {
@@ -31,7 +30,7 @@ struct SearchListPage {
         RefreshList({
           dataSource: this.viewModel.dataSource,
           controller: this.viewModel.controller,
-          onRefresh: () => this.viewModel.refresh(this.searchText),
+          onRefresh: () => this.viewModel.refresh(),
           onLoadMore: () => this.viewModel.loadMore(),
           itemLayout: (item: Object, index: number) => this.searchItemLayout(item as ItemModel),
 
@@ -51,6 +50,7 @@ struct SearchListPage {
     .title(this.title)
     .onReady((ctx) => {
       this.title = ctx.pathInfo.param as string
+      this.viewModel.refresh()
     })
   }
 
@@ -59,34 +59,26 @@ struct SearchListPage {
     Column() {
       // 搜索框
       Row() {
-        TextInput({ placeholder: '搜索内容...', text: this.searchText })
+        TextInput({ placeholder: '搜索内容...', text: this.viewModel.currentKeyword })
           .layoutWeight(1)
           .onChange((value: string) => {
-            this.searchText = value
-          })
-          .onSubmit(() => {
-            this.performSearch()
-          })
-
-        Button('搜索')
-          .margin({ left: 10 })
-          .onClick(() => {
-            this.performSearch()
+            this.viewModel.currentKeyword = value
+            this.viewModel.refresh()
           })
       }
       .width('100%')
       .padding(15)
 
       // 搜索状态栏
-      if (this.searchText) {
+      if (this.viewModel.currentKeyword) {
         Row() {
-          Text(`搜索 "${this.searchText}"`)
+          Text(`搜索 "${this.viewModel.currentKeyword}"`)
             .fontSize(14)
             .fontColor('#666')
             .layoutWeight(1)
 
-          if (this.viewModel.dataSource.totalCount() > 0) {
-            Text(`找到 ${this.viewModel.dataSource.totalCount()} 个结果`)
+          if (this.viewModel.searchCount > 0) {
+            Text(`找到 ${this.viewModel.searchCount} 个结果`)
               .fontSize(12)
               .fontColor('#999')
           }
@@ -96,7 +88,7 @@ struct SearchListPage {
       }
 
       // 热门搜索标签
-      if (!this.searchText && this.viewModel.dataSource.totalCount() === 0) {
+      if (!this.viewModel.currentKeyword) {
         this.hotSearchTags()
       }
     }
@@ -128,8 +120,8 @@ struct SearchListPage {
             })
             .margin({ right: 8, bottom: 8 })
             .onClick(() => {
-              this.searchText = tag
-              this.performSearch()
+              this.viewModel.currentKeyword = tag
+              this.viewModel.refresh()
             })
         }, (tag: string) => tag)
       }
@@ -144,16 +136,24 @@ struct SearchListPage {
     ListItem() {
       Row() {
         // 搜索结果图标
-        Image(item.image || $r('sys.media.ohos_ic_public_search_filled'))
+        Image(item.image)
+          .alt($r('sys.media.ohos_ic_public_search_filled'))
           .width(50)
           .height(50)
           .borderRadius(8)
           .objectFit(ImageFit.Cover)
+          .syncLoad(item.image && this.imageMap.get(item.image))
+          .onComplete((event) => {
+            if (event && item.image) {
+              this.imageMap.set(item.image, true)
+            }
+          })
+
 
         // 搜索结果内容
         Column() {
           // 标题 - 高亮搜索关键词
-          Text(this.highlightSearchText(item.title))
+          Text(item.title)
             .fontSize(16)
             .fontColor('#333')
             .maxLines(2)
@@ -161,7 +161,7 @@ struct SearchListPage {
 
           // 描述
           if (item.description) {
-            Text(this.highlightSearchText(item.description))
+            Text(item.description)
               .fontSize(14)
               .fontColor('#666')
               .maxLines(2)
@@ -231,12 +231,12 @@ struct SearchListPage {
   searchEmptyLayout(): void {
     Column() {
       Image($r('sys.media.ohos_ic_public_search_filled'))
-        .width(80)
-        .height(80)
+        .width(60)
+        .height(60)
         .fillColor('#ddd')
 
-      if (this.searchText) {
-        Text(`未找到 "${this.searchText}" 的相关结果`)
+      if (this.viewModel.currentKeyword) {
+        Text(`未找到 "${this.viewModel.currentKeyword}" 的相关结果`)
           .fontSize(16)
           .fontColor('#666')
           .margin({ top: 20 })
@@ -269,30 +269,11 @@ struct SearchListPage {
       Text('搜索中...')
         .fontSize(16)
         .fontColor('#666')
-        .margin({ top: 20 })
+        .margin({ top: 10 })
     }
     .justifyContent(FlexAlign.Center)
     .alignItems(HorizontalAlign.Center)
     .width('100%')
     .height('100%')
-  }
-
-  private performSearch(): void {
-    if (!this.searchText.trim()) {
-      return
-    }
-
-    this.isSearching = true
-    this.viewModel.search(this.searchText.trim())
-  }
-
-  private highlightSearchText(text: string): string {
-    // 简单的高亮处理，实际项目中可以使用更复杂的高亮逻辑
-    if (!this.searchText || !text) {
-      return text
-    }
-
-    // 这里返回原文本，实际应用中可以返回带高亮标记的富文本
-    return text
   }
 }

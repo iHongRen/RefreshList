@@ -20,6 +20,7 @@ function routerBuilder() {
   AdvancedListPage()
 }
 
+// 改变背景色
 class CustomAttrModifier extends RefreshListAttrModifier {
   instance?: ListAttribute
 
@@ -66,9 +67,11 @@ struct AdvancedListPage {
           refreshHeaderLayout: () => this.advancedRefreshHeader(),
           refreshFooterLayout: () => this.advancedRefreshFooter(),
           emptyLayout: () => this.advancedEmptyLayout(),
+          refreshHeaderData: this.refreshHeaderData,
+          refreshFooterData: this.refreshFooterData,
 
           // 高级配置
-          cachedCount: 15,
+          cachedCount: 10,
           itemSpace: 2,
           pullDownRatio: 0.75,
           maintainVisibleContentPosition: true,
@@ -84,7 +87,8 @@ struct AdvancedListPage {
 
           // 滚动回调
           onDidScroll: (scrollOffset: number, scrollState: ScrollState) => {
-            this.showFloatingButton = scrollOffset > 200
+            this.showFloatingButton = this.viewModel.controller.scroller.currentOffset()
+              .yOffset > 200
           },
 
           keyGenerator: (item: ItemModel) => item.id
@@ -128,6 +132,8 @@ struct AdvancedListPage {
         })
     }
     .height('100%')
+    .padding({ right: 12 })
+    .alignItems(VerticalAlign.Center)
   }
 
   @Builder
@@ -137,7 +143,7 @@ struct AdvancedListPage {
       Stack() {
         Image($r('app.media.foreground'))
           .width('100%')
-          .height(180)
+          .height('100%')
           .objectFit(ImageFit.Cover)
 
         // 渐变遮罩
@@ -159,17 +165,17 @@ struct AdvancedListPage {
           Text('展示各种高级功能和自定义选项')
             .fontSize(14)
             .fontColor('#ffffff80')
-            .margin({ top: 8 })
+            .margin(10)
         }
         .alignItems(HorizontalAlign.Center)
       }
       .alignContent(Alignment.Bottom)
 
       // 功能卡片区域
-      Row() {
+      Row({ space: 10 }) {
         ForEach([
           { icon: '🔄', title: '智能刷新', desc: '自动检测' },
-          { icon: '⚡', title: '高性能', desc: '流畅体验' },
+          { icon: '⚡', title: '友好接口', desc: '流畅体验' },
           { icon: '🎨', title: '自定义', desc: '灵活配置' }
         ], (item: ESObject) => {
           Column() {
@@ -179,10 +185,13 @@ struct AdvancedListPage {
               .fontSize(14)
               .fontWeight(FontWeight.Medium)
               .margin({ top: 8 })
+              .fontColor(this.currentTheme === 'dark' ? '#ddd' : '#333')
+
             Text(item.desc)
               .fontSize(12)
-              .fontColor('#666')
+              .fontColor(this.currentTheme === 'dark' ? '#eee' : '#666')
               .margin({ top: 4 })
+
           }
           .layoutWeight(1)
           .padding(15)
@@ -217,7 +226,7 @@ struct AdvancedListPage {
           } else {
             Circle({ width: 50, height: 50 })
               .fill(item.avatarColor || '#007AFF')
-              .overlay(this.overlyBuilder(item.initial || 'A'))
+              .overlay(this.overlyBuilder(item.initial || 'A'), { align: Alignment.Center })
           }
 
           // 状态指示器
@@ -297,10 +306,13 @@ struct AdvancedListPage {
 
             if (item.views) {
               Row() {
-                Image($r('sys.media.ohos_app_icon'))
-                  .width(12)
-                  .height(12)
-                  .fillColor('#999')
+                Text() {
+                  SymbolSpan($r('sys.symbol.eye'))
+                    .fontWeight(FontWeight.Normal)
+                    .fontSize(12)
+                    .fontColor(['#999'])
+                }
+
                 Text(`${item.views}`)
                   .fontSize(12)
                   .fontColor('#999')
@@ -311,10 +323,13 @@ struct AdvancedListPage {
 
             if (item.likes) {
               Row() {
-                Image($r('sys.media.ohos_app_icon'))
-                  .width(12)
-                  .height(12)
-                  .fillColor('#ff4444')
+                Text() {
+                  SymbolSpan($r('sys.symbol.heart_fill'))
+                    .fontWeight(FontWeight.Normal)
+                    .fontSize(12)
+                    .fontColor(['#ff0000'])
+                }
+
                 Text(`${item.likes}`)
                   .fontSize(12)
                   .fontColor('#999')
@@ -358,6 +373,8 @@ struct AdvancedListPage {
       .fontSize(18)
       .fontColor(Color.White)
       .fontWeight(FontWeight.Bold)
+      .width(50)
+      .textAlign(TextAlign.Center)
   }
 
   @Builder
@@ -375,18 +392,18 @@ struct AdvancedListPage {
           })
 
         // 刷新图标
-        Image($r('sys.media.ohos_app_icon'))
+        Image($r('app.media.foreground'))
           .width(24)
           .height(24)
           .fillColor('#007AFF')
-          .rotate({ angle: this.refreshHeaderData.state == RefreshStatus.Refresh ? 360 : 0 })
+          .rotate({ angle: this.refreshHeaderData.offset * 6 })
           .animation({
             duration: 1000,
             iterations: this.refreshHeaderData.state == RefreshStatus.Refresh ? -1 : 1
           })
       }
 
-      Text(this.refreshHeaderData.state == RefreshStatus.Refresh ? '正在刷新数据...' : '下拉刷新')
+      Text(this.refreshHeaderData.getText())
         .fontSize(14)
         .fontColor(this.currentTheme === 'dark' ? '#cccccc' : '#666')
         .margin({ top: 8 })
@@ -395,6 +412,7 @@ struct AdvancedListPage {
     .height(80)
     .justifyContent(FlexAlign.Center)
     .backgroundColor(this.currentTheme === 'dark' ? '#1a1a1a' : '#f8f8f8')
+    .padding(10)
   }
 
   @Builder
@@ -421,6 +439,10 @@ struct AdvancedListPage {
               .fontColor('#999')
               .margin({ top: 4 })
           }
+        } else {
+          Text('请继续拉')
+            .fontSize(14)
+            .fontColor('#999')
         }
       }
       .width('100%')
@@ -433,7 +455,7 @@ struct AdvancedListPage {
   @Builder
   advancedEmptyLayout(): void {
     Column() {
-      Image($r('sys.media.ohos_app_icon'))
+      Image($r('app.media.foreground'))
         .width(100)
         .height(100)
         .fillColor('#ddd')
@@ -502,7 +524,7 @@ struct AdvancedListPage {
   @Builder
   themeToggleButton(): void {
     Button() {
-      Image(this.currentTheme === 'dark' ? $r('sys.media.ohos_app_icon') : $r('sys.media.ohos_app_icon'))
+      Image(this.currentTheme === 'dark' ? $r('app.media.foreground') : $r('app.media.startIcon'))
         .width(20)
         .height(20)
         .fillColor(Color.White)
@@ -510,7 +532,7 @@ struct AdvancedListPage {
     .width(40)
     .height(40)
     .borderRadius(20)
-    .backgroundColor(this.currentTheme === 'dark' ? '#333' : '#666')
+    .backgroundColor(this.currentTheme === 'dark' ? '#ddd' : '#666')
     .position({ x: '85%', y: '10%' })
     .zIndex(10)
     .onClick(() => {

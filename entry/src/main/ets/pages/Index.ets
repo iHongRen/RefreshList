@@ -10,8 +10,6 @@ struct Index {
     ['网格布局示例', 'grid'],
     ['聊天列表示例', 'chat'],
     ['搜索结果示例', 'search'],
-    ['无限滚动示例', 'infinite'],
-    ['性能优化示例', 'performance'],
     ['动态内容示例', 'dynamic'],
     ['高级综合示例', 'advanced'],
     ['全局配置示例', 'global']

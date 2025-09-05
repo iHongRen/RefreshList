@@ -44,3 +44,4 @@ export class RefreshGlobalConfig {
   static headerLoadingSize: SizeOptions = { width: 20, height: 20 }
   static footerLoadingSize: SizeOptions = { width: 20, height: 20 }
 }
+

@@ -57,22 +57,6 @@
       }
     },
     {
-      "name": "infinite",
-      "pageSourceFile": "src/main/ets/pages/infinite/InfiniteListPage.ets",
-      "buildFunction": "routerBuilder",
-      "data": {
-        "description": "page"
-      }
-    },
-    {
-      "name": "performance",
-      "pageSourceFile": "src/main/ets/pages/performance/PerformanceListPage.ets",
-      "buildFunction": "routerBuilder",
-      "data": {
-        "description": "page"
-      }
-    },
-    {
       "name": "dynamic",
       "pageSourceFile": "src/main/ets/pages/dynamic/DynamicListPage.ets",
       "buildFunction": "routerBuilder",

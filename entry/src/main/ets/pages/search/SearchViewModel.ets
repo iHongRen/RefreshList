@@ -12,55 +12,37 @@ export class SearchViewModel {
   @Track dataSource: RefreshDataSource = new RefreshDataSource()
   @Track controller: RefreshController = new RefreshController()
   @Track currentKeyword: string = ''
-  private currentPage: number = 1
-  private pageSize: number = 20
+  @Track searchCount: number = 0
   @Track hotTags: string[] = [
     'HarmonyOS', 'ArkTS', 'RefreshList', '鸿蒙开发',
     '移动应用', 'UI组件', '性能优化', '用户体验'
   ]
+  private currentPage: number = 1
+  private pageSize: number = 20
 
-  refresh(keyword: string = ''): void {
-    this.currentKeyword = keyword
-    this.currentPage = 1
-
-    if (!keyword.trim()) {
-      this.dataSource.deleteAll()
-      this.controller.finishRefresh()
-      return
-    }
-
-    // 模拟搜索API调用
-    setTimeout(() => {
-      this.dataSource.deleteAll()
-      const results = this.performSearch(keyword, this.pageSize)
-      this.dataSource.pushDataArray(results)
-      this.controller.finishRefresh()
-      this.controller.setHasmore(results.length >= this.pageSize)
-    }, 800)
+  refresh(): void {
+    this.requestData(1)
   }
 
-  search(keyword: string) {
-    this.refresh(keyword)
-  }
 
   loadMore(): void {
-    if (!this.currentKeyword) {
-      return
-    }
+    this.requestData(this.currentPage + 1)
+  }
 
-    this.currentPage++
-
+  private async requestData(page: number): Promise<void> {
     setTimeout(() => {
-      const results = this.performSearch(this.currentKeyword, this.pageSize)
-      this.dataSource.pushDataArray(results)
-
-      // 模拟搜索结果有限
-      if (this.currentPage >= 5 || results.length < this.pageSize) {
-        this.controller.setHasmore(false)
+      this.currentPage = page
+      const data = this.performSearch(this.currentKeyword, this.pageSize)
+      if (page === 1) {
+        this.dataSource.deleteAll()
       }
+      this.dataSource.pushDataArray(data)
 
+      const hasMore = this.searchCount > this.dataSource.totalCount()
+      this.controller.setHasmore(hasMore)
       this.controller.finishRefresh()
-    }, 600)
+
+    }, 800)
   }
 
   private performSearch(keyword: string, count: number): ItemModel[] {
@@ -73,6 +55,7 @@ export class SearchViewModel {
       (item.description && item.description.toLowerCase().includes(keyword.toLowerCase())) ||
       (item.category && item.category.toLowerCase().includes(keyword.toLowerCase()))
     )
+    this.searchCount = results.length
 
     // 计算匹配度并排序
     const scoredResults = results.map(item => {
@@ -105,9 +88,12 @@ export class SearchViewModel {
       }
 
       const scoredItem = new ItemModel(item.id, item.title)
-      // 复制所有属性
-      // Object.assign(scoredItem, item)
-      // 设置新的属性
+      scoredItem.description = item.description
+      scoredItem.category = item.category
+      scoredItem.views = item.views
+      scoredItem.likes = item.likes
+      scoredItem.time = item.time
+      scoredItem.image = item.image
       scoredItem.score = Math.min(100, score)
       scoredItem.id = `search_${item.id}_${this.currentPage}`
       return scoredItem
