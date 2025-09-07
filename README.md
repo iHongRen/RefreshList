@@ -46,49 +46,24 @@ ohpm install @cxy/refreshlist
 
 ## 🚀 快速开始
 
-#### 1️⃣ 创建数据模型
 ```typescript
-// ItemModel.ets
-export class ItemModel {
+import { RefreshController, RefreshDataSource, RefreshList } from "@cxy/refreshlist"
+
+// 1️⃣ 创建数据模型
+class ItemModel {
   id: string = ''
   title: string = ''
-  
-  // 基础属性
-  description?: string
-  category?: string
-  
-  // 显示属性
-  avatarColor?: string
-  initial?: string
-  time?: string
-  
-  // 状态属性
-  isNew?: boolean
-  isOnline?: boolean
-  
-  // 扩展属性（根据场景使用）
-  lastMessage?: string    // 聊天场景
-  unreadCount?: number    // 消息数量
-  price?: string          // 商品场景
-  views?: number          // 浏览量
-  likes?: number          // 点赞数
 
   constructor(id: string = '', title: string = '') {
     this.id = id
     this.title = title
   }
 }
-```
 
-#### 2️⃣ 创建ViewModel
-```typescript
-// SimpleViewModel.ets
-import { RefreshController, RefreshDataSource } from "@cxy/refreshlist"
-import { ItemModel } from "./ItemModel"
-
-export class SimpleViewModel {
-  dataSource: RefreshDataSource = new RefreshDataSource()
-  controller: RefreshController = new RefreshController()
+// 2️⃣ 创建ViewModel
+class SimpleViewModel {
+  @Track dataSource: RefreshDataSource = new RefreshDataSource()
+  @Track controller: RefreshController = new RefreshController()
   private currentPage: number = 1
   private pageSize: number = 20
 
@@ -105,7 +80,6 @@ export class SimpleViewModel {
     setTimeout(() => {
       this.currentPage = page
       const data = this.generateSimpleData(this.pageSize)
-
       if (page === 1) {
         this.dataSource.deleteAll()
       }
@@ -115,125 +89,55 @@ export class SimpleViewModel {
       const hasMore = page < 5
       this.controller.setHasmore(hasMore)
       this.controller.finishRefresh()
-
-    }, 800)
+    }, 500)
   }
 
   private generateSimpleData(count: number): ItemModel[] {
-    const categories = [
-      '基础功能', '核心特性', '用户体验', '性能优化', '界面设计'
-    ]
-    const colors = [
-      '#4CAF50', '#2196F3', '#FF9800', '#9C27B0', '#F44336'
-    ]
-
     const result: ItemModel[] = []
     for (let i = 0; i < count; i++) {
       const globalIndex = (this.currentPage - 1) * this.pageSize + i
-      const categoryIndex = globalIndex % categories.length
-
-      const item = new ItemModel(`simple_${globalIndex}`, `${categories[categoryIndex]} ${globalIndex + 1}`)
-      item.description = `展示基础的刷新和加载更多功能，简单易用的列表组件。`
-      item.category = categories[categoryIndex]
-      item.avatarColor = colors[categoryIndex]
-      item.initial = categories[categoryIndex].charAt(0)
-      item.time = '刚刚'
-      item.isNew = i < 3 && this.currentPage === 1 // 第一页前3个标记为新
-
+      const item = new ItemModel(`simple_${globalIndex}`, `Title - ${globalIndex + 1}`)
       result.push(item)
     }
     return result
   }
 }
-```
 
-#### 3️⃣ 使用组件
-```typescript
-// SimpleListPage.ets
-import { RefreshList } from '@cxy/refreshlist'
-import { SimpleViewModel } from './SimpleViewModel'
-import { ItemModel } from './ItemModel'
 
+// 3️⃣ 使用组件
+@Entry
 @Component
-struct SimpleListPage {
+struct Index {
   @State viewModel: SimpleViewModel = new SimpleViewModel()
-
-  build() {
-    RefreshList({
-      dataSource: this.viewModel.dataSource,
-      controller: this.viewModel.controller,
-      onRefresh: () => this.viewModel.refresh(),
-      onLoadMore: () => this.viewModel.loadMore(),
-      itemLayout: (item: Object, index: number) => this.itemLayout(item as ItemModel),
-      divider: { strokeWidth: 0.5, color: '#f0f0f0' },
-      keyGenerator: (item: ItemModel) => item.id
-    })
-    .backgroundColor('#f8f9fa')
-  }
 
   aboutToAppear() {
     this.viewModel.refresh()
+  }
+
+  build() {
+    Column() {
+      RefreshList({
+        dataSource: this.viewModel.dataSource,
+        controller: this.viewModel.controller,
+        onRefresh: () => this.viewModel.refresh(),
+        onLoadMore: () => this.viewModel.loadMore(),
+        itemLayout: (item: Object, index: number) => this.itemLayout(item as ItemModel),
+        divider: { strokeWidth: 0.5, color: '#f0f0f0' },
+        keyGenerator: (item: ItemModel) => item.id
+      })
+    }
   }
 
   @Builder
   itemLayout(item: ItemModel): void {
     ListItem() {
       Row() {
-        // 左侧图标
-        Column() {
-          Text(item.initial || item.title.charAt(0))
-            .fontSize(16)
-            .fontColor('#fff')
-            .fontWeight(FontWeight.Medium)
-        }
-        .width(40)
-        .height(40)
-        .borderRadius(20)
-        .backgroundColor(item.avatarColor || '#4CAF50')
-        .justifyContent(FlexAlign.Center)
+        Text(item.title)
+          .fontSize(16)
+          .fontColor('#333')
+          .fontWeight(FontWeight.Medium)
+          .layoutWeight(1)
 
-        // 内容区域
-        Column() {
-          Text(item.title)
-            .fontSize(16)
-            .fontColor('#333')
-            .fontWeight(FontWeight.Medium)
-            .maxLines(1)
-            .textOverflow({ overflow: TextOverflow.Ellipsis })
-
-          if (item.description) {
-            Text(item.description)
-              .fontSize(14)
-              .fontColor('#666')
-              .maxLines(2)
-              .textOverflow({ overflow: TextOverflow.Ellipsis })
-              .margin({ top: 4 })
-          }
-
-          // 底部信息
-          Row() {
-            Text(item.time || '刚刚')
-              .fontSize(12)
-              .fontColor('#999')
-
-            if (item.isNew) {
-              Text('NEW')
-                .fontSize(10)
-                .fontColor('#fff')
-                .backgroundColor('#ff4444')
-                .padding({ left: 6, right: 6, top: 2, bottom: 2 })
-                .borderRadius(8)
-                .margin({ left: 8 })
-            }
-          }
-          .width('100%')
-          .margin({ top: 8 })
-        }
-        .layoutWeight(1)
-        .margin({ left: 12 })
-        .alignItems(HorizontalAlign.Start)
-
-        // 右侧箭头
         Image($r('sys.media.ohos_ic_public_arrow_right'))
           .width(16)
           .height(16)
@@ -248,9 +152,12 @@ struct SimpleListPage {
     })
   }
 }
+
 ```
 
 🎉 **就是这么简单！** 三步即可拥有一个功能完整的刷新列表。
+
+
 
 ## 📚 API 文档
 
@@ -656,34 +563,6 @@ class CustomAttrModifier extends RefreshListAttrModifier {
 ```
 
 
-
-### 分组列表用法
-
-```typescript
-import { RefreshGroupDataSource, RefreshGroupModel } from '@cxy/refreshlist'
-
-export class GroupViewModel {
-  dataSource: RefreshGroupDataSource = new RefreshGroupDataSource()
-  controller: RefreshController = new RefreshController()
-  
-  refresh() {
-    setTimeout(() => {
-      this.dataSource.deleteAll()
-      
-      // 方法1：手动创建分组
-      const group1 = new RefreshGroupModel('分组1', new RefreshDataSource())
-      group1.dataSource.pushDataArray([...items1])
-      this.dataSource.pushData(group1)
-      
-      // 方法2：自动分组
-      const allItems = [...items]
-      this.dataSource.addListToGroup(allItems, (item) => item.category)
-      
-      this.controller.finishRefresh()
-    }, 2000)
-  }
-}
-```
 
 ## ❓常见问题
 
