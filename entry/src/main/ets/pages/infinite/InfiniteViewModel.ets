@@ -8,72 +8,180 @@
 import { RefreshController, RefreshDataSource } from "@cxy/refreshlist"
 import { ItemModel } from "../../models/ItemModel"
 
-interface ITotal {
-  total: number,
-  currentPage: number,
-  totalPages: number
-}
-
 export class InfiniteViewModel {
-  dataSource: RefreshDataSource = new RefreshDataSource()
-  controller: RefreshController = new RefreshController()
-  private currentPage: number = 1
+  @Track dataSource: RefreshDataSource = new RefreshDataSource()
+  @Track controller: RefreshController = new RefreshController()
+  @Track currentPage: number = 1
+  @Track isLoading: boolean = false
+  @Track loadedCount: number = 0 //已加载数量
+  @Track totalPages: number = 20 // 模拟总共20页数据
+  @Track hasMoreData: boolean = true // 是否还有更多数据
+  @Track preloadThreshold: number = 3 // 预加载阈值：距离底部3个item时开始加载
+  @Track loadError: string = '' // 加载错误信息
+  @Track isPreloadVisible: boolean = false // 是否显示预加载指示器
+  @Track isPreloading: boolean = false // 防止重复预加载
+  private retryCount: number = 0 // 重试次数
+  private maxRetries: number = 3 // 最大重试次数
   private pageSize: number = 15
-  private isLoading: boolean = false
-  private totalPages: number = 20 // 模拟总共20页数据
 
   refresh(): void {
-    if (this.isLoading) {
-      return
-    }
+    this.hasMoreData = true
+    this.isPreloading = false
+    this.loadError = ''
+    this.retryCount = 0
+    this.isPreloadVisible = false
     this.requestData(1)
   }
 
   loadMore(): void {
-    if (this.isLoading || this.currentPage >= this.totalPages) {
-      return
-    }
-    this.requestData(this.currentPage + 1)
-  }
-
-  // 获取当前数据统计
-  getDataStats(): ITotal {
-    return {
-      total: this.dataSource.totalCount(),
-      currentPage: this.currentPage,
-      totalPages: this.totalPages
+    if (this.hasMoreData && !this.isLoading && !this.isPreloading) {
+      this.requestData(this.currentPage + 1)
     }
   }
 
-  // 检查是否正在加载
-  getLoadingState(): boolean {
-    return this.isLoading
+  // 预加载方法 - 无感知加载的核心
+  preloadMore(): void {
+    if (this.hasMoreData && !this.isLoading && !this.isPreloading) {
+      this.isPreloading = true
+      this.isPreloadVisible = true
+      this.requestData(this.currentPage + 1, true)
+    }
   }
 
-  private async requestData(page: number): Promise<void> {
+  // 检查是否需要预加载
+  checkPreload(currentIndex: number): void {
+    const totalCount = this.dataSource.totalCount()
+    const remainingItems = totalCount - currentIndex - 1
+
+    // 当剩余item数量小于等于预加载阈值时，触发预加载
+    if (remainingItems <= this.preloadThreshold) {
+      this.preloadMore()
+    }
+  }
+
+  // 重试加载
+  retryLoad(): void {
+    if (this.retryCount < this.maxRetries) {
+      this.retryCount++
+      this.loadError = ''
+      this.requestData(this.currentPage + 1)
+    }
+  }
+
+  // 动态调整预加载阈值
+  adjustPreloadThreshold(): void {
+    // 根据加载速度动态调整预加载阈值
+    if (this.retryCount > 0) {
+      // 网络较慢时，提前更多预加载
+      this.preloadThreshold = Math.min(6, this.preloadThreshold + 1)
+    } else {
+      // 网络良好时，可以适当减少预加载阈值
+      this.preloadThreshold = Math.max(3, this.preloadThreshold - 0.5)
+    }
+  }
+
+  // 获取加载状态描述
+  getLoadingStatus(): string {
+    if (this.isLoading) {
+      return '加载中'
+    }
+    if (this.isPreloading) {
+      return '智能预加载'
+    }
+    if (this.loadError) {
+      return '加载失败'
+    }
+    if (!this.hasMoreData) {
+      return '已加载全部'
+    }
+    return '就绪'
+  }
+
+  // 获取状态颜色
+  getStatusColor(): string {
+    if (this.isLoading) {
+      return '#ff9800'
+    }
+    if (this.isPreloading) {
+      return '#2196F3'
+    }
+    if (this.loadError) {
+      return '#ff4444'
+    }
+    if (!this.hasMoreData) {
+      return '#666'
+    }
+    return '#4caf50'
+  }
+
+  // 格式化数字显示
+  formatNumber(num: number): string {
+    if (num >= 10000) {
+      return `${Math.floor(num / 1000)}k`
+    } else if (num >= 1000) {
+      return `${(num / 1000).toFixed(1)}k`
+    }
+    return num.toString()
+  }
+
+  private async requestData(page: number, isPreload: boolean = false): Promise<void> {
     if (this.isLoading) {
       return
     }
 
-    this.isLoading = true
+    // 预加载时不显示loading状态，保持无感知
+    if (!isPreload) {
+      this.isLoading = true
+    }
 
-    // 模拟网络请求延迟
+    // 模拟网络请求延迟和可能的错误
     setTimeout(() => {
-      this.currentPage = page
-      const data = this.generateInfiniteData(this.pageSize)
+      try {
+        // 模拟偶尔的网络错误（5%概率）
+        if (Math.random() < 0.05 && page > 1) {
+          throw new Error('网络连接异常，请稍后重试')
+        }
 
-      if (page === 1) {
-        this.dataSource.deleteAll()
+        this.currentPage = page
+        const data = this.generateInfiniteData(this.pageSize)
+
+        if (page === 1) {
+          this.dataSource.deleteAll()
+        }
+        this.dataSource.pushDataArray(data)
+
+        // 更新是否还有更多数据
+        this.hasMoreData = page < this.totalPages
+        this.controller.setHasmore(this.hasMoreData)
+
+        if (!isPreload) {
+          this.controller.finishRefresh()
+          this.isLoading = false
+        }
+
+        // 重置状态
+        this.isPreloading = false
+        this.isPreloadVisible = false
+        this.loadError = ''
+        this.retryCount = 0
+
+        this.loadedCount = this.dataSource.totalCount()
+
+        console.log(`${isPreload ? '预加载' : '加载'}完成 - 页面: ${page}, 总数据: ${this.dataSource.totalCount()}`)
+      } catch (error) {
+        // 错误处理
+        this.loadError = error.message || '加载失败'
+        this.isLoading = false
+        this.isPreloading = false
+        this.isPreloadVisible = false
+
+        if (!isPreload) {
+          this.controller.finishRefresh()
+        }
+
+        console.error(`加载失败: ${error.message}`)
       }
-      this.dataSource.pushDataArray(data)
-
-      // 设置是否还有更多数据
-      const hasMore = page < this.totalPages
-      this.controller.setHasmore(hasMore)
-      this.controller.finishRefresh()
-
-      this.isLoading = false
-    }, page === 1 ? 800 : 500) // 刷新稍慢，加载更多稍快
+    }, isPreload ? 200 : (page === 1 ? 800 : 500)) // 预加载更快，提升体验
   }
 
   private generateInfiniteData(count: number): ItemModel[] {

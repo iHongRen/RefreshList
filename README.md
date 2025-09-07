@@ -6,6 +6,8 @@
 
 鸿蒙HarmonyOS NEXT 简单易用的上拉下拉刷新组件，支持自定义样式和多种使用场景。
 
+如果项目对你有帮助，欢迎持续关注和 [🌟Star](https://github.com/iHongRen/RefreshList) ，[💖赞助](https://ihongren.github.io/donate.html)
+
 ## ✨ 特性
 
 - 支持下拉刷新和上拉加载更多
@@ -43,6 +45,16 @@ ohpm install @cxy/refreshlist
   }
 }
 ```
+
+
+
+## Demo - [前往查看示例代码](https://github.com/iHongRen/RefreshList)
+
+
+
+
+
+
 
 ## 🚀 快速开始
 
@@ -193,29 +205,43 @@ struct Index {
 
 #### 列表配置属性
 
-| 属性                             | 类型                      | 默认值                   | 说明                              |
-|--------------------------------|-------------------------|----------------------|---------------------------------|
-| cachedCount                    | number                  | 4                    | 缓存的列表项数量，用于性能优化，建议使用列表一屏能显示的列表项数量的一半 |
-| itemSpace                      | number                  | 0                    | 列表项间距                           |
-| pullDownRatio                  | number                  | 0.62                 | 设置下拉跟手系数，禁止下拉设置0                |
-| divider                        | RefreshListDivider      | null                 | 分割线样式                           |
-| lanes                          | number                  | 1                    | 设置List组件的布局列数或行数（网格布局）          |
-| gutter                         | Dimension               | 0                    | 列间距（网格布局时使用）                    |
-| maintainVisibleContentPosition | boolean                 | false                | 插入或删除数据时是否保持可见内容位置不变            |
-| edfeEffect                     | EdgeEffect              | EdgeEffect.Spring    | List的EdgeEffect效果               |
-| listAttrModifier               | RefreshListAttrModifier | -                    | 用于自定义更多List属性                   |
-| barState                       | BarState                | BarState.On          | 滚动条状态                           |
+| 属性                             | 类型                      | 默认值                          | 说明                                   |
+|--------------------------------|-------------------------|------------------------------|--------------------------------------|
+| cachedCount                    | number                  | 4                            | 缓存的列表项数量，用于性能优化                      |
+| showLoadMoreGreaterCount       | number                  | 5                            | 当item大于多少时，才显示加载更多组件，通常为一屏能显示的item数量 |
+| contentStartOffset             | number                  | -                            | 设置内容区域起始偏移量                          |
+| contentEndOffset               | number                  | -                            | 设置内容区末尾偏移量                           |
+| sticky                         | StickyStyle             | StickyStyle.Header \| Footer | 吸顶样式                               |
+| itemSpace                      | number                  | -                            | 列表项间距                              |
+| barState                       | BarState                | BarState.On                  | 滚动条状态                              |
+| scrollBarColor                 | Color \| number \| string | -                          | 滚动条颜色                              |
+| nestedScroll                   | NestedScrollOptions     | -                            | 设置前后两个方向的嵌套滚动模式，实现与父组件的滚动联动        |
+| enableScrollInteraction        | boolean                 | -                            | 设置是否支持滚动手势                         |
+| pullDownRatio                  | number                  | -                            | 设置下拉跟手系数，禁止下拉设置0                   |
+| divider                        | RefreshListDivider      | null                         | 分割线样式                              |
+| lanes                          | number                  | -                            | 设置List组件的布局列数或行数（网格布局）             |
+| gutter                         | Dimension               | -                            | 列间距（网格布局时使用）                       |
+| maintainVisibleContentPosition | boolean                 | false                        | 插入或删除数据时是否保持可见内容位置不变               |
+| backToTop                      | boolean                 | true                         | 设置滚动组件是否支持点击状态栏回到顶部（API version 15+） |
+| edfeEffect                     | EdgeEffect              | -                            | List的EdgeEffect效果                  |
+| listAttrModifier               | RefreshListAttrModifier | -                            | 用于自定义更多List属性                      |
 
 #### 回调函数
 
-| 属性            | 类型                                        | 说明           |
-|---------------|-------------------------------------------|--------------|
-| onRefresh     | () => void                                | 下拉刷新时的回调函数   |
-| onLoadMore    | () => void                                | 上拉加载更多时的回调函数 |
-| keyGenerator  | (item: Object, index: number) => string  | 列表项唯一标识生成器   |
-| onDidScroll   | (scrollOffset: number, scrollState: ScrollState) => void | 滚动时的回调函数     |
-| onReachEnd    | () => void                                | 滚动到底部时的回调函数  |
-| onScrollIndex | (start: number, end: number) => void      | 滚动到索引时的回调函数  |
+| 属性            | 类型                                                         | 说明                    |
+|---------------|------------------------------------------------------------|-----------------------|
+| onRefresh     | () => void                                                 | 下拉刷新时的回调函数            |
+| onLoadMore    | () => void                                                 | 上拉加载更多时的回调函数          |
+| keyGenerator  | (item: ESObject, index: number) => string                 | 列表项唯一标识生成器            |
+| onDidScroll   | OnScrollCallback                                           | 滚动时的回调函数              |
+| onReachEnd    | () => void                                                 | 滚动到底部时的回调函数           |
+| onScrollIndex | (start: number, end: number) => void                      | 滚动到索引时的回调函数，可用于实现无感知预加载 |
+
+#### 滚动控制器
+
+| 属性       | 类型           | 说明                        |
+|----------|--------------|---------------------------|
+| scroller | ListScroller | 列表滚动控制器，可用于获取滚动位置等信息和控制滚动 |
 
 ### RefreshController 控制器
 
@@ -223,9 +249,9 @@ RefreshController 提供了控制刷新列表的各种方法：
 
 #### 属性
 
-| 属性       | 类型           | 说明      |
-|----------|--------------|---------|
-| scroller | ListScroller | 列表滚动控制器，可用于获取滚动位置等信息 |
+| 属性       | 类型           | 说明                        |
+|----------|--------------|---------------------------|
+| scroller | ListScroller | 列表滚动控制器，可用于获取滚动位置等信息和控制滚动 |
 
 #### 方法
 
@@ -236,6 +262,16 @@ RefreshController 提供了控制刷新列表的各种方法：
 | hideLoadMore  | (hide: boolean)                                                                        | void | 隐藏或显示加载更多组件       |
 | onRefresh     | ()                                                                                     | void | 手动触发下拉刷新          |
 | scrollToIndex | (index: number, smooth?: boolean, align?: ScrollAlign, options?: ScrollToIndexOptions) | void | 滚动到指定索引位置         |
+
+#### 内部回调属性（由组件自动设置）
+
+| 属性            | 类型                                                                                     | 说明           |
+|---------------|----------------------------------------------------------------------------------------|--------------|
+| setHasmore    | (hasmore: boolean) => void                                                             | 设置是否还有更多数据   |
+| onRefresh     | () => void                                                                             | 刷新回调         |
+| finishRefresh | () => void                                                                             | 完成刷新回调       |
+| hideLoadMore  | (hide: boolean) => void                                                                | 隐藏加载更多回调     |
+| scrollToIndex | (value: number, smooth?: boolean, align?: ScrollAlign, options?: ScrollToIndexOptions) => void | 滚动到指定索引回调    |
 
 #### 使用示例
 
@@ -606,6 +642,10 @@ RefreshList({
   onScrollIndex: (start: number, end: number) => {
     console.log(`当前可见范围: ${start} - ${end}`)
     // 可以用于埋点统计、预加载等
+  },
+  onReachEnd: () => {
+    console.log('滚动到底部')
+    // 可以用于触发加载更多数据
   }
 })
 ```
@@ -614,7 +654,7 @@ RefreshList({
 
 # 作者
 
-[@仙银](https://github.com/iHongRen) 鸿蒙相关开源作品
+[@仙银](https://github.com/iHongRen) 鸿蒙开源作品，欢迎持续关注 [🌟Star](https://github.com/iHongRen/RefreshList) ，[💖赞助](https://ihongren.github.io/donate.html)
 
 1、[hpack](https://github.com/iHongRen/hpack) - 鸿蒙内部测试分发，一键脚本打包工具
 
@@ -634,6 +674,4 @@ DevEco-Studio 打开鸿蒙工程。
 8、[RefreshList](https://github.com/iHongRen/RefreshList) - 功能完善的上拉下拉加载组件，支持各种自定义。
 
 
-
-如果项目对你有帮助，欢迎持续关注和 [🌟Star](https://github.com/iHongRen/RefreshList) ，[💖赞助](https://ihongren.github.io/donate.html)
 

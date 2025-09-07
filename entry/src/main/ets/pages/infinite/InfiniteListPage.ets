@@ -18,46 +18,52 @@ function routerBuilder() {
 struct InfiniteListPage {
   @State title: string = ''
   @State viewModel: InfiniteViewModel = new InfiniteViewModel()
-  @State showStats: boolean = false
 
   build() {
     NavDestination() {
       Column() {
         // 顶部统计信息（可选显示）
-        if (this.showStats) {
-          this.statsHeader()
-        }
+        this.statsHeader()
 
         // 无限滚动列表
-        RefreshList({
-          dataSource: this.viewModel.dataSource,
-          controller: this.viewModel.controller,
-          onRefresh: () => this.viewModel.refresh(),
-          onLoadMore: () => this.viewModel.loadMore(),
-          itemLayout: (item: Object, index: number) => this.itemLayout(item as ItemModel),
-          divider: { strokeWidth: 0.5, color: '#f0f0f0', startMargin: 60 },
-          keyGenerator: (item: ItemModel) => item.id,
-          // 无限滚动的关键配置
-          onReachEnd: () => {
-            // 滚动到底部时自动触发加载更多
-            this.viewModel.loadMore()
-          },
-          // 提前触发加载，提升用户体验
-          cachedCount: 6
-        })
-          .layoutWeight(1)
-          .backgroundColor('#f8f9fa')
+        Stack() {
+          RefreshList({
+            dataSource: this.viewModel.dataSource,
+            controller: this.viewModel.controller,
+            onRefresh: () => this.viewModel.refresh(),
+            onLoadMore: () => this.viewModel.loadMore(),
+            itemLayout: (item: Object, index: number) => this.itemLayout(item as ItemModel, index),
+            divider: { strokeWidth: 0.5, color: '#f0f0f0', startMargin: 60 },
+            keyGenerator: (item: ItemModel) => item.id,
+            // 无限滚动的关键配置
+            onReachEnd: () => {
+              // 滚动到底部时自动触发加载更多（兜底机制）
+              this.viewModel.loadMore()
+            },
+            // 提前触发加载，提升用户体验
+            cachedCount: 8, // 增加缓存数量
+            // 滚动监听 - 实现无感知预加载
+            onScrollIndex: (firstIndex: number, lastIndex: number) => {
+              // 当用户滚动时，检查是否需要预加载
+              this.viewModel.checkPreload(lastIndex)
+            }
+          })
+            .backgroundColor('#f8f9fa')
+
+          // 预加载指示器
+          if (this.viewModel.isPreloadVisible) {
+            this.preloadIndicator()
+          }
+
+          // 错误提示
+          if (this.viewModel.loadError) {
+            this.errorIndicator()
+          }
+        }
+        .layoutWeight(1)
       }
     }
     .title(this.title)
-    .menus([
-      {
-        value: this.showStats ? '隐藏统计' : '显示统计',
-        action: () => {
-          this.showStats = !this.showStats
-        }
-      }
-    ])
     .onReady((ctx) => {
       this.title = ctx.pathInfo.param as string
       this.viewModel.refresh()
@@ -71,7 +77,7 @@ struct InfiniteListPage {
         Text('已加载')
           .fontSize(12)
           .fontColor('#666')
-        Text(this.viewModel.getDataStats().total.toString())
+        Text(this.viewModel.loadedCount.toString())
           .fontSize(18)
           .fontColor('#333')
           .fontWeight(FontWeight.Bold)
@@ -82,7 +88,7 @@ struct InfiniteListPage {
         Text('当前页')
           .fontSize(12)
           .fontColor('#666')
-        Text(`${this.viewModel.getDataStats().currentPage}/${this.viewModel.getDataStats().totalPages}`)
+        Text(`${this.viewModel.currentPage}/${this.viewModel.totalPages}`)
           .fontSize(18)
           .fontColor('#333')
           .fontWeight(FontWeight.Bold)
@@ -93,9 +99,9 @@ struct InfiniteListPage {
         Text('状态')
           .fontSize(12)
           .fontColor('#666')
-        Text(this.viewModel.getLoadingState() ? '加载中' : '就绪')
+        Text(this.viewModel.getLoadingStatus())
           .fontSize(14)
-          .fontColor(this.viewModel.getLoadingState() ? '#ff9800' : '#4caf50')
+          .fontColor(this.viewModel.getStatusColor())
           .fontWeight(FontWeight.Medium)
       }
       .layoutWeight(1)
@@ -107,7 +113,7 @@ struct InfiniteListPage {
   }
 
   @Builder
-  itemLayout(item: ItemModel): void {
+  itemLayout(item: ItemModel, index: number): void {
     ListItem() {
       Row() {
         // 左侧头像和序号
@@ -129,9 +135,14 @@ struct InfiniteListPage {
             Text(item.index.toString())
               .fontSize(10)
               .fontColor('#fff')
-              .backgroundColor('#333')
+              .backgroundColor('#f00')
               .borderRadius(8)
-              .padding({ left: 4, right: 4, top: 1, bottom: 1 })
+              .padding({
+                left: 4,
+                right: 4,
+                top: 1,
+                bottom: 1
+              })
               .position({ x: 30, y: -5 })
           }
         }
@@ -154,7 +165,12 @@ struct InfiniteListPage {
                 .fontSize(10)
                 .fontColor('#fff')
                 .backgroundColor('#ff4444')
-                .padding({ left: 6, right: 6, top: 2, bottom: 2 })
+                .padding({
+                  left: 6,
+                  right: 6,
+                  top: 2,
+                  bottom: 2
+                })
                 .borderRadius(8)
                 .margin({ left: 8 })
             }
@@ -177,7 +193,12 @@ struct InfiniteListPage {
               .fontSize(12)
               .fontColor('#2196F3')
               .backgroundColor('#E3F2FD')
-              .padding({ left: 6, right: 6, top: 2, bottom: 2 })
+              .padding({
+                left: 6,
+                right: 6,
+                top: 2,
+                bottom: 2
+              })
               .borderRadius(4)
 
             Text(`@${item.author}`)
@@ -202,7 +223,7 @@ struct InfiniteListPage {
                   .width(12)
                   .height(12)
                   .fillColor('#999')
-                Text(this.formatNumber(item.views || 0))
+                Text(this.viewModel.formatNumber(item.views || 0))
                   .fontSize(12)
                   .fontColor('#999')
               }
@@ -212,7 +233,7 @@ struct InfiniteListPage {
                   .width(12)
                   .height(12)
                   .fillColor('#999')
-                Text(this.formatNumber(item.likes || 0))
+                Text(this.viewModel.formatNumber(item.likes || 0))
                   .fontSize(12)
                   .fontColor('#999')
               }
@@ -222,7 +243,7 @@ struct InfiniteListPage {
                   .width(12)
                   .height(12)
                   .fillColor('#999')
-                Text(this.formatNumber(item.comments || 0))
+                Text(this.viewModel.formatNumber(item.comments || 0))
                   .fontSize(12)
                   .fontColor('#999')
               }
@@ -245,13 +266,73 @@ struct InfiniteListPage {
     })
   }
 
-  // 格式化数字显示
-  private formatNumber(num: number): string {
-    if (num >= 10000) {
-      return `${Math.floor(num / 1000)}k`
-    } else if (num >= 1000) {
-      return `${(num / 1000).toFixed(1)}k`
+  @Builder
+  preloadIndicator(): void {
+    Row() {
+      LoadingProgress()
+        .width(16)
+        .height(16)
+        .color('#666')
+      
+      Text('智能加载中...')
+        .fontSize(12)
+        .fontColor('#666')
+        .margin({ left: 8 })
     }
-    return num.toString()
+    .padding({
+      left: 16,
+      right: 16,
+      top: 8,
+      bottom: 8
+    })
+    .backgroundColor('#f0f0f0')
+    .borderRadius(16)
+    .position({ x: '50%', y: '90%' })
+    .translate({ x: '-50%', y: '-50%' })
+    .zIndex(10)
   }
+
+  @Builder
+  errorIndicator(): void {
+    Column() {
+      Text('加载失败')
+        .fontSize(14)
+        .fontColor('#ff4444')
+        .fontWeight(FontWeight.Medium)
+      
+      Text(this.viewModel.loadError)
+        .fontSize(12)
+        .fontColor('#666')
+        .margin({ top: 4 })
+      
+      Button('重试')
+        .fontSize(12)
+        .backgroundColor('#ff4444')
+        .fontColor('#fff')
+        .padding({
+          left: 16,
+          right: 16,
+          top: 4,
+          bottom: 4
+        })
+        .margin({ top: 8 })
+        .onClick(() => {
+          this.viewModel.retryLoad()
+        })
+    }
+    .padding(16)
+    .backgroundColor('#fff')
+    .borderRadius(8)
+    .shadow({
+      radius: 8,
+      color: '#00000020',
+      offsetX: 0,
+      offsetY: 2
+    })
+    .position({ x: '50%', y: '50%' })
+    .translate({ x: '-50%', y: '-50%' })
+    .zIndex(20)
+  }
+
+
 }

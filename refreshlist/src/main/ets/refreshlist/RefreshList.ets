@@ -53,8 +53,12 @@ export struct RefreshList {
   @Prop barState: BarState = BarState.On
   // 滚动条颜色
   @Prop scrollBarColor: Color | number | string
-  // 滚动条宽度
-  @Prop scrollBarWidth: string | number
+  // 滚动条宽度 - 不推荐设置，设置后按压状态将无效
+  // @Prop scrollBarWidth?: string | number
+  // 设置前后两个方向的嵌套滚动模式，实现与父组件的滚动联动。
+  @Prop nestedScroll: NestedScrollOptions
+  // 设置是否支持滚动手势。
+  @Prop enableScrollInteraction: boolean
   // 设置下拉跟手系数。
   @Prop pullDownRatio: number
   // 分割线样式
@@ -65,6 +69,8 @@ export struct RefreshList {
   @Prop gutter: Dimension
   // 设置显示区域上方插入或删除数据时是否要保持可见内容位置不变。
   @Prop maintainVisibleContentPosition: boolean = false
+  // 设置滚动组件是否支持点击状态栏回到顶部。从API version 15开始
+  @Prop backToTop: boolean = true
   // List 的 EdgeEffect
   @Prop edfeEffect: EdgeEffect
   // 用于自定义更多 List 属性
@@ -240,13 +246,17 @@ export struct RefreshList {
     .edgeEffect(this.edfeEffect, { alwaysEnabled: true })
     .scrollBar(this.barState)
     .scrollBarColor(this.scrollBarColor)
-    .scrollBarWidth(this.scrollBarWidth)
+    // .scrollBarWidth(this.scrollBarWidth)
     .contentStartOffset(this.contentStartOffset)
     .contentEndOffset(this.contentEndOffset)
+    .nestedScroll(this.nestedScroll)
     .sticky(this.sticky)
     .cachedCount(this.cachedCount)
     .divider(this.divider)
     .lanes(this.lanes, this.gutter)
+    .nestedScroll(this.nestedScroll)
+    .enableScrollInteraction(this.enableScrollInteraction)
+    .backToTop(this.backToTop)
     .attributeModifier(this.listAttrModifier)
     .width('100%')
     .height('100%')
