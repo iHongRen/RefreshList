@@ -41,6 +41,14 @@
       }
     },
     {
+      "name": "infinite",
+      "pageSourceFile": "src/main/ets/pages/infinite/InfiniteListPage.ets",
+      "buildFunction": "routerBuilder",
+      "data": {
+        "description": "page"
+      }
+    },
+    {
       "name": "chat",
       "pageSourceFile": "src/main/ets/pages/chat/ChatListPage.ets",
       "buildFunction": "routerBuilder",

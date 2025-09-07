@@ -8,6 +8,7 @@ struct Index {
     ['HeaderView', 'header'],
     ['自定义使用', 'custom'],
     ['网格布局示例', 'grid'],
+    ['无限滚动示例', 'infinite'],
     ['聊天列表示例', 'chat'],
     ['搜索结果示例', 'search'],
     ['动态内容示例', 'dynamic'],

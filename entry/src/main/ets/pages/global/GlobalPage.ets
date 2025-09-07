@@ -24,34 +24,16 @@ function headerBuilder(item: IRefreshHeaderData) {
 struct GlobalHeader {
   @ObjectLink data: RefreshHeaderData
 
-  refresText(): string {
-    console.error('==================' + this.data.state)
-    if (this.data.state === RefreshStatus.Drag) {
-      return '下拉刷新'
-    }
-    if (this.data.state === RefreshStatus.OverDrag) {
-      return '释放刷新'
-    }
-    if (this.data.state === RefreshStatus.Done) {
-      return '刷新完成'
-    }
-    if (this.data.state === RefreshStatus.Refresh) {
-      return '正在刷新'
-    }
-    return '下拉刷新'
-  }
-
   build() {
     Column({ space: 5 }) {
       Image($r('app.media.custom_loading'))
         .height(25)
 
-      Text(this.refresText())
-        .fontColor('#999')
-        .fontSize(13)
+      Text(this.data.getText())
+        .fontColor(this.data.textColor)
+        .font(this.data.font)
     }
     .padding(10)
-
   }
 }
 
@@ -66,14 +48,21 @@ struct GlobalFooter {
   }
 }
 
-function globalConfig() {
+// 配置全局设置
+function setupGlobalConfig() {
   RefreshGlobalConfig.headerBuilder = wrapBuilder(headerBuilder)
-  RefreshGlobalConfig.footerNoneText = '上拉加载' //默认文本
-  RefreshGlobalConfig.footerLoadingText = '数据加载中...' //加载中文本
-  RefreshGlobalConfig.footerNoMoreText = '亲，没有更多了' //没有更多文本
+  RefreshGlobalConfig.headerDragText = '下拉刷新数据'
+  RefreshGlobalConfig.headerOverDragText = '释放立即刷新'
+  RefreshGlobalConfig.headerRefreshText = '正在刷新数据...'
+  RefreshGlobalConfig.headerDoneText = '刷新成功'
+  RefreshGlobalConfig.footerNoneText = '上拉加载更多'
+  RefreshGlobalConfig.footerLoadingText = '数据加载中...'
+  RefreshGlobalConfig.footerNoMoreText = '亲，没有更多了'
+  RefreshGlobalConfig.headerTextColor = '#f00'
+  RefreshGlobalConfig.footerTextColor = '#666'
 }
 
-globalConfig()
+setupGlobalConfig()
 
 @Builder
 function routerBuilder() {
@@ -84,11 +73,7 @@ function routerBuilder() {
 struct GlobalPage {
   @State title: string = ''
   @State viewModel: SimpleViewModel = new SimpleViewModel()
-
-  aboutToAppear(): void {
-    globalConfig()
-  }
-
+  
   build() {
     NavDestination() {
       RefreshList({
