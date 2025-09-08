@@ -47,13 +47,14 @@ ohpm install @cxy/refreshlist
 ```
 
 
-
 ## Demo - [前往查看示例代码](https://github.com/iHongRen/RefreshList)
 
-
-
-
-
+|                                          |                                            |                                       |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| <img src="https://i.mji.rip/2025/09/08/fb40bffdddf82a6c1ca8b773ff1c97bf.jpeg" alt="demo.jpeg" width=300><br>**Demo 页面**<br> | <img src="https://i.mji.rip/2025/09/08/1bc7f774ee99a9dfe13a50e5ad5b108b.gif" alt="simple.gif" width=300><br>**简单示例**<br> | <img src="https://i.mji.rip/2025/09/08/6de85128e07c7fb5add707f2b0e0a915.gif" alt="group.gif" width=300><br>**分组示例**<br> |
+| <img src="https://i.mji.rip/2025/09/08/84ab86ab3b9a2e20cb73b078a340c5b8.gif" alt="headerview.gif" width=300><br>**自定义HeaderView示例**<br> | <img src="https://i.mji.rip/2025/09/08/8fae5be2ad8de2a9514a2d9ca4dd7207.gif" alt="custom.gif" width=300><br>**各种自定义示例**<br> | <img src="https://i.mji.rip/2025/09/08/138fd06fc7a34b9d2cdc9010650e741e.gif" alt="chat.gif" width=300><br>**聊天示例**<br> |
+| <img src="https://i.mji.rip/2025/09/08/b47a0e77b160652cce6591bfe7633767.gif" alt="dynamic.gif" width=300><br>**动态刷新示例**<br> | <img src="https://i.mji.rip/2025/09/08/e2c0bfe4d0fe42acd8d67b6c1de0b97b.gif" alt="infinite.gif" width=300><br>**无限加载示例**<br> | <img src="https://i.mji.rip/2025/09/08/e8f817db4bb5a2317c44b616f85d66da.gif" alt="search.gif" width=300><br>**搜索示例**<br> |
+| <img src="https://i.mji.rip/2025/09/08/bafce049adf9471e497240cfb9d83f38.gif" alt="grid.gif" width=300>**<br>网格示例**<br> | <img src="https://i.mji.rip/2025/09/08/57101cd918ac3a3b8fd4b427d440c3fa.gif" alt="advanced.gif" width=300><br>**高级使用示例**<br> | <img src="https://i.mji.rip/2025/09/08/4adf3411de978da386d470a72f6c2492.gif" alt="global.gif" width=300><br>**全局配置示例**<br> |
 
 
 ## 🚀 快速开始
