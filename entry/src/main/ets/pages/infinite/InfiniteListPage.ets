@@ -273,7 +273,7 @@ struct InfiniteListPage {
         .width(16)
         .height(16)
         .color('#666')
-      
+
       Text('智能加载中...')
         .fontSize(12)
         .fontColor('#666')
@@ -299,12 +299,12 @@ struct InfiniteListPage {
         .fontSize(14)
         .fontColor('#ff4444')
         .fontWeight(FontWeight.Medium)
-      
+
       Text(this.viewModel.loadError)
         .fontSize(12)
         .fontColor('#666')
         .margin({ top: 4 })
-      
+
       Button('重试')
         .fontSize(12)
         .backgroundColor('#ff4444')
@@ -333,6 +333,4 @@ struct InfiniteListPage {
     .translate({ x: '-50%', y: '-50%' })
     .zIndex(20)
   }
-
-
 }
