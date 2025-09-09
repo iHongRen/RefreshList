@@ -9,13 +9,16 @@ import { RefreshDataSource, RefreshController } from '@cxy/refreshlist'
 import { ItemModel } from '../../models/ItemModel'
 
 export class DynamicViewModel {
-  dataSource: RefreshDataSource = new RefreshDataSource()
-  controller: RefreshController = new RefreshController()
+  @Track dataSource: RefreshDataSource = new RefreshDataSource()
+  @Track controller: RefreshController = new RefreshController()
+  @Track onlineUsers: number = 1234
+  @Track activityLevel: number = 85
+  @Track newMessages: number = 12
+  @Track isRealTimeMode: boolean = false
+  @Track updateCount: number = 0
   private currentPage: number = 1
   private pageSize: number = 20
-  private onlineUsers: number = 1234
-  private activityLevel: number = 85
-  private newMessages: number = 12
+  private timer: number = -1
 
   refresh(): void {
     this.requestPage(1)
@@ -60,7 +63,6 @@ export class DynamicViewModel {
       if (item) {
         // 随机更新数据
         this.updateItemData(item)
-        this.dataSource.reloadIndex(randomIndex)
       }
     }
 
@@ -84,6 +86,36 @@ export class DynamicViewModel {
 
   getNewMessages(): number {
     return this.newMessages
+  }
+
+  toggleRealTimeMode(): void {
+    this.isRealTimeMode = !this.isRealTimeMode
+
+    if (this.isRealTimeMode) {
+      this.startRealTimeUpdates()
+    } else {
+      this.stopRealTimeUpdates()
+    }
+  }
+
+  startRealTimeUpdates(): void {
+    if (this.timer !== -1) {
+      clearInterval(this.timer)
+    }
+
+    this.timer = setInterval(() => {
+      if (this.isRealTimeMode) {
+        this.performRealTimeUpdate()
+        this.updateCount++
+      }
+    }, 3000) // 每3秒更新一次
+  }
+
+  stopRealTimeUpdates(): void {
+    if (this.timer !== -1) {
+      clearInterval(this.timer)
+      this.timer = -1
+    }
   }
 
   private updateItemData(item: ItemModel): void {

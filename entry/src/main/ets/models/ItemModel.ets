@@ -5,6 +5,7 @@
  * @description : 通用数据模型
  */
 
+@Observed
 export class ItemModel {
   id: string = ''
   title: string = ''

@@ -14,22 +14,25 @@ function routerBuilder() {
   DynamicListPage()
 }
 
+interface ICardItem {
+  title: string,
+  value: string,
+  color: string
+}
+
 @Component
 struct DynamicListPage {
   @State title: string = ''
   @State viewModel: DynamicViewModel = new DynamicViewModel()
-  @State isRealTimeMode: boolean = false
-  @State updateCount: number = 0
-  private timer: number = -1
 
   aboutToAppear() {
     // 启动实时更新
-    this.startRealTimeUpdates()
+    this.viewModel.startRealTimeUpdates()
   }
 
   aboutToDisappear() {
     // 清理定时器
-    this.stopRealTimeUpdates()
+    this.viewModel.stopRealTimeUpdates()
   }
 
   build() {
@@ -72,11 +75,11 @@ struct DynamicListPage {
           .fontWeight(FontWeight.Bold)
           .layoutWeight(1)
 
-        Button(this.isRealTimeMode ? '停止实时' : '开启实时')
+        Button(this.viewModel.isRealTimeMode ? '停止实时' : '开启实时')
           .fontSize(12)
-          .backgroundColor(this.isRealTimeMode ? '#ff4444' : '#00C851')
+          .backgroundColor(this.viewModel.isRealTimeMode ? '#ff4444' : '#00C851')
           .onClick(() => {
-            this.toggleRealTimeMode()
+            this.viewModel.toggleRealTimeMode()
           })
       }
       .width('100%')
@@ -87,13 +90,13 @@ struct DynamicListPage {
           .fontSize(14)
           .fontColor('#666')
 
-        Text(`更新次数: ${this.updateCount}`)
+        Text(`更新次数: ${this.viewModel.updateCount}`)
           .fontSize(14)
           .fontColor('#666')
 
-        Text(`状态: ${this.isRealTimeMode ? '实时更新' : '手动更新'}`)
+        Text(`状态: ${this.viewModel.isRealTimeMode ? '实时更新' : '手动更新'}`)
           .fontSize(14)
-          .fontColor(this.isRealTimeMode ? '#00C851' : '#666')
+          .fontColor(this.viewModel.isRealTimeMode ? '#00C851' : '#666')
       }
       .width('100%')
       .padding({ left: 15, right: 15, bottom: 15 })
@@ -108,9 +111,9 @@ struct DynamicListPage {
     Column() {
       // 实时统计卡片
       Row() {
-        this.statisticCard('在线用户', this.viewModel.getOnlineUsers().toString(), '#00C851')
-        this.statisticCard('活跃度', `${this.viewModel.getActivityLevel()}%`, '#007AFF')
-        this.statisticCard('新消息', this.viewModel.getNewMessages().toString(), '#ff6b6b')
+        this.statisticCard({ title: '在线用户', value: this.viewModel.getOnlineUsers().toString(), color: '#00C851' })
+        this.statisticCard({ title: '活跃度', value: `${this.viewModel.getActivityLevel()}%`, color: '#007AFF' })
+        this.statisticCard({ title: '新消息', value: this.viewModel.getNewMessages().toString(), color: '#ff6b6b' })
       }
       .width('100%')
       .padding(15)
@@ -135,14 +138,14 @@ struct DynamicListPage {
   }
 
   @Builder
-  statisticCard(title: string, value: string, color: string): void {
+  statisticCard(item: ICardItem): void {
     Column() {
-      Text(value)
+      Text(item.value)
         .fontSize(20)
         .fontWeight(FontWeight.Bold)
-        .fontColor(color)
+        .fontColor(item.color)
 
-      Text(title)
+      Text(item.title)
         .fontSize(12)
         .fontColor('#666')
         .margin({ top: 4 })
@@ -155,37 +158,37 @@ struct DynamicListPage {
   }
 
   @Builder
-  overlyBuilder(text: string) {
-    Text(text)
-      .fontSize(18)
-      .fontColor(Color.White)
-      .fontWeight(FontWeight.Bold)
-      .width('100%')
-      .textAlign(TextAlign.Center)
-  }
-
-  @Builder
   dynamicItemLayout(item: ItemModel, index: number): void {
+    DynamicCell({ model: item })
+  }
+}
+
+@Reusable
+@Component
+struct DynamicCell {
+  @ObjectLink model: ItemModel
+
+  build() {
     ListItem() {
       Row() {
         // 动态状态指示器
         Stack() {
           Circle({ width: 50, height: 50 })
-            .fill(item.avatarColor || '#007AFF')
+            .fill(this.model.avatarColor || '#007AFF')
             .overlay(
-              this.overlyBuilder(item.initial || 'D'),
+              this.overlyBuilder(this.model.initial || 'D'),
               {
                 align: Alignment.Center
               }
             )
 
           // 实时活动指示器
-          if (item.isOnline) {
+          if (this.model.isOnline) {
             Circle({ width: 12, height: 12 })
               .fill('#00C851')
               .stroke(Color.White)
               .strokeWidth(2)
-              .scale({ x: item.isActive ? 1.2 : 1 })
+              .scale({ x: this.model.isActive ? 1.2 : 1 })
               .animation({
                 duration: 1000,
                 iterations: -1,
@@ -198,17 +201,17 @@ struct DynamicListPage {
         // 动态内容
         Column() {
           Row() {
-            Text(item.title)
+            Text(this.model.title)
               .fontSize(16)
               .fontColor('#333')
               .fontWeight(FontWeight.Medium)
               .layoutWeight(1)
 
             // 实时更新时间
-            Text(item.time || '刚刚')
+            Text(this.model.time || '刚刚')
               .fontSize(12)
               .fontColor('#999')
-              .backgroundColor(item.isNew ? '#ff6b6b20' : 'transparent')
+              .backgroundColor(this.model.isNew ? '#ff6b6b20' : 'transparent')
               .borderRadius(4)
               .padding({
                 left: 6,
@@ -219,8 +222,8 @@ struct DynamicListPage {
           }
           .width('100%')
 
-          if (item.description) {
-            Text(item.description)
+          if (this.model.description) {
+            Text(this.model.description)
               .fontSize(14)
               .fontColor('#666')
               .maxLines(2)
@@ -239,17 +242,17 @@ struct DynamicListPage {
                   .fontColor(['#ff0000'])
               }
 
-              
-              Text(`${item.likes || 0}`)
+
+              Text(`${this.model.likes || 0}`)
                 .fontSize(12)
                 .fontColor('#666')
                 .margin({ left: 2 })
-                .scale({ x: item.likesChanged ? 1.2 : 1 })
+                .scale({ x: this.model.likesChanged ? 1.2 : 1 })
                 .animation({
                   duration: 300,
                   onFinish: () => {
-                    if (item.likesChanged) {
-                      item.likesChanged = false
+                    if (this.model.likesChanged) {
+                      this.model.likesChanged = false
                     }
                   }
                 })
@@ -262,7 +265,7 @@ struct DynamicListPage {
                   .fontSize(12)
               }
 
-              Text(`${item.views || 0}`)
+              Text(`${this.model.views || 0}`)
                 .fontSize(12)
                 .fontColor('#666')
                 .margin({ left: 2 })
@@ -272,7 +275,7 @@ struct DynamicListPage {
             Blank()
 
             // 动态状态标签
-            if (item.isHot) {
+            if (this.model.isHot) {
               Text('🔥 热门')
                 .fontSize(10)
                 .fontColor('#ff4444')
@@ -286,7 +289,7 @@ struct DynamicListPage {
                 })
             }
 
-            if (item.isNew) {
+            if (this.model.isNew) {
               Text('✨ 新')
                 .fontSize(10)
                 .fontColor('#00C851')
@@ -317,7 +320,7 @@ struct DynamicListPage {
             .padding(0)
             .backgroundColor('#f0f0f0')
             .onClick(() => {
-              this.likeItem(item, index)
+              this.likeItem()
             })
 
           Button('📤')
@@ -328,7 +331,7 @@ struct DynamicListPage {
             .backgroundColor('#f0f0f0')
             .margin({ top: 5 })
             .onClick(() => {
-              console.log(`分享: ${item.title}`)
+              console.log(`分享: ${this.model.title}`)
             })
         }
       }
@@ -338,47 +341,24 @@ struct DynamicListPage {
     }
     .backgroundColor(Color.White)
     .border({
-      width: { left: item.isNew ? 3 : 0 },
+      width: { left: this.model.isNew ? 3 : 0 },
       color: '#00C851'
     })
   }
 
-  private toggleRealTimeMode(): void {
-    this.isRealTimeMode = !this.isRealTimeMode
-
-    if (this.isRealTimeMode) {
-      this.startRealTimeUpdates()
-    } else {
-      this.stopRealTimeUpdates()
-    }
+  @Builder
+  overlyBuilder(text: string) {
+    Text(text)
+      .fontSize(18)
+      .fontColor(Color.White)
+      .fontWeight(FontWeight.Bold)
+      .width('100%')
+      .textAlign(TextAlign.Center)
   }
 
-  private startRealTimeUpdates(): void {
-    if (this.timer !== -1) {
-      clearInterval(this.timer)
-    }
-
-    this.timer = setInterval(() => {
-      if (this.isRealTimeMode) {
-        this.viewModel.performRealTimeUpdate()
-        this.updateCount++
-      }
-    }, 3000) // 每3秒更新一次
-  }
-
-  private stopRealTimeUpdates(): void {
-    if (this.timer !== -1) {
-      clearInterval(this.timer)
-      this.timer = -1
-    }
-  }
-
-  private likeItem(item: ItemModel, index: number): void {
+  private likeItem(): void {
     // 增加点赞数
-    item.likes = (item.likes || 0) + 1
-    item.likesChanged = true
-
-    // 更新数据源
-    this.viewModel.dataSource.reloadIndex(index)
+    this.model.likes = (this.model.likes || 0) + 1
+    this.model.likesChanged = true
   }
 }
