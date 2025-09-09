@@ -34,7 +34,7 @@
 ohpm install @cxy/refreshlist
 ```
 
-### 通过本地依赖安装
+### 通过依赖安装
 
 在项目的 `oh-package.json5` 文件中添加依赖， 然后执行同步操作：
 
