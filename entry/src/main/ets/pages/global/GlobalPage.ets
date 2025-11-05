@@ -2,7 +2,7 @@
  * @fileName : GlobalPage.ets
  * @author : @cxy
  * @date : 2025/9/4
- * @description : 文件描述
+ * @description : 全局配置
  */
 
 import {
@@ -16,9 +16,29 @@ import {
 import { ItemModel } from '../../models/ItemModel'
 import { SimpleViewModel } from '../simple/SimpleViewModel'
 
+import { LottieController, Lottie } from '@jjr/lottie_component';
+
+@Component
+struct LottieHeader {
+  private controller: LottieController = new LottieController();
+
+  build() {
+    Column() {
+      Lottie({
+        controller: this.controller,
+        animationPath: 'refresh_header.json', // rawfile目录
+        autoPlay: true,
+      })
+        .height(44)
+    }
+    .padding(10)
+  }
+}
+
 @Builder
 function headerBuilder(item: IRefreshHeaderData) {
-  GlobalHeader({ data: item.data })
+  LottieHeader()
+  // GlobalHeader({ data: item.data })
 }
 
 @Component
