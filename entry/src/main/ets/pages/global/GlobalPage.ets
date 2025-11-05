@@ -22,14 +22,26 @@ import { LottieController, Lottie } from '@jjr/lottie_component';
 struct LottieHeader {
   @ObjectLink data: RefreshHeaderData
   private controller: LottieController = new LottieController();
+  private path: string = 'pages/global/refresh_header.json'
+  private path1: string = 'pages/global/refresh.json'
 
   build() {
     Column({ space: 5 }) {
       Lottie({
         controller: this.controller,
-        animationPath: 'refresh_header.json', // rawfile目录
-        autoPlay: true,
-      }).height(30)
+        animationPath: this.data.state === RefreshStatus.Refresh ? this.path : this.path1,
+        loop: true
+      })
+        .height(30)
+        .aspectRatio(267 / 102)
+        .onVisibleAreaChange([0, 1], (isExpanding: boolean, currentRatio: number) => {
+          if (isExpanding) {
+            this.controller.play()
+          } else {
+            this.controller.stop()
+          }
+        })
+      
       Text(this.data.getText())
         .font(this.data.font)
     }
