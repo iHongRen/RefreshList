@@ -12,4 +12,6 @@ export { RefreshGroupModel } from './src/main/ets/refreshlist/RefreshGroupModel'
 
 export { RefreshListAttrModifier } from './src/main/ets/refreshlist/RefreshListAttrModifier'
 
-export { RefreshGlobalConfig, IRefreshHeaderData } from './src/main/ets/refreshlist/RefreshGlobalConfig'
+export { RefreshGlobalConfig,
+  IRefreshHeaderData,
+  IRefreshFooterData } from './src/main/ets/refreshlist/RefreshGlobalConfig'

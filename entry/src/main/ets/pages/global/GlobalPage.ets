@@ -6,6 +6,7 @@
  */
 
 import {
+  IRefreshFooterData,
   IRefreshHeaderData,
   RefreshFooterData,
   RefreshGlobalConfig,
@@ -37,6 +38,11 @@ struct GlobalHeader {
   }
 }
 
+@Builder
+function footerBuilder(item: IRefreshFooterData) {
+  GlobalFooter({ data: item.data })
+}
+
 @Component
 struct GlobalFooter {
   @ObjectLink data: RefreshFooterData
@@ -55,6 +61,8 @@ function setupGlobalConfig() {
   RefreshGlobalConfig.headerOverDragText = '释放立即刷新'
   RefreshGlobalConfig.headerRefreshText = '正在刷新数据...'
   RefreshGlobalConfig.headerDoneText = '刷新成功'
+
+  RefreshGlobalConfig.footerBuilder = wrapBuilder(footerBuilder)
   RefreshGlobalConfig.footerNoneText = '上拉加载更多'
   RefreshGlobalConfig.footerLoadingText = '数据加载中...'
   RefreshGlobalConfig.footerNoMoreText = '亲，没有更多了'
@@ -73,7 +81,7 @@ function routerBuilder() {
 struct GlobalPage {
   @State title: string = ''
   @State viewModel: SimpleViewModel = new SimpleViewModel()
-  
+
   build() {
     NavDestination() {
       RefreshList({

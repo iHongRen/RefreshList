@@ -125,7 +125,11 @@ export struct RefreshList {
 
   @Builder
   defaultRefreshFooter() {
-    RefreshFooter({ data: this.refreshFooterData })
+    if (RefreshGlobalConfig.footerBuilder) {
+      RefreshGlobalConfig.footerBuilder?.builder({ data: this.refreshFooterData })
+    } else {
+      RefreshFooter({ data: this.refreshFooterData })
+    }
   }
 
   aboutToAppear(): void {
