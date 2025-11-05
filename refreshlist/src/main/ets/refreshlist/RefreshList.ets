@@ -106,12 +106,20 @@ export struct RefreshList {
 
   @Builder
   defaultLoadingView() {
-    RefreshLoadingView()
+    if (RefreshGlobalConfig.loadingBuilder) {
+      RefreshGlobalConfig.loadingBuilder?.builder()
+    } else {
+      RefreshLoadingView()
+    }
   }
 
   @Builder
   defaultEmptyView() {
-    RefreshEmptyView()
+    if (RefreshGlobalConfig.emptyBuilder) {
+      RefreshGlobalConfig.emptyBuilder?.builder()
+    } else {
+      RefreshEmptyView()
+    }
   }
 
   @Builder
