@@ -22,7 +22,7 @@ import { LottieController, Lottie } from '@jjr/lottie_component';
 struct LottieHeader {
   @ObjectLink data: RefreshHeaderData
   private controller: LottieController = new LottieController();
-  private path: string = 'pages/global/refresh_header.json'
+  private path: string = 'pages/global/animation.json'
   private path1: string = 'pages/global/refresh.json'
 
   build() {
@@ -41,7 +41,7 @@ struct LottieHeader {
             this.controller.stop()
           }
         })
-      
+
       Text(this.data.getText())
         .font(this.data.font)
     }
