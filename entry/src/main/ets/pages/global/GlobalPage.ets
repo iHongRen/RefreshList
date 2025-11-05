@@ -20,16 +20,18 @@ import { LottieController, Lottie } from '@jjr/lottie_component';
 
 @Component
 struct LottieHeader {
+  @ObjectLink data: RefreshHeaderData
   private controller: LottieController = new LottieController();
 
   build() {
-    Column() {
+    Column({ space: 5 }) {
       Lottie({
         controller: this.controller,
         animationPath: 'refresh_header.json', // rawfile目录
         autoPlay: true,
-      })
-        .height(44)
+      }).height(30)
+      Text(this.data.getText())
+        .font(this.data.font)
     }
     .padding(10)
   }
@@ -37,7 +39,7 @@ struct LottieHeader {
 
 @Builder
 function headerBuilder(item: IRefreshHeaderData) {
-  LottieHeader()
+  LottieHeader({ data: item.data })
   // GlobalHeader({ data: item.data })
 }
 
