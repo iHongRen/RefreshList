@@ -35,7 +35,7 @@ struct LottieHeader {
         .height(30)
         .aspectRatio(267 / 102)
         .onVisibleAreaChange([0, 1], (isExpanding: boolean, currentRatio: number) => {
-          if (isExpanding) {
+          if (currentRatio > 0) {
             this.controller.play()
           } else {
             this.controller.stop()
