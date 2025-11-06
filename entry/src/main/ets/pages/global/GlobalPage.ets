@@ -22,14 +22,13 @@ import { LottieController, Lottie } from '@jjr/lottie_component';
 struct LottieHeader {
   @ObjectLink data: RefreshHeaderData
   private controller: LottieController = new LottieController();
-  private path: string = 'pages/global/animation.json'
-  private path1: string = 'pages/global/refresh.json'
+  private path: string = 'pages/global/lottie/refresh.json'
 
   build() {
     Column({ space: 5 }) {
       Lottie({
         controller: this.controller,
-        animationPath: this.data.state === RefreshStatus.Refresh ? this.path : this.path1,
+        animationPath: this.path,
         loop: true
       })
         .height(30)
@@ -77,6 +76,45 @@ function footerBuilder(item: IRefreshFooterData) {
   GlobalFooter({ data: item.data })
 }
 
+
+@Builder
+function emptyBuilder() {
+  Text('暂无数据')
+}
+
+@Builder
+function loadingBuilder() {
+  LottieLoading()
+}
+
+@Component
+struct LottieLoading {
+  private controller: LottieController = new LottieController();
+  private path: string = 'pages/global/lottie/animation.json'
+
+  build() {
+    Column() {
+      Lottie({
+        controller: this.controller,
+        animationPath: this.path,
+        loop: true
+      })
+        .height(40)
+        .height(40)
+        .onVisibleAreaChange([0, 1], (isExpanding: boolean, currentRatio: number) => {
+          if (currentRatio > 0) {
+            this.controller.play()
+          } else {
+            this.controller.stop()
+          }
+        })
+    }
+    .justifyContent(FlexAlign.Center)
+    .height('100%')
+    .width('100%')
+  }
+}
+
 @Component
 struct GlobalFooter {
   @ObjectLink data: RefreshFooterData
@@ -102,6 +140,9 @@ function setupGlobalConfig() {
   RefreshGlobalConfig.footerNoMoreText = '亲，没有更多了'
   RefreshGlobalConfig.headerTextColor = '#f00'
   RefreshGlobalConfig.footerTextColor = '#666'
+
+  RefreshGlobalConfig.emptyBuilder = wrapBuilder(emptyBuilder)
+  RefreshGlobalConfig.loadingBuilder = wrapBuilder(loadingBuilder)
 }
 
 setupGlobalConfig()

@@ -38,7 +38,7 @@ export class SimpleViewModel {
       this.controller.setHasmore(hasMore)
       this.controller.finishRefresh()
 
-    }, 800)
+    }, 1000)
   }
 
   private generateSimpleData(count: number): ItemModel[] {
