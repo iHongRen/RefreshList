@@ -1,7 +1,16 @@
 
 ## 🔄 更新日志
 
-  ### [v1.0.0](https://github.com/iHongRen/RefreshList)  (2025-09-09)
+  ### [v1.0.1](https://github.com/iHongRen/RefreshList/releases/tag/v1.0.1)  (2025-11-09)
+
+- 支持配置全局刷新footer，empty，loading 组件
+
+- 增加 lottie 用于自定义组件使用demo
+
+  
+
+
+  ### [v1.0.0](https://github.com/iHongRen/RefreshList/releases/tag/v1.0.0)  (2025-09-09)
 
 - 支持下拉刷新和上拉加载更多
 - 支持自定义刷新头部和底部组件
