@@ -43,5 +43,7 @@ export class RefreshGlobalConfig {
   // loading 大小
   static headerLoadingSize: SizeOptions = { width: 20, height: 20 }
   static footerLoadingSize: SizeOptions = { width: 20, height: 20 }
+  // 设置触发刷新的下拉偏移量，当下拉距离小于该属性设置值时离手不会触发刷新。默认64
+  static refreshOffset: number
 }
 

@@ -61,6 +61,8 @@ export struct RefreshList {
   @Prop enableScrollInteraction: boolean
   // 设置下拉跟手系数。
   @Prop pullDownRatio: number
+  // 设置触发刷新的下拉偏移量，当下拉距离小于该属性设置值时离手不会触发刷新。
+  @Prop refreshOffset: number
   // 分割线样式
   @Prop divider: RefreshListDivider | null = null
   // 设置List组件的布局列数或行数
@@ -184,10 +186,11 @@ export struct RefreshList {
   build() {
     Refresh({
       refreshing: this._refreshing,
-      builder: this.refreshHeaderLayout,
+      builder: this.refreshHeaderLayout
     }) {
       this.listView()
     }
+    .refreshOffset(this.refreshOffset || RefreshGlobalConfig.refreshOffset)
     .onOffsetChange((offset: number) => {
       this.refreshHeaderData.offset = offset;
     })
