@@ -45,5 +45,9 @@ export class RefreshGlobalConfig {
   static footerLoadingSize: SizeOptions = { width: 20, height: 20 }
   // 设置触发刷新的下拉偏移量，当下拉距离小于该属性设置值时离手不会触发刷新。默认64
   static refreshOffset: number
+  // 设置下拉跟手系数。数值越大，跟随手势下拉的反应越灵敏，有效值为0-1之间的值
+  static pullDownRatio: number
+  // 设置最大下拉距离。从API version 20开始
+  // static maxPullDownDistance: number
 }
 

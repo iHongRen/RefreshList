@@ -1,5 +1,5 @@
 {
-  "modelVersion": "5.0.2",
+  "modelVersion": "5.0.3",
   "description": "Please describe the basic information.",
   "dependencies": {
     "@jjr/lottie_component": "^1.0.8"

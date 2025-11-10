@@ -9,6 +9,7 @@ import {
   IRefreshFooterData,
   IRefreshHeaderData,
   RefreshFooterData,
+  RefreshFooterState,
   RefreshGlobalConfig,
   RefreshHeaderData,
   RefreshList
@@ -123,6 +124,7 @@ struct GlobalFooter {
     Image($r('app.media.custom_loading'))
       .height(30)
       .margin(10)
+      .visibility(this.data.state === RefreshFooterState.NoMore ? Visibility.None : Visibility.Visible)
   }
 }
 
