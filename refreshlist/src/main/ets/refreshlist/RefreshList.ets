@@ -184,12 +184,11 @@ export struct RefreshList {
   build() {
     Refresh({
       refreshing: this._refreshing,
-      builder: this.refreshHeaderLayout
+      builder: this.refreshHeaderLayout,
     }) {
       this.listView()
     }
     .onOffsetChange((offset: number) => {
-      console.error('---' + offset)
       this.refreshHeaderData.offset = offset;
     })
     .onStateChange((state: RefreshStatus) => {
@@ -197,7 +196,6 @@ export struct RefreshList {
         this.refreshHeaderData.state = RefreshStatus.Done;
         return
       }
-      console.error('-----' + state)
       this.refreshHeaderData.state = state;
     })
     .onRefreshing(() => {
