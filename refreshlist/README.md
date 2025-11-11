@@ -2,9 +2,9 @@
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![HarmonyOS](https://img.shields.io/badge/HarmonyOS-NEXT-orange.svg)](https://developer.harmonyos.com/)
-[![Version](https://img.shields.io/badge/version-1.0.1-green.svg)](oh-package.json5)
+[![Version](https://img.shields.io/badge/version-1.0.2-green.svg)](oh-package.json5)
 
-鸿蒙HarmonyOS NEXT 简单易用的上拉下拉刷新组件，支持自定义样式和多种使用场景。
+鸿蒙HarmonyOS NEXT 简单易用的上拉下拉刷新组件，支持自定义样式和多种使用场景，兼容API 15+。
 
 如果项目对你有帮助，欢迎持续关注和 [🌟Star](https://github.com/iHongRen/RefreshList) ，[💖赞助](https://ihongren.github.io/donate.html)
 
@@ -24,8 +24,6 @@
 
 - 完善的 demo 示例
 
-  
-
 ## 📦 安装
 
 ### 通过 ohpm 安装
@@ -41,25 +39,19 @@ ohpm install @cxy/refreshlist
 ```json5
 {
   "dependencies": {
-    "@cxy/refreshlist": "^1.0.1"
+    "@cxy/refreshlist": "^1.0.2"
   }
 }
 ```
 
-
 ## Demo - [前往查看示例代码](https://github.com/iHongRen/RefreshList)
 
-
-
-|                                          |                                            |                                       |
-| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| <img src="https://i.mji.rip/2025/09/08/fb40bffdddf82a6c1ca8b773ff1c97bf.jpeg" alt="demo.jpeg" width=250><br>**Demo 页面**<br> | <img src="https://i.mji.rip/2025/09/08/1bc7f774ee99a9dfe13a50e5ad5b108b.gif" alt="simple.gif" width=250><br>**简单示例**<br> | <img src="https://i.mji.rip/2025/09/08/6de85128e07c7fb5add707f2b0e0a915.gif" alt="group.gif" width=250><br>**分组示例**<br> |
-| <img src="https://i.mji.rip/2025/09/08/84ab86ab3b9a2e20cb73b078a340c5b8.gif" alt="headerview.gif" width=250><br>**自定义HeaderView示例**<br> | <img src="https://i.mji.rip/2025/09/08/8fae5be2ad8de2a9514a2d9ca4dd7207.gif" alt="custom.gif" width=250><br>**各种自定义示例**<br> | <img src="https://i.mji.rip/2025/09/08/138fd06fc7a34b9d2cdc9010650e741e.gif" alt="chat.gif" width=250><br>**聊天示例**<br> |
-| <img src="https://i.mji.rip/2025/09/08/b47a0e77b160652cce6591bfe7633767.gif" alt="dynamic.gif" width=250><br>**动态刷新示例**<br> | <img src="https://i.mji.rip/2025/09/08/e2c0bfe4d0fe42acd8d67b6c1de0b97b.gif" alt="infinite.gif" width=250><br>**无限加载示例**<br> | <img src="https://i.mji.rip/2025/09/08/e8f817db4bb5a2317c44b616f85d66da.gif" alt="search.gif" width=250><br>**搜索示例**<br> |
-| <img src="https://i.mji.rip/2025/09/08/bafce049adf9471e497240cfb9d83f38.gif" alt="grid.gif" width=250>**<br>网格示例**<br> | <img src="https://i.mji.rip/2025/09/08/57101cd918ac3a3b8fd4b427d440c3fa.gif" alt="advanced.gif" width=250><br>**高级使用示例**<br> | <img src="https://i.mji.rip/2025/09/08/4adf3411de978da386d470a72f6c2492.gif" alt="global.gif" width=250><br>**全局配置示例**<br> |
-
-
-
+|                                                                                                                                         |                                                                                                                              |                                                                                                                            |
+|-----------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------|
+| <img src="https://i.mji.rip/2025/09/08/fb40bffdddf82a6c1ca8b773ff1c97bf.jpeg" alt="demo.jpeg" width=250><br>**Demo 页面**<br>             | <img src="https://i.mji.rip/2025/09/08/1bc7f774ee99a9dfe13a50e5ad5b108b.gif" alt="simple.gif" width=250><br>**简单示例**<br>     | <img src="https://i.mji.rip/2025/09/08/6de85128e07c7fb5add707f2b0e0a915.gif" alt="group.gif" width=250><br>**分组示例**<br>    |
+| <img src="https://i.mji.rip/2025/09/08/84ab86ab3b9a2e20cb73b078a340c5b8.gif" alt="headerview.gif" width=250><br>**自定义HeaderView示例**<br> | <img src="https://i.mji.rip/2025/09/08/8fae5be2ad8de2a9514a2d9ca4dd7207.gif" alt="custom.gif" width=250><br>**各种自定义示例**<br>  | <img src="https://i.mji.rip/2025/09/08/138fd06fc7a34b9d2cdc9010650e741e.gif" alt="chat.gif" width=250><br>**聊天示例**<br>     |
+| <img src="https://i.mji.rip/2025/09/08/b47a0e77b160652cce6591bfe7633767.gif" alt="dynamic.gif" width=250><br>**动态刷新示例**<br>             | <img src="https://i.mji.rip/2025/09/08/e2c0bfe4d0fe42acd8d67b6c1de0b97b.gif" alt="infinite.gif" width=250><br>**无限加载示例**<br> | <img src="https://i.mji.rip/2025/09/08/e8f817db4bb5a2317c44b616f85d66da.gif" alt="search.gif" width=250><br>**搜索示例**<br>   |
+| <img src="https://i.mji.rip/2025/09/08/bafce049adf9471e497240cfb9d83f38.gif" alt="grid.gif" width=250>**<br>网格示例**<br>                  | <img src="https://i.mji.rip/2025/09/08/57101cd918ac3a3b8fd4b427d440c3fa.gif" alt="advanced.gif" width=250><br>**高级使用示例**<br> | <img src="https://i.mji.rip/2025/09/08/4adf3411de978da386d470a72f6c2492.gif" alt="global.gif" width=250><br>**全局配置示例**<br> |
 
 ## 🚀 快速开始
 
@@ -125,7 +117,8 @@ class SimpleViewModel {
 @Entry
 @Component
 struct Index {
-  @State viewModel: SimpleViewModel = new SimpleViewModel()
+  @State
+  viewModel: SimpleViewModel = new SimpleViewModel()
 
   aboutToAppear() {
     this.viewModel.refresh()
@@ -164,17 +157,15 @@ struct Index {
       .padding(16)
       .backgroundColor('#fff')
     }
-    .onClick(() => {
-      console.log(`点击项目: ${item.title}`)
-    })
+    .onClick(()=> {
+      console.log(`点击项目: ${ item.title}`)
+    }) 
   }
 }
 
 ```
 
 🎉 **就是这么简单！** 三步即可拥有一个功能完整的刷新列表。
-
-
 
 ## 📚 API 文档
 
@@ -189,58 +180,59 @@ struct Index {
 
 #### 布局属性
 
-| 属性                | 类型                                  | 默认值       | 说明                                   |
-| ------------------- | ------------------------------------- | ------------ | -------------------------------------- |
-| itemLayout          | (item: Object, index: number) => void | -            | 列表项布局                             |
-| customLayout        | () => void                            | -            | 自定义布局，完全自定义LazyForEach部分  |
-| headerLayout        | () => void                            | -            | 列表头部布局，类似iOS的tableHeaderView |
-| loadingLayout       | () => void                            | 默认加载视图 | 加载中状态的布局                       |
-| emptyLayout         | () => void                            | 默认空视图   | 空数据状态的布局                       |
-| refreshHeaderLayout | () => void                            | 默认刷新头部 | 自定义下拉刷新头部布局                 |
-| refreshFooterLayout | () => void                            | 默认刷新底部 | 自定义上拉加载底部布局                 |
+| 属性                  | 类型                                    | 默认值    | 说明                           |
+|---------------------|---------------------------------------|--------|------------------------------|
+| itemLayout          | (item: Object, index: number) => void | -      | 列表项布局                        |
+| customLayout        | () => void                            | -      | 自定义布局，完全自定义LazyForEach部分     |
+| headerLayout        | () => void                            | -      | 列表头部布局，类似iOS的tableHeaderView |
+| loadingLayout       | () => void                            | 默认加载视图 | 加载中状态的布局                     |
+| emptyLayout         | () => void                            | 默认空视图  | 空数据状态的布局                     |
+| refreshHeaderLayout | () => void                            | 默认刷新头部 | 自定义下拉刷新头部布局                  |
+| refreshFooterLayout | () => void                            | 默认刷新底部 | 自定义上拉加载底部布局                  |
 
 #### 数据状态属性
 
-| 属性                | 类型                | 默认值 | 说明                    |
-|-------------------|-------------------|-----|---------------------|
-| refreshHeaderData | RefreshHeaderData | -   | 下拉刷新头部数据，用于自定义刷新头部状态 |
-| refreshFooterData | RefreshFooterData | -   | 上拉加载底部数据，用于自定义加载底部状态 |
-| showLoading       | boolean           | true | 是否显示加载状态            |
-| showEmpty         | boolean           | true | 是否显示空数据状态           |
+| 属性                | 类型                | 默认值  | 说明                   |
+|-------------------|-------------------|------|----------------------|
+| refreshHeaderData | RefreshHeaderData | -    | 下拉刷新头部数据，用于自定义刷新头部状态 |
+| refreshFooterData | RefreshFooterData | -    | 上拉加载底部数据，用于自定义加载底部状态 |
+| showLoading       | boolean           | true | 是否显示加载状态             |
+| showEmpty         | boolean           | true | 是否显示空数据状态            |
 
 #### 列表配置属性
 
-| 属性                             | 类型                      | 默认值                          | 说明                                   |
-|--------------------------------|-------------------------|------------------------------|--------------------------------------|
-| cachedCount                    | number                  | 4                            | 缓存的列表项数量，用于性能优化                      |
-| showLoadMoreGreaterCount       | number                  | 5                            | 当item大于多少时，才显示加载更多组件，通常为一屏能显示的item数量 |
-| contentStartOffset             | number                  | -                            | 设置内容区域起始偏移量                          |
-| contentEndOffset               | number                  | -                            | 设置内容区末尾偏移量                           |
-| sticky                         | StickyStyle             | StickyStyle.Header \| Footer | 吸顶样式                               |
-| itemSpace                      | number                  | -                            | 列表项间距                              |
-| barState                       | BarState                | BarState.On                  | 滚动条状态                              |
-| scrollBarColor                 | Color \| number \| string | -                          | 滚动条颜色                              |
-| nestedScroll                   | NestedScrollOptions     | -                            | 设置前后两个方向的嵌套滚动模式，实现与父组件的滚动联动        |
-| enableScrollInteraction        | boolean                 | -                            | 设置是否支持滚动手势                         |
-| pullDownRatio                  | number                  | -                            | 设置下拉跟手系数，禁止下拉设置0                   |
-| divider                        | RefreshListDivider      | null                         | 分割线样式                              |
-| lanes                          | number                  | -                            | 设置List组件的布局列数或行数（网格布局）             |
-| gutter                         | Dimension               | -                            | 列间距（网格布局时使用）                       |
-| maintainVisibleContentPosition | boolean                 | false                        | 插入或删除数据时是否保持可见内容位置不变               |
-| backToTop                      | boolean                 | true                         | 设置滚动组件是否支持点击状态栏回到顶部（API version 15+） |
-| edfeEffect                     | EdgeEffect              | -                            | List的EdgeEffect效果                  |
-| listAttrModifier               | RefreshListAttrModifier | -                            | 用于自定义更多List属性                      |
+| 属性                             | 类型                        | 默认值                          | 说明                                   |
+|--------------------------------|---------------------------|------------------------------|--------------------------------------|
+| cachedCount                    | number                    | 4                            | 缓存的列表项数量，用于性能优化                      |
+| showLoadMoreGreaterCount       | number                    | 5                            | 当item大于多少时，才显示加载更多组件，通常为一屏能显示的item数量 |
+| contentStartOffset             | number                    | -                            | 设置内容区域起始偏移量                          |
+| contentEndOffset               | number                    | -                            | 设置内容区末尾偏移量                           |
+| sticky                         | StickyStyle               | StickyStyle.Header \| Footer | 吸顶样式                                 |
+| itemSpace                      | number                    | -                            | 列表项间距                                |
+| barState                       | BarState                  | BarState.On                  | 滚动条状态                                |
+| scrollBarColor                 | Color \| number \| string | -                            | 滚动条颜色                                |
+| nestedScroll                   | NestedScrollOptions       | -                            | 设置前后两个方向的嵌套滚动模式，实现与父组件的滚动联动          |
+| enableScrollInteraction        | boolean                   | -                            | 设置是否支持滚动手势                           |
+| pullDownRatio                  | number                    | -                            | 设置下拉跟手系数，禁止下拉设置0                     |
+| refreshOffset                  | number                    | -                            | 设置触发刷新的下拉偏移量                         |
+| divider                        | RefreshListDivider        | null                         | 分割线样式                                |
+| lanes                          | number                    | -                            | 设置List组件的布局列数或行数（网格布局）               |
+| gutter                         | Dimension                 | -                            | 列间距（网格布局时使用）                         |
+| maintainVisibleContentPosition | boolean                   | false                        | 插入或删除数据时是否保持可见内容位置不变                 |
+| backToTop                      | boolean                   | true                         | 设置滚动组件是否支持点击状态栏回到顶部（API version 15+） |
+| edfeEffect                     | EdgeEffect                | -                            | List的EdgeEffect效果                    |
+| listAttrModifier               | RefreshListAttrModifier   | -                            | 用于自定义更多List属性                        |
 
 #### 回调函数
 
-| 属性            | 类型                                                         | 说明                    |
-|---------------|------------------------------------------------------------|-----------------------|
-| onRefresh     | () => void                                                 | 下拉刷新时的回调函数            |
-| onLoadMore    | () => void                                                 | 上拉加载更多时的回调函数          |
-| keyGenerator  | (item: ESObject, index: number) => string                 | 列表项唯一标识生成器            |
-| onDidScroll   | OnScrollCallback                                           | 滚动时的回调函数              |
-| onReachEnd    | () => void                                                 | 滚动到底部时的回调函数           |
-| onScrollIndex | (start: number, end: number) => void                      | 滚动到索引时的回调函数，可用于实现无感知预加载 |
+| 属性            | 类型                                        | 说明                      |
+|---------------|-------------------------------------------|-------------------------|
+| onRefresh     | () => void                                | 下拉刷新时的回调函数              |
+| onLoadMore    | () => void                                | 上拉加载更多时的回调函数            |
+| keyGenerator  | (item: ESObject, index: number) => string | 列表项唯一标识生成器              |
+| onDidScroll   | OnScrollCallback                          | 滚动时的回调函数                |
+| onReachEnd    | () => void                                | 滚动到底部时的回调函数             |
+| onScrollIndex | (start: number, end: number) => void      | 滚动到索引时的回调函数，可用于实现无感知预加载 |
 
 #### 滚动控制器
 
@@ -270,13 +262,13 @@ RefreshController 提供了控制刷新列表的各种方法：
 
 #### 内部回调属性（由组件自动设置）
 
-| 属性            | 类型                                                                                     | 说明           |
-|---------------|----------------------------------------------------------------------------------------|--------------|
-| setHasmore    | (hasmore: boolean) => void                                                             | 设置是否还有更多数据   |
-| onRefresh     | () => void                                                                             | 刷新回调         |
-| finishRefresh | () => void                                                                             | 完成刷新回调       |
-| hideLoadMore  | (hide: boolean) => void                                                                | 隐藏加载更多回调     |
-| scrollToIndex | (value: number, smooth?: boolean, align?: ScrollAlign, options?: ScrollToIndexOptions) => void | 滚动到指定索引回调    |
+| 属性            | 类型                                                                                             | 说明         |
+|---------------|------------------------------------------------------------------------------------------------|------------|
+| setHasmore    | (hasmore: boolean) => void                                                                     | 设置是否还有更多数据 |
+| onRefresh     | () => void                                                                                     | 刷新回调       |
+| finishRefresh | () => void                                                                                     | 完成刷新回调     |
+| hideLoadMore  | (hide: boolean) => void                                                                        | 隐藏加载更多回调   |
+| scrollToIndex | (value: number, smooth?: boolean, align?: ScrollAlign, options?: ScrollToIndexOptions) => void | 滚动到指定索引回调  |
 
 #### 使用示例
 
@@ -288,13 +280,13 @@ export class SimpleViewModel {
     // 模拟网络请求
     setTimeout(() => {
       // 处理数据...
-      
+
       // 设置是否还有更多数据
       this.controller.setHasmore(hasMore)
-      
+
       // 必须调用finishRefresh结束刷新状态
       this.controller.finishRefresh()
-     
+
     }, 1000)
   }
 
@@ -375,8 +367,8 @@ RefreshGroupDataSource 继承自 RefreshDataSource，专门用于管理分组列
 
 #### 分组特有方法
 
-| 方法             | 参数                                                  | 返回值  | 说明           |
-|----------------|-----------------------------------------------------|------|--------------|
+| 方法             | 参数                                                | 返回值  | 说明           |
+|----------------|---------------------------------------------------|------|--------------|
 | addListToGroup | (list: Object[], getTitle: (e: Object) => string) | void | 将数据列表按标题分组添加 |
 
 #### 使用示例
@@ -389,7 +381,7 @@ export class SimpleViewModel {
   refresh(): void {
     // 清空现有数据
     this.dataSource.deleteAll()
-    
+
     // 添加新数据
     const newData = this.generateData()
     this.dataSource.pushDataArray(newData)
@@ -414,7 +406,7 @@ export class GroupViewModel {
 
   refresh(): void {
     this.dataSource.deleteAll()
-    
+
     const allItems = this.generateData()
     // 按category字段自动分组
     this.dataSource.addListToGroup(allItems, (item) => item.category)
@@ -437,52 +429,55 @@ export class GroupViewModel {
 #### 构造函数
 
 ```typescript
-constructor(title: string, dataSource: RefreshDataSource)
+constructor(title:
+string, dataSource:
+RefreshDataSource
+)
 ```
 
 ### RefreshHeaderData 刷新头部数据
 
 下拉刷新头部的状态数据：
 
-| 属性            | 类型                              | 默认值                    | 说明                                        |
-|---------------|----------------------------------|-------------------------|-------------------------------------------|
-| state         | RefreshStatus                    | RefreshStatus.Inactive  | 刷新状态（Inactive、Drag、OverDrag、Refresh、Done） |
-| offset        | number                           | 0                       | 下拉偏移量                                     |
-| dragText      | ResourceStr                      | '下拉刷新'                 | 下拉时显示的文本                                  |
-| overDragText  | ResourceStr                      | '释放刷新'                 | 超过阈值时显示的文本                                |
-| refreshText   | ResourceStr                      | '刷新中...'               | 刷新中显示的文本                                  |
-| doneText      | ResourceStr                      | '刷新完成'                 | 刷新完成显示的文本                                 |
-| textColor     | ResourceColor                    | '#bbb'                  | 文本颜色                                      |
-| font          | Font                             | { size: 13 }            | 文本字体                                      |
-| loadingColor  | ResourceColor \| LinearGradient  | LinearGradient          | loading 颜色                                |
-| loadingSize   | SizeOptions                      | { width: 20, height: 20 } | loading 大小                                |
+| 属性           | 类型                              | 默认值                       | 说明                                        |
+|--------------|---------------------------------|---------------------------|-------------------------------------------|
+| state        | RefreshStatus                   | RefreshStatus.Inactive    | 刷新状态（Inactive、Drag、OverDrag、Refresh、Done） |
+| offset       | number                          | 0                         | 下拉偏移量                                     |
+| dragText     | ResourceStr                     | '下拉刷新'                    | 下拉时显示的文本                                  |
+| overDragText | ResourceStr                     | '释放刷新'                    | 超过阈值时显示的文本                                |
+| refreshText  | ResourceStr                     | '刷新中...'                  | 刷新中显示的文本                                  |
+| doneText     | ResourceStr                     | '刷新完成'                    | 刷新完成显示的文本                                 |
+| textColor    | ResourceColor                   | '#bbb'                    | 文本颜色                                      |
+| font         | Font                            | { size: 13 }              | 文本字体                                      |
+| loadingColor | ResourceColor \| LinearGradient | LinearGradient            | loading 颜色                                |
+| loadingSize  | SizeOptions                     | { width: 20, height: 20 } | loading 大小                                |
 
 #### 方法
 
-| 方法      | 参数 | 返回值        | 说明            |
-|---------|----|-----------|--------------|
+| 方法      | 参数 | 返回值         | 说明            |
+|---------|----|-------------|---------------|
 | getText | () | ResourceStr | 根据当前状态返回对应的文本 |
 
 ### RefreshFooterData 刷新底部数据
 
 上拉加载更多底部的状态数据：
 
-| 属性          | 类型                 | 默认值                     | 说明           |
-|-------------|--------------------|-------------------------|--------------|
-| isShow      | boolean            | true                    | 是否显示底部组件     |
-| state       | RefreshFooterState | RefreshFooterState.None | 加载状态         |
-| noneText    | ResourceStr        | '上拉加载更多'               | 默认状态显示的文本    |
-| loadingText | ResourceStr        | '加载中...'                | 加载中显示的文本     |
-| noMoreText  | ResourceStr        | '没有更多了'                | 没有更多数据时显示的文本 |
-| textColor   | ResourceColor      | '#bbb'                  | 文本颜色         |
-| font        | Font               | { size: 13 }            | 文本字体         |
-| loadingColor| ResourceColor      | '#bbb'                  | loading 颜色    |
-| loadingSize | SizeOptions        | { width: 20, height: 20 } | loading 大小    |
+| 属性           | 类型                 | 默认值                       | 说明           |
+|--------------|--------------------|---------------------------|--------------|
+| isShow       | boolean            | true                      | 是否显示底部组件     |
+| state        | RefreshFooterState | RefreshFooterState.None   | 加载状态         |
+| noneText     | ResourceStr        | '上拉加载更多'                  | 默认状态显示的文本    |
+| loadingText  | ResourceStr        | '加载中...'                  | 加载中显示的文本     |
+| noMoreText   | ResourceStr        | '没有更多了'                   | 没有更多数据时显示的文本 |
+| textColor    | ResourceColor      | '#bbb'                    | 文本颜色         |
+| font         | Font               | { size: 13 }              | 文本字体         |
+| loadingColor | ResourceColor      | '#bbb'                    | loading 颜色   |
+| loadingSize  | SizeOptions        | { width: 20, height: 20 } | loading 大小   |
 
 #### 方法
 
-| 方法      | 参数 | 返回值        | 说明            |
-|---------|----|-----------|--------------|
+| 方法      | 参数 | 返回值         | 说明            |
+|---------|----|-------------|---------------|
 | getText | () | ResourceStr | 根据当前状态返回对应的文本 |
 
 ### RefreshFooterState 枚举
@@ -502,28 +497,30 @@ constructor(title: string, dataSource: RefreshDataSource)
 
 #### 静态属性
 
-| 属性                  | 类型                                    | 默认值                    | 说明           |
-|---------------------|---------------------------------------|-------------------------|--------------|
-| headerBuilder       | WrappedBuilder<[IRefreshHeaderData]>  | -                       | 全局自定义刷新头部构建器 |
-| footerBuilder       | WrappedBuilder<[IRefreshFooterData]>  | -                       | 全局自定义刷新底部构建器 |
-| loadingBuilder      | WrappedBuilder<[]>                    | -                       | 全局自定义加载构建器   |
-| emptyBuilder        | WrappedBuilder<[]>                    | -                       | 全局自定义空状态构建器  |
-| headerInactiveText  | ResourceStr                           | '刷新'                    | 头部非活动状态文本    |
-| headerDragText      | ResourceStr                           | '下拉刷新'                 | 头部下拉状态文本     |
-| headerOverDragText  | ResourceStr                           | '释放刷新'                 | 头部超过阈值状态文本   |
-| headerRefreshText   | ResourceStr                           | '刷新中...'               | 头部刷新中状态文本    |
-| headerDoneText      | ResourceStr                           | '刷新完成'                 | 头部刷新完成状态文本   |
-| footerNoneText      | ResourceStr                           | '上拉加载更多'               | 底部默认状态文本     |
-| footerLoadingText   | ResourceStr                           | '加载中...'               | 底部加载中状态文本    |
-| footerNoMoreText    | ResourceStr                           | '没有更多了'                | 底部没有更多数据状态文本 |
-| headerTextColor     | ResourceColor                         | '#bbb'                  | 头部文本颜色       |
-| footerTextColor     | ResourceColor                         | '#bbb'                  | 底部文本颜色       |
-| headerTextFont      | Font                                  | { size: 13 }            | 头部文本字体       |
-| footerTextFont      | Font                                  | { size: 13 }            | 底部文本字体       |
-| headerLoadingColor  | ResourceColor \| LinearGradient       | LinearGradient          | 头部loading颜色   |
-| footerLoadingColor  | ResourceColor                         | '#bbb'                  | 底部loading颜色   |
-| headerLoadingSize   | SizeOptions                           | { width: 20, height: 20 } | 头部loading大小   |
-| footerLoadingSize   | SizeOptions                           | { width: 20, height: 20 } | 底部loading大小   |
+| 属性                 | 类型                                   | 默认值                       | 说明                   |
+|--------------------|--------------------------------------|---------------------------|----------------------|
+| headerBuilder      | WrappedBuilder<[IRefreshHeaderData]> | -                         | 全局自定义刷新头部构建器         |
+| footerBuilder      | WrappedBuilder<[IRefreshFooterData]> | -                         | 全局自定义刷新底部构建器         |
+| loadingBuilder     | WrappedBuilder<[]>                   | -                         | 全局自定义加载构建器           |
+| emptyBuilder       | WrappedBuilder<[]>                   | -                         | 全局自定义空状态构建器          |
+| headerInactiveText | ResourceStr                          | '刷新'                      | 头部非活动状态文本            |
+| headerDragText     | ResourceStr                          | '下拉刷新'                    | 头部下拉状态文本             |
+| headerOverDragText | ResourceStr                          | '释放刷新'                    | 头部超过阈值状态文本           |
+| headerRefreshText  | ResourceStr                          | '刷新中...'                  | 头部刷新中状态文本            |
+| headerDoneText     | ResourceStr                          | '刷新完成'                    | 头部刷新完成状态文本           |
+| footerNoneText     | ResourceStr                          | '上拉加载更多'                  | 底部默认状态文本             |
+| footerLoadingText  | ResourceStr                          | '加载中...'                  | 底部加载中状态文本            |
+| footerNoMoreText   | ResourceStr                          | '没有更多了'                   | 底部没有更多数据状态文本         |
+| headerTextColor    | ResourceColor                        | '#bbb'                    | 头部文本颜色               |
+| footerTextColor    | ResourceColor                        | '#bbb'                    | 底部文本颜色               |
+| headerTextFont     | Font                                 | { size: 13 }              | 头部文本字体               |
+| footerTextFont     | Font                                 | { size: 13 }              | 底部文本字体               |
+| headerLoadingColor | ResourceColor \| LinearGradient      | LinearGradient            | 头部loading颜色          |
+| footerLoadingColor | ResourceColor                        | '#bbb'                    | 底部loading颜色          |
+| headerLoadingSize  | SizeOptions                          | { width: 20, height: 20 } | 头部loading大小          |
+| footerLoadingSize  | SizeOptions                          | { width: 20, height: 20 } | 底部loading大小          |
+| refreshOffset      | number                               | -                         | 设置触发刷新的下拉偏移量         |
+| pullDownRatio      | number                               | -                         | 设置下拉跟手系数,有效值为0-1之间的值 |
 
 #### 使用示例
 
@@ -603,8 +600,6 @@ class CustomAttrModifier extends RefreshListAttrModifier {
 }
 ```
 
-
-
 ## ❓常见问题
 
 ### Q: 如何禁用下拉刷新？
@@ -633,11 +628,12 @@ RefreshList({
 })
 
 // 方法2：动态控制显示/隐藏
-this.controller.hideLoadMore(true)  // 隐藏加载更多
-this.controller.setHasmore(false)   // 设置没有更多数据
+this.controller.hideLoadMore(true) // 隐藏加载更多
+this.controller.setHasmore(false) // 设置没有更多数据
 ```
 
 ### Q: 如何监听列表滚动事件？
+
 ```typescript
 RefreshList({
   onDidScroll: (scrollOffset: number, scrollState: ScrollState) => {
@@ -655,11 +651,10 @@ RefreshList({
 })
 ```
 
-
-
 # 作者
 
-[@仙银](https://github.com/iHongRen) 鸿蒙开源作品，欢迎持续关注 [🌟Star](https://github.com/iHongRen/RefreshList) ，[💖赞助](https://ihongren.github.io/donate.html)
+[@仙银](https://github.com/iHongRen)
+鸿蒙开源作品，欢迎持续关注 [🌟Star](https://github.com/iHongRen/RefreshList) ，[💖赞助](https://ihongren.github.io/donate.html)
 
 1、[hpack](https://github.com/iHongRen/hpack) - 鸿蒙内部测试分发，一键脚本打包工具
 
