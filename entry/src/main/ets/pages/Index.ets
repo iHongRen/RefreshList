@@ -47,7 +47,6 @@ struct Index {
     .hideBackButton(true)
     .mode(NavigationMode.Stack)
     .title('RefreshList Demo')
-
   }
 
   pushToName(item: string[]) {

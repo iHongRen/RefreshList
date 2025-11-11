@@ -15,8 +15,6 @@ import { RefreshListDivider } from './RefreshListDirvier'
 import { RefreshEmptyView } from './RefreshEmptyView'
 import { RefreshLoadingView } from './RefreshLoadingView'
 import { RefreshGlobalConfig } from './RefreshGlobalConfig'
-import { deviceInfo } from '@kit.BasicServicesKit';
-
 
 @Component
 export struct RefreshList {
@@ -64,7 +62,7 @@ export struct RefreshList {
   @Prop pullDownRatio: number
   // 设置触发刷新的下拉偏移量，当下拉距离小于该属性设置值时离手不会触发刷新。
   @Prop refreshOffset: number
-  // 最大下拉距离 API version 20开始
+  // 最大下拉距离 API version 20开始, 暂不开放
   // @Prop maxPullDownDistance: number
   // 分割线样式
   @Prop divider: RefreshListDivider | null = null
