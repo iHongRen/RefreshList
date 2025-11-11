@@ -45,7 +45,8 @@ struct LottieHeader {
       Text(this.data.getText())
         .font(this.data.font)
     }
-    .padding(10)
+    .justifyContent(FlexAlign.Center)
+    .height(100)
   }
 }
 
@@ -145,6 +146,8 @@ function setupGlobalConfig() {
 
   RefreshGlobalConfig.emptyBuilder = wrapBuilder(emptyBuilder)
   RefreshGlobalConfig.loadingBuilder = wrapBuilder(loadingBuilder)
+
+  RefreshGlobalConfig.refreshOffset = 100
 }
 
 setupGlobalConfig()
