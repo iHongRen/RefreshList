@@ -117,8 +117,7 @@ class SimpleViewModel {
 @Entry
 @Component
 struct Index {
-  @State
-  viewModel: SimpleViewModel = new SimpleViewModel()
+  @State viewModel: SimpleViewModel = new SimpleViewModel()
 
   aboutToAppear() {
     this.viewModel.refresh()
@@ -158,9 +157,9 @@ struct Index {
         .backgroundColor('#fff')
     }
     .onClick(()=> {
-    console.log(`点击项目: ${ item.title}`)
-})
-}
+      console.log(`点击项目: ${ item.title}`)
+    })
+  }
 }
 
 ```
@@ -429,10 +428,7 @@ export class GroupViewModel {
 #### 构造函数
 
 ```typescript
-constructor(title:
-string, dataSource:
-RefreshDataSource
-)
+constructor(title:string, dataSource:RefreshDataSource)
 ```
 
 ### RefreshHeaderData 刷新头部数据
@@ -656,10 +652,9 @@ RefreshList({
 [@仙银](https://github.com/iHongRen)
 鸿蒙开源作品，欢迎持续关注 [🌟Star](https://github.com/iHongRen/RefreshList) ，[💖赞助](https://ihongren.github.io/donate.html)
 
-1、[hpack](https://github.com/iHongRen/hpack) - 鸿蒙内部测试分发，一键脚本打包工具
+1、[hpack](https://github.com/iHongRen/hpack) - 鸿蒙 HarmonyOS 一键打包上传分发测试工具。
 
-2、[Open-in-DevEco-Studio](https://github.com/iHongRen/Open-in-DevEco-Studio)  - macOS 直接在 Finder 工具栏上，使用
-DevEco-Studio 打开鸿蒙工程。
+2、[Open-in-DevEco-Studio](https://github.com/iHongRen/Open-in-DevEco-Studio)  - macOS 直接在 Finder 工具栏上，使用 DevEco-Studio 打开鸿蒙工程。
 
 3、[cxy-theme](https://github.com/iHongRen/cxy-theme) - DevEco-Studio 绿色护眼背景主题
 
