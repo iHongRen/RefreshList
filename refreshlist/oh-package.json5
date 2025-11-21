@@ -1,6 +1,6 @@
 {
   "name": "@cxy/refreshlist",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "上拉下拉刷新组件，支持自定义样式和多种使用场景，提供丰富的Demo",
   "main": "Index.ets",
   "author": "@仙银",

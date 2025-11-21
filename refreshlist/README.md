@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![HarmonyOS](https://img.shields.io/badge/HarmonyOS-NEXT-orange.svg)](https://developer.harmonyos.com/)
-[![Version](https://img.shields.io/badge/version-1.0.2-green.svg)](oh-package.json5)
+[![Version](https://img.shields.io/badge/version-1.0.3-green.svg)](oh-package.json5)
 
 鸿蒙HarmonyOS NEXT 简单易用的上拉下拉刷新组件，支持自定义样式和多种使用场景，兼容API 15+。
 
@@ -39,7 +39,7 @@ ohpm install @cxy/refreshlist
 ```json5
 {
   "dependencies": {
-    "@cxy/refreshlist": "^1.0.2"
+    "@cxy/refreshlist": "^1.0.3"
   }
 }
 ```

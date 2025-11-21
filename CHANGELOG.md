@@ -1,5 +1,12 @@
 ## 🔄 更新日志
 
+### [v1.0.3](https://github.com/iHongRen/RefreshList/releases/tag/v1.0.3)  (2025-21-11)
+- 优化文档
+- 新增包签名
+
+- API 兼容性提升到 5.0.3(15)
+- 新增参数 refreshOffset: 设置触发刷新的下拉偏移量
+
 ### [v1.0.2](https://github.com/iHongRen/RefreshList/releases/tag/v1.0.2)  (2025-11-11)
 
 - API 兼容性提升到 5.0.3(15)
