@@ -184,6 +184,12 @@ export struct RefreshList {
       }
   }
 
+  onDidBuild(): void {
+    if (this.dataSource.totalItemCount() > 0) {
+      this.showLoading = false
+    }
+  }
+
   build() {
     Refresh({
       refreshing: this._refreshing,
