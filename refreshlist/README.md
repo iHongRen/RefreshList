@@ -1,14 +1,14 @@
 # RefreshList
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-Apache2.0-blue.svg)](LICENSE)
 [![HarmonyOS](https://img.shields.io/badge/HarmonyOS-NEXT-orange.svg)](https://developer.harmonyos.com/)
-[![Version](https://img.shields.io/badge/version-1.0.3-green.svg)](oh-package.json5)
+[![Version](https://img.shields.io/badge/version-1.0.4-green.svg)](oh-package.json5)
 
 鸿蒙HarmonyOS NEXT 简单易用的上拉下拉刷新组件，支持自定义样式和多种使用场景，兼容API 15+。
 
 如果项目对你有帮助，欢迎持续关注和 [🌟Star](https://github.com/iHongRen/RefreshList) ，[💖赞助](https://ihongren.github.io/donate.html)
 
-## ✨ 特性
+## 特性
 
 - 支持下拉刷新和上拉加载更多
 
@@ -24,7 +24,7 @@
 
 - 完善的 demo 示例
 
-## 📦 安装
+## 安装
 
 ### 通过 ohpm 安装
 
@@ -53,12 +53,12 @@ ohpm install @cxy/refreshlist
 | <img src="https://i.mji.rip/2025/09/08/b47a0e77b160652cce6591bfe7633767.gif" alt="dynamic.gif" width=250><br>**动态刷新示例**<br>             | <img src="https://i.mji.rip/2025/09/08/e2c0bfe4d0fe42acd8d67b6c1de0b97b.gif" alt="infinite.gif" width=250><br>**无限加载示例**<br> | <img src="https://i.mji.rip/2025/09/08/e8f817db4bb5a2317c44b616f85d66da.gif" alt="search.gif" width=250><br>**搜索示例**<br>   |
 | <img src="https://i.mji.rip/2025/09/08/bafce049adf9471e497240cfb9d83f38.gif" alt="grid.gif" width=250>**<br>网格示例**<br>                  | <img src="https://i.mji.rip/2025/09/08/57101cd918ac3a3b8fd4b427d440c3fa.gif" alt="advanced.gif" width=250><br>**高级使用示例**<br> | <img src="https://i.mji.rip/2025/09/08/4adf3411de978da386d470a72f6c2492.gif" alt="global.gif" width=250><br>**全局配置示例**<br> |
 
-## 🚀 快速开始
+## 快速开始
 
 ```typescript
 import { RefreshController, RefreshDataSource, RefreshList } from "@cxy/refreshlist"
 
-// 1️⃣ 创建数据模型
+// 1. 创建数据模型
 class ItemModel {
   id: string = ''
   title: string = ''
@@ -69,7 +69,7 @@ class ItemModel {
   }
 }
 
-// 2️⃣ 创建ViewModel
+// 2. 创建ViewModel
 class SimpleViewModel {
   @Track dataSource: RefreshDataSource = new RefreshDataSource()
   @Track controller: RefreshController = new RefreshController()
@@ -113,7 +113,7 @@ class SimpleViewModel {
 }
 
 
-// 3️⃣ 使用组件
+// 3. 使用组件
 @Entry
 @Component
 struct Index {
@@ -164,9 +164,9 @@ struct Index {
 
 ```
 
-🎉 **就是这么简单！** 三步即可拥有一个功能完整的刷新列表。
+**就是这么简单！** 三步即可拥有一个功能完整的刷新列表。
 
-## 📚 API 文档
+## API 文档
 
 ### RefreshList 组件属性
 
@@ -596,7 +596,7 @@ class CustomAttrModifier extends RefreshListAttrModifier {
 }
 ```
 
-## ❓常见问题
+## 常见问题
 
 ### Q: 如何禁用下拉刷新？
 
