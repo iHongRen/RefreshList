@@ -44,7 +44,7 @@ export enum RefreshFooterState {
 
 @Observed
 export class RefreshFooterData {
-  @Track isShow: boolean = true //是否显示
+  @Track isShow: boolean = false //是否显示
   @Track state: RefreshFooterState = RefreshFooterState.None //状态
   @Track noneText: ResourceStr = RefreshGlobalConfig.footerNoneText //默认文本
   @Track loadingText: ResourceStr = RefreshGlobalConfig.footerLoadingText //加载中文本
