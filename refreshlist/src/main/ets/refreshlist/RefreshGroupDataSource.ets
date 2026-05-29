@@ -20,8 +20,10 @@ export class RefreshGroupDataSource extends RefreshDataSource {
     }
     let itemCount = 0
     for (let index = 0; index < count; index++) {
-      const e = this.list[index] as RefreshGroupModel
-      itemCount += e.dataSource.totalCount()
+      const e = this.list[index]
+      if (e instanceof RefreshGroupModel) {
+        itemCount += e.dataSource.totalCount()
+      }
     }
     return itemCount
   }
@@ -29,8 +31,9 @@ export class RefreshGroupDataSource extends RefreshDataSource {
   public getGroupDataAll(): Object[] {
     const all: Object[] = []
     this.list.forEach((e: Object) => {
-      const item = e as RefreshGroupModel
-      all.push(...item.dataSource.getDataAll())
+      if (e instanceof RefreshGroupModel) {
+        all.push(...e.dataSource.getDataAll())
+      }
     })
     return all
   }
@@ -41,18 +44,19 @@ export class RefreshGroupDataSource extends RefreshDataSource {
       return
     }
     const lastData = this.getLastData()
-    let prevTitle: string | undefined = lastData ? (lastData as RefreshGroupModel).title : ''
+    let prevTitle: string | undefined = lastData instanceof RefreshGroupModel ? lastData.title : undefined
 
     let items: Object[] = []
     list.forEach((e: Object) => {
-
       const title = getTitle(e)
       if (title === prevTitle) {
         items.push(e)
       } else {
-        if (prevTitle) {
-          const lastData = this.getLastData() as RefreshGroupModel
-          lastData.dataSource.pushDataArray(items)
+        if (items.length > 0 && prevTitle) {
+          const last = this.getLastData()
+          if (last instanceof RefreshGroupModel) {
+            last.dataSource.pushDataArray(items)
+          }
         }
         const dataSource = new RefreshDataSource()
         const group = new RefreshGroupModel(title, dataSource)
@@ -63,10 +67,10 @@ export class RefreshGroupDataSource extends RefreshDataSource {
       }
     });
 
-    if (list.length > 0 && prevTitle && items.length > 0) {
-      const lastData = this.getLastData() as RefreshGroupModel
-      if (lastData.title === prevTitle) {
-        lastData.dataSource.pushDataArray(items)
+    if (items.length > 0 && prevTitle) {
+      const last = this.getLastData()
+      if (last instanceof RefreshGroupModel && last.title === prevTitle) {
+        last.dataSource.pushDataArray(items)
       }
     }
   }

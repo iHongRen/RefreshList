@@ -161,5 +161,6 @@ export class RefreshDataSource implements IDataSource {
     for (let i = 0; i < total; i++) {
       this.notifyDataChange(i)
     }
+    this.onDataCountChange(total)
   }
 }

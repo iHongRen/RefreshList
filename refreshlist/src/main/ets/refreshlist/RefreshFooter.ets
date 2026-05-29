@@ -25,7 +25,6 @@ export struct RefreshFooter {
     }.width("100%")
     .height(44)
     .justifyContent(FlexAlign.Center)
-    .visibility(this.data.isShow ? Visibility.Visible : Visibility.None)
   }
 }
 

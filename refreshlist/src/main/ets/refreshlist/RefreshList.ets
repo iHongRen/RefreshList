@@ -18,6 +18,10 @@ import { RefreshGlobalConfig } from './RefreshGlobalConfig'
 
 @Component
 export struct RefreshList {
+  // 数据源
+  @Require dataSource: RefreshDataSource = new RefreshDataSource()
+  // 控制器
+  @Require controller: RefreshController = new RefreshController()
   // 需要 ListItem / ListItemGroup 作为组件
   @BuilderParam itemLayout: (item: Object, index: number) => void
   // 自定义布局，自己实现 LazyForEach 部分
@@ -75,17 +79,13 @@ export struct RefreshList {
   // 设置滚动组件是否支持点击状态栏回到顶部。从API version 15开始
   @Prop backToTop: boolean = true
   // List 的 EdgeEffect
-  @Prop edfeEffect: EdgeEffect
+  @Prop edgeEffect: EdgeEffect
   // 用于自定义更多 List 属性
   @State listAttrModifier: RefreshListAttrModifier = new RefreshListAttrModifier()
   // 刷新头部状态数据
   @State refreshHeaderData: RefreshHeaderData = new RefreshHeaderData()
   // 加载更多状态数据
   @State refreshFooterData: RefreshFooterData = new RefreshFooterData()
-  // 数据源
-  @Require dataSource: RefreshDataSource = new RefreshDataSource()
-  // 控制器
-  @Require controller: RefreshController = new RefreshController()
   ////////////////////////////////////////////////////
   // 刷新时回调
   onRefresh?: () => void
@@ -101,9 +101,9 @@ export struct RefreshList {
   //滚动到索引回调
   onScrollIndex?: (start: number, end: number) => void
   //////----------- 以下，不需要作为属性传值 ----------///////
-  @State _isEmpty: boolean = false
-  @State _listWidth: number | string = '100%'
-  @State _refreshing: boolean = false //是否正在刷新
+  @State private _isEmpty: boolean = false
+  @State private _listWidth: number | string = '100%'
+  @State private _refreshing: boolean = false //是否正在刷新
   private _canLoadMore: boolean = false;
   private _isLoadingMore: boolean = false;
 
@@ -147,7 +147,11 @@ export struct RefreshList {
     this.configController()
 
     this.dataSource.onDataCountChange = (count: number) => {
-      this._isEmpty = count === 0
+      this._isEmpty = (count === 0)
+    }
+
+    if (this.onLoadMore) {
+      this.refreshFooterData.isShow = true
     }
   }
 
@@ -256,7 +260,7 @@ export struct RefreshList {
           this.emptyLayout()
         }
         .width(this._listWidth)
-      } else if (this.onLoadMore && !this._refreshing) {
+      } else if (this.refreshFooterData.isShow && this.onLoadMore && !this._refreshing) {
         ListItem() {
           this.refreshFooterLayout()
         }
@@ -264,7 +268,7 @@ export struct RefreshList {
       }
     }
     .maintainVisibleContentPosition(this.maintainVisibleContentPosition)
-    .edgeEffect(this.edfeEffect, { alwaysEnabled: true })
+    .edgeEffect(this.edgeEffect, { alwaysEnabled: true })
     .scrollBar(this.barState)
     .scrollBarColor(this.scrollBarColor)
     // .scrollBarWidth(this.scrollBarWidth)
