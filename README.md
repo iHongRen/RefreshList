@@ -158,6 +158,8 @@ struct Index {
 
 **就是这么简单！** 三步即可拥有一个功能完整的刷新列表。
 
+## API 文档
+
 <details>
 <summary><strong>RefreshList 组件属性</strong></summary>
 
