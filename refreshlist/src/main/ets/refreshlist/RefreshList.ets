@@ -11,7 +11,7 @@ import { RefreshFooter } from './RefreshFooter'
 import { RefreshController } from './RefreshController'
 import { RefreshFooterData, RefreshFooterState, RefreshHeaderData } from './RefreshState'
 import { RefreshListAttrModifier } from './RefreshListAttrModifier'
-import { RefreshListDivider } from './RefreshListDirvier'
+import { RefreshListDivider } from './RefreshListDivider'
 import { RefreshEmptyView } from './RefreshEmptyView'
 import { RefreshLoadingView } from './RefreshLoadingView'
 import { RefreshGlobalConfig } from './RefreshGlobalConfig'
@@ -148,6 +148,9 @@ export struct RefreshList {
 
     this.dataSource.onDataCountChange = (count: number) => {
       this._isEmpty = (count === 0)
+      if (count > 0) {
+        this.showLoading = false
+      }
     }
 
     if (this.onLoadMore) {
@@ -186,12 +189,6 @@ export struct RefreshList {
       (value: number, smooth?: boolean, align?: ScrollAlign, options?: ScrollToIndexOptions) => {
         this.controller.scroller?.scrollToIndex(value, smooth, align, options)
       }
-  }
-
-  onDidBuild(): void {
-    if (this.dataSource.totalItemCount() > 0) {
-      this.showLoading = false
-    }
   }
 
   build() {

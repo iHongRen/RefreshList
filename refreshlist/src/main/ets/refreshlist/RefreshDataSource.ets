@@ -79,13 +79,14 @@ export class RefreshDataSource implements IDataSource {
   }
 
   deleteIndexCount(index: number, count: number): void {
-    if (index >= 0) {
-      this.list.splice(index, count)
-      this.notifyDataListDelete(index, count)
+    if (index >= 0 && index < this.list.length && count > 0) {
+      const actualCount = Math.min(count, this.list.length - index)
+      this.list.splice(index, actualCount)
+      this.notifyDataListDelete(index, actualCount)
     }
   }
 
-  repalceIndex(index: number, data: Object, key?: string) {
+  replaceIndex(index: number, data: Object, key?: string) {
     if (index >= 0) {
       this.list.splice(index, 1, data)
       this.notifyDataChange(index, key)

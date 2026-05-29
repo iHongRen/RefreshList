@@ -4,6 +4,7 @@
  * @date : 2025/4/11
  * @description : 空页面
  */
+import { RefreshGlobalConfig } from './RefreshGlobalConfig'
 
 @Component
 export struct RefreshEmptyView {
@@ -13,19 +14,23 @@ export struct RefreshEmptyView {
   @Prop retryTitle: string = '重新加载'
   @Prop offsetY: number = 0 //可用来调整位置, 0居中
   @Prop iconSize: Size = { width: 100, height: 100 }
+  @Prop titleColor: ResourceColor = RefreshGlobalConfig.emptyTitleColor
+  @Prop descColor: ResourceColor = RefreshGlobalConfig.emptyDescColor
+  @Prop retryButtonColor: ResourceColor = RefreshGlobalConfig.emptyRetryButtonColor
+  @Prop retryTextColor: ResourceColor = RefreshGlobalConfig.emptyRetryTextColor
   onRetry?: () => void
 
   build() {
     Column({ space: 8 }) {
       Column({ space: 10 }) {
         Image(this.icon).size(this.iconSize).objectFit(ImageFit.Contain)
-        Text(this.title).fontColor('#999').fontSize(14)
-        Text(this.desc).fontColor('#aaa').fontSize(12)
+        Text(this.title).fontColor(this.titleColor).fontSize(14)
+        Text(this.desc).fontColor(this.descColor).fontSize(12)
         if (this.onRetry) {
           Button() {
-            Text(this.retryTitle).fontColor('#fff').fontSize(12)
+            Text(this.retryTitle).fontColor(this.retryTextColor).fontSize(12)
           }
-          .backgroundColor('#0663f6')
+          .backgroundColor(this.retryButtonColor)
           .padding({
             left: 12,
             right: 12,

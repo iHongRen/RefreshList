@@ -43,6 +43,11 @@ export class RefreshGlobalConfig {
   // loading 大小
   static headerLoadingSize: SizeOptions = { width: 20, height: 20 }
   static footerLoadingSize: SizeOptions = { width: 20, height: 20 }
+  // empty 视图颜色
+  static emptyTitleColor: ResourceColor = '#999'
+  static emptyDescColor: ResourceColor = '#aaa'
+  static emptyRetryButtonColor: ResourceColor = '#0663f6'
+  static emptyRetryTextColor: ResourceColor = '#fff'
   // 设置触发刷新的下拉偏移量，当下拉距离小于该属性设置值时离手不会触发刷新。默认64
   static refreshOffset: number
   // 设置下拉跟手系数。数值越大，跟随手势下拉的反应越灵敏，有效值为0-1之间的值
