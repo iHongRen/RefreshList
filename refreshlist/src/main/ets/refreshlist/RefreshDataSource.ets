@@ -110,8 +110,11 @@ export class RefreshDataSource implements IDataSource {
   }
 
   moveDataIndex(from: number, to: number): void {
-    const tmp = this.list.splice(from, 1)
-    this.list.splice(to, 0, tmp[0])
+    if (from < 0 || from >= this.list.length || to < 0 || to >= this.list.length || from === to) {
+      return
+    }
+    const item = this.list.splice(from, 1)[0]
+    this.list.splice(to, 0, item)
     this.notifyDataMove(from, to)
   }
 

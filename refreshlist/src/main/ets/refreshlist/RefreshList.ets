@@ -110,7 +110,7 @@ export struct RefreshList {
   @Builder
   defaultLoadingView() {
     if (RefreshGlobalConfig.loadingBuilder) {
-      RefreshGlobalConfig.loadingBuilder?.builder()
+      RefreshGlobalConfig.loadingBuilder.builder()
     } else {
       RefreshLoadingView()
     }
@@ -119,7 +119,7 @@ export struct RefreshList {
   @Builder
   defaultEmptyView() {
     if (RefreshGlobalConfig.emptyBuilder) {
-      RefreshGlobalConfig.emptyBuilder?.builder()
+      RefreshGlobalConfig.emptyBuilder.builder()
     } else {
       RefreshEmptyView()
     }
@@ -128,7 +128,7 @@ export struct RefreshList {
   @Builder
   defaultRefreshHeader() {
     if (RefreshGlobalConfig.headerBuilder) {
-      RefreshGlobalConfig.headerBuilder?.builder({ data: this.refreshHeaderData })
+      RefreshGlobalConfig.headerBuilder.builder({ data: this.refreshHeaderData })
     } else {
       RefreshHeader({ data: this.refreshHeaderData })
     }
@@ -137,7 +137,7 @@ export struct RefreshList {
   @Builder
   defaultRefreshFooter() {
     if (RefreshGlobalConfig.footerBuilder) {
-      RefreshGlobalConfig.footerBuilder?.builder({ data: this.refreshFooterData })
+      RefreshGlobalConfig.footerBuilder.builder({ data: this.refreshFooterData })
     } else {
       RefreshFooter({ data: this.refreshFooterData })
     }
@@ -212,10 +212,10 @@ export struct RefreshList {
       this.refreshHeaderData.state = state;
     })
     .onRefreshing(() => {
-      const isGuestureTrigger = !this._refreshing
+      const isGestureTrigger = !this._refreshing
       this._refreshing = true
       if (this.onRefresh) {
-        if (isGuestureTrigger) {
+        if (isGestureTrigger) {
           this.onRefresh?.()
         } else {
           setTimeout(() => {
@@ -311,7 +311,7 @@ export struct RefreshList {
     })
     .onDidScroll(this.onDidScroll)
     .onAreaChange((oldValue: Area, newValue: Area) => {
-      this._listWidth = newValue.width as number
+      this._listWidth = Number(newValue.width)
     })
   }
 }
