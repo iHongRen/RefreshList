@@ -625,7 +625,8 @@ class CustomAttrModifier extends RefreshListAttrModifier {
 
 </details>
 
-## 常见问题
+<details>
+<summary><strong>常见问题</strong></summary>
 
 ### Q: 如何禁用下拉刷新？
 
@@ -675,6 +676,8 @@ RefreshList({
   }
 })
 ```
+
+</details>
 
 # 作者
 
