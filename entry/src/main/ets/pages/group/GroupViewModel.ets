@@ -38,6 +38,11 @@ export class GroupViewModel {
       this.dataSource.addListToGroup(data, (item: ItemModel) => {
         return item.category || '其他'
       })
+      // 分组附加数据示例：验证 setGroupData / setLastGroupData 的刷新链路
+      if (page === 1) {
+        this.dataSource.setGroupData(0, `首个分组附加信息（第 ${page} 页）`)
+      }
+      this.dataSource.setLastGroupData(`最后分组附加信息（第 ${page} 页 · ${new Date().toLocaleTimeString()}）`)
       // 模拟最多4页数据
       const hasMore = page < 4
       this.controller.setHasmore(hasMore)

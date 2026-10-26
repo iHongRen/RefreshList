@@ -11,8 +11,9 @@ export class RefreshGroupModel {
   dataSource: RefreshDataSource
   data?: Object
 
-  constructor(title: string, dataSource: RefreshDataSource) {
+  constructor(title: string, dataSource: RefreshDataSource, data?: Object) {
     this.title = title
     this.dataSource = dataSource
+    this.data = data
   }
 }

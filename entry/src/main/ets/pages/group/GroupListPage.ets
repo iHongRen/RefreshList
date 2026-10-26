@@ -84,6 +84,15 @@ struct GroupListPage {
           .fontSize(12)
           .fontColor('#666')
           .margin({ top: 2 })
+
+        if (group.data) {
+          Text(group.data as string)
+            .fontSize(11)
+            .fontColor('#2196F3')
+            .maxLines(1)
+            .textOverflow({ overflow: TextOverflow.Ellipsis })
+            .margin({ top: 2 })
+        }
       }
       .layoutWeight(1)
       .margin({ left: 12 })

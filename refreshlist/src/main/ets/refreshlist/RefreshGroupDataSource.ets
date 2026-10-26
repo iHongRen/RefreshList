@@ -47,8 +47,8 @@ export class RefreshGroupDataSource extends RefreshDataSource {
     let prevTitle: string | undefined = lastData instanceof RefreshGroupModel ? lastData.title : undefined
 
     let items: Object[] = []
-    list.forEach((e: Object) => {
-      const title = getTitle(e)
+    for (const e of list) {
+      const title = getTitle(e as ESObject)
       if (title === prevTitle) {
         items.push(e)
       } else {
@@ -65,13 +65,32 @@ export class RefreshGroupDataSource extends RefreshDataSource {
         prevTitle = title
         items = [e]
       }
-    });
+    }
 
     if (items.length > 0 && prevTitle) {
       const last = this.getLastData()
       if (last instanceof RefreshGroupModel && last.title === prevTitle) {
         last.dataSource.pushDataArray(items)
       }
+    }
+  }
+
+  public setGroupData(index: number, data: Object): void {
+    if (index < 0 || index >= this.list.length) {
+      return
+    }
+    const item = this.list[index]
+    if (item instanceof RefreshGroupModel) {
+      item.data = data
+      this.reloadIndex(index)
+    }
+  }
+
+  public setLastGroupData(data: Object): void {
+    const lastItem = this.getLastData()
+    if (lastItem instanceof RefreshGroupModel) {
+      lastItem.data = data
+      this.reloadIndex(this.list.length - 1)
     }
   }
 }
