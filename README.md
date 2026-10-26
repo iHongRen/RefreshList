@@ -31,7 +31,7 @@ ohpm install @cxy/refreshlist
 ```json5
 {
   "dependencies": {
-    "@cxy/refreshlist": "^1.1.0"
+    "@cxy/refreshlist": "^1.1.1"
   }
 }
 ```
@@ -368,9 +368,11 @@ RefreshGroupDataSource 继承自 RefreshDataSource，专门用于管理分组列
 
 #### 分组特有方法
 
-| 方法           | 参数                                              | 返回值 | 说明                     |
-| -------------- | ------------------------------------------------- | ------ | ------------------------ |
-| addListToGroup | (list: Object[], getTitle: (e: Object) => string) | void   | 将数据列表按标题分组添加 |
+| 方法             | 参数                                              | 返回值 | 说明                                       |
+| ---------------- | ------------------------------------------------- | ------ | ------------------------------------------ |
+| addListToGroup   | (list: Object[], getTitle: (e: Object) => string) | void   | 将数据列表按标题分组添加                   |
+| setGroupData     | (index: number, data: Object)                     | void   | 设置指定分组的附加数据，并触发该分组重绘   |
+| setLastGroupData | (data: Object)                                    | void   | 设置最后一个分组的附加数据，并触发该分组重绘 |
 
 #### 使用示例
 
@@ -411,6 +413,10 @@ export class GroupViewModel {
     const allItems = this.generateData()
     // 按category字段自动分组
     this.dataSource.addListToGroup(allItems, (item) => item.category)
+
+    // 分组附加数据：在分组 header 中展示，赋值后自动刷新对应分组
+    this.dataSource.setGroupData(0, '首个分组的附加信息')
+    this.dataSource.setLastGroupData(`更新于 ${new Date().toLocaleTimeString()}`)
   }
 }
 ```
@@ -433,7 +439,7 @@ export class GroupViewModel {
 #### 构造函数
 
 ```typescript
-constructor(title:string, dataSource:RefreshDataSource)
+constructor(title: string, dataSource: RefreshDataSource, data?: Object)
 ```
 
 </details>

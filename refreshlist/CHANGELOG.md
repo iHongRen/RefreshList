@@ -1,5 +1,16 @@
 ## 🔄 更新日志
 
+### [v1.1.1](https://github.com/iHongRen/RefreshList/releases/tag/v1.1.1)  (2026-10-26)
+
+#### 新增
+
+- `RefreshGroupModel` 新增可选 `data` 字段，支持为分组挂载附加数据，在分组 header 中展示 title 之外的信息
+- `RefreshGroupDataSource` 新增 `setGroupData` / `setLastGroupData`，赋值后自动触发对应分组重绘
+
+#### Bug 修复
+
+- 修复 `addListToGroup` 在 release 模式下的编译问题：`forEach` 回调改为 `for..of` + `as ESObject`
+
 ### [v1.1.0](https://github.com/iHongRen/RefreshList/releases/tag/v1.1.0)  (2026-05-29)
 
 #### Bug 修复
