@@ -3,7 +3,11 @@
   "version": "1.1.0",
   "description": "上拉下拉刷新组件，支持自定义样式和多种使用场景，提供丰富的Demo",
   "main": "Index.ets",
-  "author": "@仙银",
+  "author": {
+    "name": "@仙银",
+    "email": "iamhongren@gmail.com",
+    "url": "https://ihongren.github.io"
+  },
   "homepage": "https://github.com/iHongRen",
   "repository": "https://github.com/iHongRen/RefreshList",
   "license": "Apache-2.0",
